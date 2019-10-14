@@ -5,11 +5,9 @@ FROM balenalib/%%BALENA_MACHINE_NAME%%-python:3.7.2-stretch-run
 # use `install_packages` if you need to install dependencies,
 # for instance if you need git, just uncomment the line below.
 RUN install_packages \
-  chromium-browser \
+  chromium \
   lsb-release xserver-xorg \
   xinit lxsession desktop-file-utils \
-  raspberrypi-ui-mods rpd-icons \
-  gtk2-engines-clearlookspix \
   matchbox-keyboard \
   unclutter \
   # Support for Accuview gTouch 21.5" touchscreen

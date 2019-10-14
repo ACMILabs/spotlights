@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  labelinteractive:
+    build:
+      context: "../"
+      dockerfile: development/Dockerfile
+      args:
+        IS_LOCAL_ENV: "true"
+    hostname: labelinteractive
+    container_name: labelinteractive
+    env_file: ../config.env
+    volumes:
+      - ../:/code        
+    command: ./scripts/dev.sh
+    ports:
+     - 8080:8080

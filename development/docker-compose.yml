@@ -1,14 +1,14 @@
 version: "3"
 
 services:
-  labelinteractive:
+  spotlights:
     build:
       context: "../"
       dockerfile: development/Dockerfile
       args:
         IS_LOCAL_ENV: "true"
-    hostname: labelinteractive
-    container_name: labelinteractive
+    hostname: spotlights
+    container_name: spotlights
     env_file: ../config.env
     volumes:
       - ../:/code        

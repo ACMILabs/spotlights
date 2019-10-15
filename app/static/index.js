@@ -1,4 +1,3 @@
-/*
 function save_label(label_id, playlist_id) {
   fetch('http://localhost:8080/api/labels/', {
       method: 'POST',
@@ -18,7 +17,6 @@ function save_label(label_id, playlist_id) {
   .then(data => console.log(JSON.stringify(data)))
   .catch(error => console.error(error));
 }
-*/
 
 const LIST_ITEM_WIDTH = 240
 const LIST_PADDING = 30
@@ -45,6 +43,7 @@ const playlist = [
   {
     id: 2,
     title: "Placeholder video 2",
+    secondary_title: "Filmmaker",
     description: "This is the first placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
     video_url: "/static/sample.mp4",
     image_url: "/static/sample.png",
@@ -53,6 +52,7 @@ const playlist = [
   {
     id: 3,
     title: "Placeholder video 3",
+    secondary_title: "Director",
     description: "This is the first placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
     video_url: "/static/sample.mp4",
     image_url: "/static/sample.png",
@@ -61,6 +61,7 @@ const playlist = [
   {
     id: 4,
     title: "Placeholder video 4",
+    secondary_title: "Filmmaker",
     description: "This is the first placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
     video_url: "/static/sample.mp4",
     image_url: "/static/sample.png",
@@ -69,6 +70,7 @@ const playlist = [
   {
     id: 5,
     title: "Placeholder video 5",
+    secondary_title: "Director",
     description: "This is the first placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
     video_url: "/static/sample.mp4",
     image_url: "/static/sample.png",
@@ -77,6 +79,7 @@ const playlist = [
   {
     id: 6,
     title: "Placeholder video 6",
+    secondary_title: "Filmmaker",
     description: "This is the first placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
     video_url: "/static/sample.mp4",
     image_url: "/static/sample.png",
@@ -85,6 +88,7 @@ const playlist = [
   {
     id: 7,
     title: "Placeholder video 7",
+    secondary_title: "Director",
     description: "This is the first placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
     video_url: "/static/sample.mp4",
     image_url: "/static/sample.png",
@@ -93,6 +97,7 @@ const playlist = [
   {
     id: 8,
     title: "Placeholder video 8",
+    secondary_title: "Filmmaker",
     description: "This is the first placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
     video_url: "/static/sample.mp4",
     image_url: "/static/sample.png",
@@ -144,10 +149,13 @@ for (let i=0; i<playlist.length; i++) {
   description.innerHTML = p.description
 
   item.addEventListener('click', function () {
-    current_item.classList.remove('active')
-    item.classList.add('active')
-    video.src = playlist[0].video_url
-    current_item = item
+    if (current_item != item) {
+      current_item.classList.remove('active')
+      item.classList.add('active')
+      video.src = playlist[i].video_url
+      current_item = item
+      save_label(playlist[i].id, playlist_id)
+    }
   })
 }
 

@@ -70,7 +70,7 @@ def playlist():
         json_data = json.load(json_file)
 
     return render_template(
-        'playlist.html',
+        'index.html',
         playlist_json=json_data,
         xos={
             'playlist_endpoint': f'{XOS_API_ENDPOINT}playlists/',

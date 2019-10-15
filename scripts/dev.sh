@@ -1,4 +1,4 @@
 #!/bin/bash
 
-# Start Flask
+export FLASK_ENV=development
 python -u app/main.py

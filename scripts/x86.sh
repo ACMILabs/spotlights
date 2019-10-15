@@ -15,7 +15,7 @@ python -u app/main.py &
 
 sleep 10
 
-xrandr -o right
+xrandr -o left
 
 # Launch chromium browser in fullscreen on that page
 SCREEN_SCALE="${SCREEN_SCALE:-default 1.0}"

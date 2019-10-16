@@ -21,7 +21,7 @@ body {
 
 .list {
   white-space: nowrap;
-  transition: transform 200ms;
+  /*transition: transform 200ms;*/
 }
 
 .list_item {
@@ -32,6 +32,7 @@ body {
   background: #222 center/cover;
   box-sizing: border-box;
   padding: 15px 20px;
+  user-select: none;
 }
 
 .list_item.active {

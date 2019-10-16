@@ -18,10 +18,19 @@ function save_label(label_id, playlist_id) {
   .catch(error => console.error(error));
 }
 
+
+
 const LIST_ITEM_WIDTH = 240
 const LIST_PADDING = 30
 
-const playlist = [
+const FRICTION = 0.9
+const MIN_LIST_VELOCITY = 0.02
+const MIN_TARGET_D = 0.02
+const MIN_DRAG = 10
+
+
+
+const content = [
   {
     id: 0,
     title: "George Miller",
@@ -104,6 +113,10 @@ const playlist = [
   },
 ]
 
+
+
+// DOM
+
 const root = document.getElementById('root')
 
 const video = document.createElement('video')
@@ -124,8 +137,8 @@ list.className = 'list'
 const list_items = []
 let current_item = null
 
-for (let i=0; i<playlist.length; i++) {
-  const p = playlist[i]
+for (let i=0; i<content.length; i++) {
+  const p = content[i]
 
   const item = document.createElement('div')
   list_items.push(item)
@@ -148,73 +161,163 @@ for (let i=0; i<playlist.length; i++) {
   description.className = 'list_item_description'
   description.innerHTML = p.description
 
-  item.addEventListener('click', function () {
-    if (current_item != item) {
+  item.addEventListener('click', function (e) {
+    if (has_dragged) {
+      e.preventDefault()
+    }
+    else if (current_item != item) {
       current_item.classList.remove('active')
       item.classList.add('active')
-      video.src = playlist[i].video_url
+      video.src = content[i].video_url
       current_item = item
-      save_label(playlist[i].id, playlist_id)
+      save_label(content[i].id, playlist_id)
     }
   })
 }
 
-
-let list_offset = 0
-let is_left_arrow_hidden = false
-let is_right_arrow_hidden = false
-
 const left_arrow = document.createElement('div')
 list_cont.appendChild(left_arrow)
 left_arrow.className = 'left_arrow'
-left_arrow.addEventListener('click', function () {
-  const min = -LIST_ITEM_WIDTH * playlist.length + window.innerWidth - 2*LIST_PADDING
-  list_offset = Math.min(0, Math.max(min, list_offset + LIST_ITEM_WIDTH))
+
+const right_arrow = document.createElement('div')
+list_cont.appendChild(right_arrow)
+right_arrow.className = 'right_arrow'
+
+
+
+// Physics,
+// Cache to avoid unnecessary thrashing,
+// Arrow clicks move target for animation,
+// And only animate to target after arrow clicks.
+
+let list_offset = 0
+let list_velocity = 0
+
+let is_left_arrow_hidden = false
+let is_right_arrow_hidden = false
+
+let target_list_offset = 0
+
+let is_targeting = false
+
+let min_list_offset = -LIST_ITEM_WIDTH * content.length + window.innerWidth - 2*LIST_PADDING
+window.addEventListener('resize', function () {
+  min_list_offset = -LIST_ITEM_WIDTH * content.length + window.innerWidth - 2*LIST_PADDING
+})
+
+
+
+// ARROWS
+
+left_arrow.addEventListener('mousedown', function (e) {
+  e.preventDefault()
+  e.stopPropagation()
+  target_list_offset = Math.min(0, target_list_offset + LIST_ITEM_WIDTH)
+  is_targeting = true
+})
+
+right_arrow.addEventListener('mousedown', function (e) {
+  e.preventDefault()
+  e.stopPropagation()
+  target_list_offset = Math.max(min_list_offset, target_list_offset - LIST_ITEM_WIDTH)
+  is_targeting = true
+})
+
+
+
+// DRAGGING
+
+let is_dragging = false
+let last_mouse_x = 0
+let has_dragged = false
+let amount_dragged = 0
+
+list_cont.addEventListener('mousedown', function (e) {
+  is_dragging = true
+  list_velocity = 0
+  last_mouse_x = e.clientX
+  is_targeting = false
+  amount_dragged = 0
+})
+
+list_cont.addEventListener('mousemove', function (e) {
+  if (is_dragging) {
+    const d = e.clientX - last_mouse_x
+    amount_dragged += d
+    if (amount_dragged > MIN_DRAG || amount_dragged < -MIN_DRAG) {
+      has_dragged = true
+    }
+    list_velocity = d
+    list_offset = Math.min(0, Math.max(min_list_offset, list_offset + d))
+    last_mouse_x = e.clientX
+  }
+})
+
+list_cont.addEventListener('mouseup', function (e) {
+  is_dragging = false
+})
+
+list_cont.addEventListener('click', function (e) {
+  has_dragged = false
+})
+
+
+
+function update () {
+  if (list_velocity > MIN_LIST_VELOCITY || list_velocity < -MIN_LIST_VELOCITY) {
+    list_velocity *= FRICTION
+    list_offset = Math.min(0, Math.max(min_list_offset, list_offset + list_velocity))
+    list.style.transform = 'translateX('+list_offset+'px)'
+    if (!is_targeting) {
+      target_list_offset = Math.round(list_offset / LIST_ITEM_WIDTH) * LIST_ITEM_WIDTH
+    }
+  }
+
   if (!is_left_arrow_hidden) {
-    if (list_offset == 0) {
+    if (target_list_offset == 0) {
       left_arrow.classList.add('hidden_arrow')
       is_left_arrow_hidden = true
     }
   }
+  if (is_left_arrow_hidden) {
+    if (target_list_offset != 0) {
+      left_arrow.classList.remove('hidden_arrow')
+      is_left_arrow_hidden = false
+    }
+  }
+  if (!is_right_arrow_hidden) {
+    if (list_offset == min_list_offset || target_list_offset == min_list_offset) {
+      right_arrow.classList.add('hidden_arrow')
+      is_right_arrow_hidden = true
+    }
+  }
   if (is_right_arrow_hidden) {
-    if (list_offset != min) {
+    if (list_offset != min_list_offset && target_list_offset != min_list_offset) {
       right_arrow.classList.remove('hidden_arrow')
       is_right_arrow_hidden = false
     }
   }
 
-  list.style.transform = 'translateX('+list_offset+'px)'
-})
-
-const right_arrow = document.createElement('div')
-list_cont.appendChild(right_arrow)
-right_arrow.className = 'right_arrow'
-right_arrow.addEventListener('click', function () {
-  const min = -LIST_ITEM_WIDTH * playlist.length + window.innerWidth - 2*LIST_PADDING
-  list_offset = Math.min(0, Math.max(min, list_offset - LIST_ITEM_WIDTH))
-  if (!is_right_arrow_hidden) {
-    if (list_offset == min) {
-      right_arrow.classList.add('hidden_arrow')
-      is_right_arrow_hidden = true
-    }
-  }
-  if (is_left_arrow_hidden) {
-    if (list_offset != 0) {
-      left_arrow.classList.remove('hidden_arrow')
-      is_left_arrow_hidden = false
+  if (is_targeting) {
+    const target_d = target_list_offset - list_offset
+    if (target_d > MIN_TARGET_D || target_d < -MIN_TARGET_D) {
+      list_velocity = 0.1 * target_d
     }
   }
 
-  list.style.transform = 'translateX('+list_offset+'px)'
-})
+  requestAnimationFrame(update)
+}
 
 
 
 // Init
+
 current_item = list_items[0]
 current_item.classList.add('active')
 
-video.src = playlist[0].video_url
+video.src = content[0].video_url
 
 left_arrow.classList.add('hidden_arrow')
 is_left_arrow_hidden = true
+
+update()

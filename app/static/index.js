@@ -1,3 +1,12 @@
+const debug_el = document.createElement('div')
+document.body.appendChild(debug_el)
+
+window.addEventListener('error', function (e) {
+  debug_el.innerHTML += e.message +'. l'+ e.lineno +':c'+ e.colno
+})
+
+
+
 function save_label(label_id, playlist_id) {
   fetch('http://localhost:8080/api/labels/', {
       method: 'POST',
@@ -209,19 +218,24 @@ window.addEventListener('resize', function () {
 
 // ARROWS
 
-left_arrow.addEventListener('mousedown', function (e) {
+function handle_left_arrow_mousedown (e) {
   e.preventDefault()
   e.stopPropagation()
   target_list_offset = Math.min(0, target_list_offset + LIST_ITEM_WIDTH)
   is_targeting = true
-})
+}
 
-right_arrow.addEventListener('mousedown', function (e) {
+function handle_right_arrow_mousedown (e) {
   e.preventDefault()
   e.stopPropagation()
   target_list_offset = Math.max(min_list_offset, target_list_offset - LIST_ITEM_WIDTH)
   is_targeting = true
-})
+}
+
+left_arrow.addEventListener('mousedown', handle_left_arrow_mousedown)
+left_arrow.addEventListener('touchstart', handle_left_arrow_mousedown)
+right_arrow.addEventListener('mousedown', handle_right_arrow_mousedown)
+right_arrow.addEventListener('touchstart', handle_right_arrow_mousedown)
 
 
 
@@ -232,34 +246,38 @@ let last_mouse_x = 0
 let has_dragged = false
 let amount_dragged = 0
 
-list_cont.addEventListener('mousedown', function (e) {
+function handle_list_mousedown (e) {
   is_dragging = true
   list_velocity = 0
-  last_mouse_x = e.clientX
+  last_mouse_x = e.touches ? e.touches[0].clientX : e.clientX
   is_targeting = false
   amount_dragged = 0
-})
+  has_dragged = false
+}
 
-list_cont.addEventListener('mousemove', function (e) {
+function handle_list_mousemove (e) {
   if (is_dragging) {
-    const d = e.clientX - last_mouse_x
+    const d = (e.touches ? e.touches[0].clientX : e.clientX) - last_mouse_x
     amount_dragged += d
     if (amount_dragged > MIN_DRAG || amount_dragged < -MIN_DRAG) {
       has_dragged = true
     }
     list_velocity = d
     list_offset = Math.min(0, Math.max(min_list_offset, list_offset + d))
-    last_mouse_x = e.clientX
+    last_mouse_x = e.touches ? e.touches[0].clientX : e.clientX
   }
-})
+}
 
-list_cont.addEventListener('mouseup', function (e) {
+function handle_list_mouseup (e) {
   is_dragging = false
-})
+}
 
-list_cont.addEventListener('click', function (e) {
-  has_dragged = false
-})
+list_cont.addEventListener('mousedown', handle_list_mousedown)
+list_cont.addEventListener('touchstart', handle_list_mousedown)
+list_cont.addEventListener('mousemove', handle_list_mousemove)
+list_cont.addEventListener('touchmove', handle_list_mousemove)
+list_cont.addEventListener('mouseup', handle_list_mouseup)
+list_cont.addEventListener('touchend', handle_list_mouseup)
 
 
 

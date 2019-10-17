@@ -41,7 +41,7 @@ class Label(Model):
 def download_playlist():
     # Download Playlist JSON from XOS
     try:
-        playlist_json = requests.get(f'{XOS_API_ENDPOINT}playlists/{XOS_PLAYLIST_ID}/').json()
+        playlist_json = requests.get(f'{XOS_API_ENDPOINT}api/playlists/{XOS_PLAYLIST_ID}/').json()
 
         # Write it to the file system
         with open(cached_playlist_json, 'w') as outfile:
@@ -71,10 +71,7 @@ def playlist():
 
     return render_template(
         'index.html',
-        playlist_json=json_data,
-        xos={
-            'playlist_endpoint': f'{XOS_API_ENDPOINT}playlists/',
-        }
+        playlist_json=json_data
     )
 
 

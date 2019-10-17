@@ -39,6 +39,7 @@ const MIN_DRAG = 10
 
 
 
+/*
 const content = [
   {
     id: 0,
@@ -121,6 +122,18 @@ const content = [
     image_url: "/static/sample.png",
   },
 ]
+*/
+
+const content = playlist_labels.map(function (x) {
+  return {
+    id: x.label.id,
+    title: x.label.title,
+    secondary_title: x.label.title,
+    description: x.label.description,
+    video_url: x.resource,
+    image_url: x.label.works[0].image,
+  }
+})
 
 
 

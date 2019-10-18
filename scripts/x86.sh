@@ -10,7 +10,7 @@ sleep 20
 # Hide the cursor
 unclutter -display :0 -idle 0.1 &
 
-rm app/static/cache/*
+rm -f app/static/cache/*
 
 # Start Flask
 python -u app/main.py &

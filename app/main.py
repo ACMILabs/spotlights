@@ -9,6 +9,7 @@ from playhouse.shortcuts import model_to_dict
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
 import re
+from urllib.parse import urlparse
 
 from errors import HTTPError
 
@@ -24,7 +25,7 @@ sentry_sdk.init(
 )
 
 app = Flask(__name__)
-cached_playlist_json = f'playlist_{XOS_PLAYLIST_ID}.json'
+cached_playlist_json = f'app/static/cache/playlist_{XOS_PLAYLIST_ID}.json'
 
 # instantiate the peewee database
 db = SqliteDatabase('label.db')
@@ -43,16 +44,23 @@ def download_playlist():
     try:
         playlist_json = requests.get(f'{XOS_API_ENDPOINT}playlists/{XOS_PLAYLIST_ID}/').json()
 
-        res = [
+        replacements = [
             (re.compile(r'(\d\d:\d\d:\d\d),(\d\d\d)'), r'\1.\2'),
             (re.compile(r'{([ibu])}'), r'<\1>'),
             (re.compile(r'{\/([ibu])}'), r'</\1>'),
             (re.compile(r'{\\[a-zA-Z0-9]+}'), ''),# Remove SubStation Alpha tags
         ]
         for i, label in enumerate(playlist_json['playlist_labels']):
+            if 'resource' in label and label['resource']:
+                response = requests.get(label['resource'])
+                filename = 'static/cache/'+str(XOS_PLAYLIST_ID)+'_'+str(i)+os.path.splitext(urlparse(label['resource']).path)[1]
+                with open('app/'+filename, 'wb') as f:
+                    f.write(response.content)
+                label['resource'] = filename
+
             if 'subtitles' in label and label['subtitles']:
                 buf = requests.get(label['subtitles']).text
-                for p, r in res:
+                for p, r in replacements:
                     buf = p.sub(r, buf)
                 label['subtitles'] = "WEBVTT\n\n"+buf
 

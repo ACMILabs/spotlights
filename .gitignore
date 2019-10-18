@@ -1,7 +1,7 @@
 config.env
 .DS_Store
 .venv
-playlist*.json
+app/static/cache
 *.db
 
 # Byte-compiled / optimized / DLL files

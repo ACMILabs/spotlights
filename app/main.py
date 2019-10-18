@@ -41,7 +41,7 @@ class Label(Model):
 def download_playlist():
     # Download Playlist JSON from XOS
     try:
-        playlist_json = requests.get(f'{XOS_API_ENDPOINT}api/playlists/{XOS_PLAYLIST_ID}/').json()
+        playlist_json = requests.get(f'{XOS_API_ENDPOINT}playlists/{XOS_PLAYLIST_ID}/').json()
 
         res = [
             (re.compile(r'(\d\d:\d\d:\d\d),(\d\d\d)'), r'\1.\2'),

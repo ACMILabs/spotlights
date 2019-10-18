@@ -2,13 +2,13 @@ import json
 import os
 import sqlite3
 from threading import Thread
-
 import requests
 from flask import Flask, jsonify, render_template, request
 from peewee import CharField, IntegerField, Model, SqliteDatabase
 from playhouse.shortcuts import model_to_dict
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
+import re
 
 from errors import HTTPError
 
@@ -42,6 +42,21 @@ def download_playlist():
     # Download Playlist JSON from XOS
     try:
         playlist_json = requests.get(f'{XOS_API_ENDPOINT}api/playlists/{XOS_PLAYLIST_ID}/').json()
+
+        res = [
+            (re.compile(r'(\d\d:\d\d:\d\d),(\d\d\d)'), r'\1.\2'),
+            (re.compile(r'{([ibu])}'), r'<\1>'),
+            (re.compile(r'{\/([ibu])}'), r'</\1>'),
+            (re.compile(r'{\\[a-zA-Z0-9]+}'), ''),# Remove SubStation Alpha tags
+        ]
+        for i, label in enumerate(playlist_json['playlist_labels']):
+            if 'subtitles' in label and label['subtitles']:
+                buf = requests.get(label['subtitles']).text
+                for p, r in res:
+                    buf = p.sub(r, buf)
+                label['subtitles'] = "WEBVTT\n\n"+buf
+
+ 
 
         # Write it to the file system
         with open(cached_playlist_json, 'w') as outfile:

@@ -11,6 +11,13 @@ body {
   background: #000;
 }
 
+.video::cue {
+  font-size: 25px;
+  color: #ff0;
+  text-shadow: 0 0 2px #000;
+  background: none;
+}
+
 .list_cont {
   position: relative;
   overflow: hidden;
@@ -26,6 +33,7 @@ body {
 
 .list_item {
   display: inline-block;
+  vertical-align: top;
   width: 240px;
   height: 320px;
   white-space: normal;

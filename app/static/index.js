@@ -132,6 +132,7 @@ const content = playlist_labels.map(function (x) {
     description: x.label.description,
     video_url: x.resource,
     image_url: x.label.works[0].image,
+    subtitles: 'data:text/vtt;base64,'+btoa(x.subtitles),
   }
 })
 
@@ -147,6 +148,10 @@ video.className = 'video'
 video.loop = true
 video.autoplay = true
 video.muted = true
+
+const video_track = document.createElement('track')
+video.appendChild(video_track)
+video_track.default = true
 
 const list_cont = document.createElement('div')
 root.appendChild(list_cont)
@@ -191,6 +196,7 @@ for (let i=0; i<content.length; i++) {
       current_item.classList.remove('active')
       item.classList.add('active')
       video.src = content[i].video_url
+      video_track.src = 'data:text/vtt;'+content[i].subtitles
       current_item = item
       save_label(content[i].id, playlist_id)
     }
@@ -347,6 +353,7 @@ current_item = list_items[0]
 current_item.classList.add('active')
 
 video.src = content[0].video_url
+video_track.src = content[0].subtitles
 
 left_arrow.classList.add('hidden_arrow')
 is_left_arrow_hidden = true

@@ -145,7 +145,6 @@ const root = document.getElementById('root')
 const video = document.createElement('video')
 root.appendChild(video)
 video.className = 'video'
-video.loop = true
 video.autoplay = true
 video.muted = true
 
@@ -162,7 +161,7 @@ list_cont.appendChild(list)
 list.className = 'list'
 
 const list_items = []
-let current_item = null
+let current_index = 0
 
 for (let i=0; i<content.length; i++) {
   const p = content[i]
@@ -192,13 +191,13 @@ for (let i=0; i<content.length; i++) {
     if (has_dragged) {
       e.preventDefault()
     }
-    else if (current_item != item) {
-      current_item.classList.remove('active')
+    else if (list_items[current_index] != item) {
+      list_items[current_index].classList.remove('active')
       item.classList.add('active')
       video.src = content[i].video_url
       video_track.src = 'data:text/vtt;'+content[i].subtitles
-      current_item = item
       save_label(content[i].id, playlist_id)
+      current_index = i
     }
   })
 }
@@ -297,13 +296,34 @@ list_cont.addEventListener('mousemove', handle_list_mousemove)
 list_cont.addEventListener('touchmove', handle_list_mousemove)
 list_cont.addEventListener('mouseup', handle_list_mouseup)
 list_cont.addEventListener('touchend', handle_list_mouseup)
+list_cont.addEventListener('mouseleave', handle_list_mouseup)
+list_cont.addEventListener('touchcancel', handle_list_mouseup)
 
 
 
-function update () {
+// AUTOPLAY
+
+video.addEventListener('ended', function () {
+  const next_index = (current_index + 1) % content.length
+  list_items[current_index].classList.remove('active')
+  list_items[next_index].classList.add('active')
+  video.src = content[next_index].video_url
+  video_track.src = 'data:text/vtt;'+content[next_index].subtitles
+  save_label(content[next_index].id, playlist_id)
+  current_index = next_index
+
+  target_list_offset = Math.min(0, Math.max(min_list_offset, -(next_index - 1) * LIST_ITEM_WIDTH))
+  is_targeting = true
+})
+
+let t0 = null
+
+function update (t1) {
+  const dt = t1 - t0
+  t0 = t1
   if (list_velocity > MIN_LIST_VELOCITY || list_velocity < -MIN_LIST_VELOCITY) {
     list_velocity *= FRICTION
-    list_offset = Math.min(0, Math.max(min_list_offset, list_offset + list_velocity))
+    list_offset = Math.min(0, Math.max(min_list_offset, list_offset + list_velocity*dt*0.0625))
     list.style.transform = 'translateX('+list_offset+'px)'
     if (!is_targeting) {
       target_list_offset = Math.round(list_offset / LIST_ITEM_WIDTH) * LIST_ITEM_WIDTH
@@ -349,8 +369,7 @@ function update () {
 
 // Init
 
-current_item = list_items[0]
-current_item.classList.add('active')
+list_items[current_index].classList.add('active')
 
 video.src = content[0].video_url
 video_track.src = content[0].subtitles

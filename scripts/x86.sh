@@ -5,14 +5,14 @@ rm /tmp/.X0-lock &>/dev/null || true
 echo "Starting X in 2 seconds"
 sleep 2
 startx &
-sleep 20
+sleep 10
 
 # Hide the cursor
 unclutter -display :0 -idle 0.1 &
 
-rm -f app/static/cache/*
+mkdir app/static/cache
 
-# Start Flask
+python -u app/cache.py
 python -u app/main.py &
 
 sleep 10

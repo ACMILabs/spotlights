@@ -1,12 +1,13 @@
 config.env
 .DS_Store
 .venv
-app/static/cache/*
 *.db
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+
+app/static/cache/*
 
 *.swp

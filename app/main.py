@@ -1,15 +1,12 @@
 import json
 import os
 import sqlite3
-from threading import Thread
 import requests
 from flask import Flask, jsonify, render_template, request
 from peewee import CharField, IntegerField, Model, SqliteDatabase
 from playhouse.shortcuts import model_to_dict
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
-import re
-from urllib.parse import urlparse
 
 from errors import HTTPError
 
@@ -37,42 +34,6 @@ class Label(Model):
     playlist_id = IntegerField()
     class Meta:
         database = db
-
-
-def download_playlist():
-    # Download Playlist JSON from XOS
-    try:
-        playlist_json = requests.get(f'{XOS_API_ENDPOINT}playlists/{XOS_PLAYLIST_ID}/').json()
-
-        replacements = [
-            (re.compile(r'(\d\d:\d\d:\d\d),(\d\d\d)'), r'\1.\2'),
-            (re.compile(r'{([ibu])}'), r'<\1>'),
-            (re.compile(r'{\/([ibu])}'), r'</\1>'),
-            (re.compile(r'{\\[a-zA-Z0-9]+}'), ''),# Remove SubStation Alpha tags
-        ]
-        for i, label in enumerate(playlist_json['playlist_labels']):
-            if 'resource' in label and label['resource']:
-                response = requests.get(label['resource'])
-                filename = 'static/cache/'+str(XOS_PLAYLIST_ID)+'_'+str(i)+os.path.splitext(urlparse(label['resource']).path)[1]
-                with open('app/'+filename, 'wb') as f:
-                    f.write(response.content)
-                label['resource'] = filename
-
-            if 'subtitles' in label and label['subtitles']:
-                buf = requests.get(label['subtitles']).text
-                for p, r in replacements:
-                    buf = p.sub(r, buf)
-                label['subtitles'] = "WEBVTT\n\n"+buf
-
- 
-
-        # Write it to the file system
-        with open(cached_playlist_json, 'w') as outfile:
-            json.dump(playlist_json, outfile)
-
-    except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError) as e:
-        print(f'Error downloading playlist JSON from XOS: {e}')
-        sentry_sdk.capture_exception(e)
 
 
 @app.errorhandler(HTTPError)
@@ -147,5 +108,4 @@ def collect_item():
 
 if __name__ == '__main__':
     db.create_tables([Label])
-    download_playlist()
     app.run(host='0.0.0.0', port=8080)

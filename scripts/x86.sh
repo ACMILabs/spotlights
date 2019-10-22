@@ -10,8 +10,6 @@ sleep 10
 # Hide the cursor
 unclutter -display :0 -idle 0.1 &
 
-mkdir app/static/cache
-
 python -u app/cache.py
 python -u app/main.py &
 

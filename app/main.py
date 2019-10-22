@@ -2,7 +2,7 @@ import json
 import os
 import sqlite3
 import requests
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, send_from_directory
 from peewee import CharField, IntegerField, Model, SqliteDatabase
 from playhouse.shortcuts import model_to_dict
 import sentry_sdk
@@ -22,7 +22,7 @@ sentry_sdk.init(
 )
 
 app = Flask(__name__)
-cached_playlist_json = f'app/static/cache/playlist_{XOS_PLAYLIST_ID}.json'
+cached_playlist_json = f'playlist_{XOS_PLAYLIST_ID}.json'
 
 # instantiate the peewee database
 db = SqliteDatabase('label.db')
@@ -105,6 +105,10 @@ def collect_item():
     if response.status_code != requests.codes['created']:
         raise HTTPError('Could not save tap to XOS.')
     return jsonify(xos_tap), response.status_code
+
+@app.route('/cache/<path:filename>')
+def cache(filename):
+    return send_from_directory('/data/', filename)
 
 if __name__ == '__main__':
     db.create_tables([Label])

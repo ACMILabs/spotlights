@@ -11,7 +11,7 @@ SENTRY_ID = os.getenv('SENTRY_ID')
 
 sentry_sdk.init(dsn=SENTRY_ID)
 
-CACHE_DIR = 'app/static/cache/'
+CACHE_DIR = '/data/'
 
 try:
     playlist_json = requests.get(f'{XOS_API_ENDPOINT}playlists/{XOS_PLAYLIST_ID}/').json()
@@ -36,7 +36,7 @@ try:
                 response = requests.get(label['resource'])
                 with open(CACHE_DIR+name, 'wb') as f:
                     f.write(response.content)
-                label['resource'] = 'static/cache/'+name
+                label['resource'] = '/cache/'+name
 
         if 'subtitles' in label and label['subtitles']:
             buf = requests.get(label['subtitles']).text
@@ -47,7 +47,7 @@ try:
     for x in old_files:
         os.remove(CACHE_DIR+x)
 
-    with open(CACHE_DIR+f'playlist_{XOS_PLAYLIST_ID}.json', 'w') as outfile:
+    with open(f'playlist_{XOS_PLAYLIST_ID}.json', 'w') as outfile:
         json.dump(playlist_json, outfile)
 
 except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError) as e:

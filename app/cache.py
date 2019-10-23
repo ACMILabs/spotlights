@@ -36,7 +36,8 @@ try:
                 response = requests.get(label['resource'])
                 with open(CACHE_DIR+name, 'wb') as f:
                     f.write(response.content)
-                label['resource'] = '/cache/'+name
+
+            label['resource'] = '/cache/'+name
 
         if 'subtitles' in label and label['subtitles']:
             buf = requests.get(label['subtitles']).text

@@ -131,7 +131,7 @@ const content = playlist_labels.map(function (x) {
     secondary_title: x.label.title,
     description: x.label.description,
     video_url: x.resource,
-    image_url: x.label.works[0].image,
+    image_url: x.image,
     subtitles: 'data:text/vtt;base64,'+btoa(x.subtitles),
   }
 })

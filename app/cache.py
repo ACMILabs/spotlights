@@ -26,6 +26,7 @@ try:
     old_files = os.listdir(CACHE_DIR)
 
     for i, label in enumerate(playlist_json['playlist_labels']):
+        # Cache video
         if 'resource' in label and label['resource']:
             name = urlparse(label['resource']).path.split('/')[-1]
             if name in old_files:
@@ -36,9 +37,25 @@ try:
                 response = requests.get(label['resource'])
                 with open(CACHE_DIR+name, 'wb') as f:
                     f.write(response.content)
-
             label['resource'] = '/cache/'+name
 
+
+        # Cache image
+        image_url = label['label']['works'][0]['image']
+        name = urlparse(image_url).path.split('/')[-1]
+        if name in old_files:
+            old_files.remove(name)
+
+        if not os.path.isfile(CACHE_DIR+name):
+            print('Downloading: '+image_url)
+            response = requests.get(image_url)
+            with open(CACHE_DIR+name, 'wb') as f:
+                f.write(response.content)
+
+        label['image'] = '/cache/'+name
+        del label['label']['works']
+
+        # Convert and save subs
         if 'subtitles' in label and label['subtitles']:
             buf = requests.get(label['subtitles']).text
             for p, r in caption_replacements:

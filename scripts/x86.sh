@@ -2,8 +2,6 @@
 
 rm /tmp/.X0-lock &>/dev/null || true
 
-echo "Starting X in 2 seconds"
-sleep 2
 startx &
 sleep 10
 
@@ -13,11 +11,9 @@ unclutter -display :0 -idle 0.1 &
 python -u app/cache.py
 python -u app/main.py &
 
-sleep 10
+sleep 5
 
-# Launch chromium browser in fullscreen on that page
-SCREEN_SCALE="${SCREEN_SCALE:-default 1.0}"
-chromium --app=http://localhost:8080 --start-fullscreen --no-sandbox --user-data-dir --kiosk --force-device-scale-factor=$SCREEN_SCALE
+chromium --app=http://localhost:8080 --enable-accelerated-video --enable-accelerated-mjpeg-decode --ignore-gpu-blacklist --enable-gpu-rasterization --enable-zero-copy --enable-native-gpu-memory-buffers --test-type --start-fullscreen --user-data-dir --kiosk --disable-application-cache --incognito
 
 # Use this for remote debug
 #chromium --no-sandbox --disable-gpu --remote-debugging-address=0.0.0.0 --remote-debugging-port=9222 --headless http://localhost:8080

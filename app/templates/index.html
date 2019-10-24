@@ -9,7 +9,6 @@
     <div id='root'></div>
     <script>
       window.playlist_labels = {{ playlist_json.playlist_labels|tojson }}
-      window.playlist_id = {{ playlist_json.id|safe }}
     </script>
     <script src="{{ url_for('static', filename='index.js') }}" type="module"></script>
   </script>

@@ -7,7 +7,7 @@ window.addEventListener('error', function (e) {
 
 
 
-function save_label(label_id, playlist_id) {
+function save_label(label_id) {
   fetch('http://localhost:8080/api/labels/', {
       method: 'POST',
       mode: 'cors',
@@ -18,13 +18,9 @@ function save_label(label_id, playlist_id) {
       referrer: 'no-referrer',
       body: JSON.stringify({
         datetime: Date.now(),
-        playlist_id: playlist_id,
         label_id: label_id,
       }),
   })
-  .then(response => response.json())
-  .then(data => console.log(JSON.stringify(data)))
-  .catch(error => console.error(error));
 }
 
 
@@ -124,7 +120,7 @@ const content = [
 ]
 */
 
-const content = playlist_labels.map(function (x) {
+const content = window.playlist_labels.map(function (x) {
   return {
     id: x.label.id,
     title: x.label.title,
@@ -196,7 +192,7 @@ for (let i=0; i<content.length; i++) {
       item.classList.add('active')
       video.src = content[i].video_url
       video_track.src = 'data:text/vtt;'+content[i].subtitles
-      save_label(content[i].id, playlist_id)
+      save_label(content[i].id)
       current_index = i
     }
   })
@@ -286,7 +282,7 @@ function handle_list_mousemove (e) {
   }
 }
 
-function handle_list_mouseup (e) {
+function handle_list_mouseup () {
   is_dragging = false
 }
 
@@ -309,7 +305,7 @@ video.addEventListener('ended', function () {
   list_items[next_index].classList.add('active')
   video.src = content[next_index].video_url
   video_track.src = 'data:text/vtt;'+content[next_index].subtitles
-  save_label(content[next_index].id, playlist_id)
+  save_label(content[next_index].id)
   current_index = next_index
 
   target_list_offset = Math.min(0, Math.max(min_list_offset, -(next_index - 1) * LIST_ITEM_WIDTH))

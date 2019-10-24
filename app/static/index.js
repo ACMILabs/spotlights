@@ -148,6 +148,10 @@ const video_track = document.createElement('track')
 video.appendChild(video_track)
 video_track.default = true
 
+const video_progress = document.createElement('div')
+root.appendChild(video_progress)
+video_progress.className = 'video_progress'
+
 const list_cont = document.createElement('div')
 root.appendChild(list_cont)
 list_cont.className = 'list_cont'
@@ -358,6 +362,8 @@ function update (t1) {
     }
   }
 
+  const duration = video.duration
+  video_progress.style.width = duration ? ((video.currentTime / duration * 100) + '%') : 0
   requestAnimationFrame(update)
 }
 

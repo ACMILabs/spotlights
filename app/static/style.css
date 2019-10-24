@@ -6,7 +6,7 @@ body {
 
 .video {
   display: block;
-  height: 500px;
+  height: calc(100vh - 320px);
   width: 100%;
   background: #000;
 }
@@ -16,6 +16,14 @@ body {
   color: #ff0;
   text-shadow: 0 0 2px #000;
   background: none;
+}
+
+.video_progress {
+  position: absolute;
+  height: 3px;
+  background: #ccc;
+  z-index: 1;
+  transform: translateY(-3px);
 }
 
 .list_cont {

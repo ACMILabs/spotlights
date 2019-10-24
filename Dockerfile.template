@@ -12,7 +12,9 @@ RUN install_packages \
   unclutter \
   # Support for Accuview gTouch 21.5" touchscreen
   xserver-xorg-input-evdev \
-  xinput
+  xinput \
+  # xrandr
+  x11-xserver-utils
 
 # disable lxpolkit popup warning
 RUN mv /usr/bin/lxpolkit /usr/bin/lxpolkit.bak

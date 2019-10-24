@@ -5,8 +5,11 @@ rm /tmp/.X0-lock &>/dev/null || true
 startx &
 sleep 10
 
-# Hide the cursor
 unclutter -display :0 -idle 0.1 &
+
+xrandr -o left
+xinput set-prop "eGalax Inc. eGalaxTouch EXC3000-1990-46.00.00" --type=float "Coordinate Transformation Matrix" 0 -1 1 1 0 0 0 0 1
+
 
 python -u app/cache.py
 python -u app/main.py &

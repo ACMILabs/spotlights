@@ -8,33 +8,35 @@ from playhouse.shortcuts import model_to_dict
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
 
-from errors import HTTPError
 
-XOS_API_ENDPOINT = os.getenv('XOS_API_ENDPOINT')
-AUTH_TOKEN = os.getenv('AUTH_TOKEN')
-XOS_PLAYLIST_ID = os.getenv('XOS_PLAYLIST_ID', 1)
-SENTRY_ID = os.getenv('SENTRY_ID')
 
-# Setup Sentry
-sentry_sdk.init(
-    dsn=SENTRY_ID,
-    integrations=[FlaskIntegration()]
-)
+AUTH_TOKEN = os.environ['AUTH_TOKEN']
+SENTRY_ID = os.environ['SENTRY_ID']
+XOS_API_ENDPOINT = os.environ['XOS_API_ENDPOINT']
+XOS_PLAYLIST_ID = os.environ['XOS_PLAYLIST_ID']
+
+
+
+sentry_sdk.init(dsn=SENTRY_ID, integrations=[FlaskIntegration()])
+
+
 
 app = Flask(__name__)
-cached_playlist_json = f'playlist_{XOS_PLAYLIST_ID}.json'
-
-# instantiate the peewee database
 db = SqliteDatabase('label.db')
 
 
-class Label(Model):
-    datetime = CharField(primary_key=True)
-    label_id = IntegerField()
-    playlist_id = IntegerField()
-    class Meta:
-        database = db
 
+class HTTPError(Exception):
+    def __init__(self, message, status_code=400, payload=None):
+        super().__init__()
+        self.message = message
+        self.status_code = status_code
+        self.payload = payload
+
+    def to_dict(self):
+        error = dict(self.payload or ())
+        error['message'] = self.message
+        return error
 
 @app.errorhandler(HTTPError)
 def handle_http_error(error):
@@ -47,10 +49,20 @@ def handle_http_error(error):
     return response
 
 
+
+class Label(Model):
+    datetime = CharField(primary_key=True)
+    label_id = IntegerField()
+    playlist_id = IntegerField()
+    class Meta:
+        database = db
+
+
+
 @app.route('/')
 def index():
     # Read in the cached JSON
-    with open(cached_playlist_json, encoding='utf-8') as json_file:
+    with open(f'playlist_{XOS_PLAYLIST_ID}.json', encoding='utf-8') as json_file:
         json_data = json.load(json_file)
 
     return render_template(

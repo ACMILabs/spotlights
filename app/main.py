@@ -48,7 +48,7 @@ def handle_http_error(error):
 
 
 @app.route('/')
-def playlist():
+def index():
     # Read in the cached JSON
     with open(cached_playlist_json, encoding='utf-8') as json_file:
         json_data = json.load(json_file)
@@ -57,15 +57,6 @@ def playlist():
         'index.html',
         playlist_json=json_data
     )
-
-
-@app.route('/api/playlist_json/')
-def playlist_json():
-    # Read in the cached JSON
-    with open(cached_playlist_json, encoding='utf-8') as json_file:
-        json_data = json.load(json_file)
-    
-    return jsonify(json_data)
 
 
 @app.route('/api/labels/', methods=['POST'])
@@ -90,7 +81,7 @@ def select_label():
     return jsonify(model_to_dict(label))
 
 
-@app.route('/api/taps', methods=['POST'])
+@app.route('/api/taps/', methods=['POST'])
 def collect_item():
     """
     Collect a tap and forward it on to XOS with the label ID.
@@ -106,10 +97,12 @@ def collect_item():
         raise HTTPError('Could not save tap to XOS.')
     return jsonify(xos_tap), response.status_code
 
+
 @app.route('/cache/<path:filename>')
 def cache(filename):
     return send_from_directory('/data/', filename)
 
+
 if __name__ == '__main__':
     db.create_tables([Label])
-    app.run(host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=8081)

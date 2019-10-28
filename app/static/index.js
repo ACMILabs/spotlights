@@ -8,7 +8,7 @@ window.addEventListener('error', function (e) {
 
 
 function save_label(label_id) {
-  fetch('http://localhost:8080/api/labels/', {
+  fetch('http://localhost:8081/api/labels/', {
       method: 'POST',
       mode: 'cors',
       cache: 'no-cache',
@@ -33,92 +33,6 @@ const MIN_LIST_VELOCITY = 0.02
 const MIN_TARGET_D = 0.02
 const MIN_DRAG = 10
 
-
-
-/*
-const content = [
-  {
-    id: 0,
-    title: "George Miller",
-    secondary_title: "Filmmaker",
-    description: "This is the first placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
-    video_url: "/static/sample.mp4",
-    image_url: "/static/sample.png",
-  },
-
-  {
-    id: 1,
-    title: "Gillian Armstrong",
-    secondary_title: "Director",
-    description: "This is the first placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
-    video_url: "/static/sample.mp4",
-    image_url: "/static/sample.png",
-  },
-
-  {
-    id: 2,
-    title: "Placeholder video 2",
-    secondary_title: "Filmmaker",
-    description: "This is the first placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
-    video_url: "/static/sample.mp4",
-    image_url: "/static/sample.png",
-  },
-
-  {
-    id: 3,
-    title: "Placeholder video 3",
-    secondary_title: "Director",
-    description: "This is the first placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
-    video_url: "/static/sample.mp4",
-    image_url: "/static/sample.png",
-  },
-
-  {
-    id: 4,
-    title: "Placeholder video 4",
-    secondary_title: "Filmmaker",
-    description: "This is the first placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
-    video_url: "/static/sample.mp4",
-    image_url: "/static/sample.png",
-  },
-
-  {
-    id: 5,
-    title: "Placeholder video 5",
-    secondary_title: "Director",
-    description: "This is the first placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
-    video_url: "/static/sample.mp4",
-    image_url: "/static/sample.png",
-  },
-
-  {
-    id: 6,
-    title: "Placeholder video 6",
-    secondary_title: "Filmmaker",
-    description: "This is the first placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
-    video_url: "/static/sample.mp4",
-    image_url: "/static/sample.png",
-  },
-
-  {
-    id: 7,
-    title: "Placeholder video 7",
-    secondary_title: "Director",
-    description: "This is the first placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
-    video_url: "/static/sample.mp4",
-    image_url: "/static/sample.png",
-  },
-
-  {
-    id: 8,
-    title: "Placeholder video 8",
-    secondary_title: "Filmmaker",
-    description: "This is the first placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
-    video_url: "/static/sample.mp4",
-    image_url: "/static/sample.png",
-  },
-]
-*/
 
 const content = window.playlist_labels.map(function (x) {
   return {
@@ -316,20 +230,31 @@ video.addEventListener('ended', function () {
   is_targeting = true
 })
 
+
 let t0 = null
 
+// MAIN LOOP
 function update (t1) {
+
+  // Framerate independent sim: dt = t1 - t0. 
+  // offset [px] += offset [px] + velocity [px/frame] * dt [ms/frame] / ideal dt [ms/frame]
+  // 1 / ideal dt [ms/frame] = 1 / 16 [ms/frame] = 0.0625 [frames/ms]
+
   const dt = t1 - t0
   t0 = t1
   if (list_velocity > MIN_LIST_VELOCITY || list_velocity < -MIN_LIST_VELOCITY) {
     list_velocity *= FRICTION
     list_offset = Math.min(0, Math.max(min_list_offset, list_offset + list_velocity*dt*0.0625))
     list.style.transform = 'translateX('+list_offset+'px)'
+
+    // Set current target for when arrows are eventually clicked
     if (!is_targeting) {
       target_list_offset = Math.round(list_offset / LIST_ITEM_WIDTH) * LIST_ITEM_WIDTH
     }
   }
 
+
+  // Cached arrow state to avoid unnecessary thrashing
   if (!is_left_arrow_hidden) {
     if (target_list_offset == 0) {
       left_arrow.classList.add('hidden_arrow')
@@ -355,6 +280,8 @@ function update (t1) {
     }
   }
 
+
+  // Only animate to target after arrow clicks
   if (is_targeting) {
     const target_d = target_list_offset - list_offset
     if (target_d > MIN_TARGET_D || target_d < -MIN_TARGET_D) {
@@ -362,8 +289,12 @@ function update (t1) {
     }
   }
 
+
+  // Progress bar
   const duration = video.duration
   video_progress.style.width = duration ? ((video.currentTime / duration * 100) + '%') : 0
+
+
   requestAnimationFrame(update)
 }
 

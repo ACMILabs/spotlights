@@ -292,7 +292,7 @@ function update (t1) {
 
   // Progress bar
   const duration = video.duration
-  video_progress.style.width = duration ? ((video.currentTime / duration * 100) + '%') : 0
+  video_progress.style.transform = 'scaleX('+(duration ? (video.currentTime / duration) : 0)+')'
 
 
   requestAnimationFrame(update)

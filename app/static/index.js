@@ -302,6 +302,8 @@ function update (t1) {
 
 // Init
 
+save_label(content[current_index].id)
+
 list_items[current_index].classList.add('active')
 
 video.src = content[0].video_url
@@ -311,3 +313,5 @@ left_arrow.classList.add('hidden_arrow')
 is_left_arrow_hidden = true
 
 update()
+
+video.play()

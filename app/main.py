@@ -3,6 +3,7 @@ import os
 import sqlite3
 import requests
 from flask import Flask, jsonify, render_template, request, send_from_directory
+from flask_cors import CORS, cross_origin
 from peewee import CharField, IntegerField, Model, SqliteDatabase
 from playhouse.shortcuts import model_to_dict
 import sentry_sdk
@@ -10,8 +11,8 @@ from sentry_sdk.integrations.flask import FlaskIntegration
 
 
 
-AUTH_TOKEN = os.environ['AUTH_TOKEN']
-SENTRY_ID = os.environ['SENTRY_ID']
+AUTH_TOKEN = os.environ['AUTH_TOKEN'] SENTRY_ID = os.environ.get('SENTRY_ID')
+print("TODO: set up a sentry ID")
 XOS_API_ENDPOINT = os.environ['XOS_API_ENDPOINT']
 XOS_PLAYLIST_ID = os.environ['XOS_PLAYLIST_ID']
 
@@ -22,6 +23,7 @@ sentry_sdk.init(dsn=SENTRY_ID, integrations=[FlaskIntegration()])
 
 
 app = Flask(__name__)
+CORS(app)
 db = SqliteDatabase('label.db')
 
 
@@ -94,6 +96,7 @@ def select_label():
 
 
 @app.route('/api/taps/', methods=['POST'])
+@cross_origin()
 def collect_item():
     """
     Collect a tap and forward it on to XOS with the label ID.

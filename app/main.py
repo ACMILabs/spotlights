@@ -11,7 +11,8 @@ from sentry_sdk.integrations.flask import FlaskIntegration
 
 
 
-AUTH_TOKEN = os.environ['AUTH_TOKEN'] SENTRY_ID = os.environ.get('SENTRY_ID')
+AUTH_TOKEN = os.environ['AUTH_TOKEN']
+SENTRY_ID = os.environ.get('SENTRY_ID')
 print("TODO: set up a sentry ID")
 XOS_API_ENDPOINT = os.environ['XOS_API_ENDPOINT']
 XOS_PLAYLIST_ID = os.environ['XOS_PLAYLIST_ID']

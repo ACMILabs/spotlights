@@ -1,32 +1,25 @@
 import json
 import os
-import sqlite3
+
 import requests
+import sentry_sdk
 from flask import Flask, jsonify, render_template, request, send_from_directory
 from flask_cors import CORS, cross_origin
 from peewee import CharField, IntegerField, Model, SqliteDatabase
 from playhouse.shortcuts import model_to_dict
-import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
-
-
 
 AUTH_TOKEN = os.environ['AUTH_TOKEN']
 SENTRY_ID = os.environ.get('SENTRY_ID')
-print("TODO: set up a sentry ID")
+# print("TODO: set up a sentry ID")
 XOS_API_ENDPOINT = os.environ['XOS_API_ENDPOINT']
 XOS_PLAYLIST_ID = os.environ['XOS_PLAYLIST_ID']
 
-
-
 sentry_sdk.init(dsn=SENTRY_ID, integrations=[FlaskIntegration()])
 
-
-
-app = Flask(__name__)
+app = Flask(__name__)  # pylint: disable=C0103
 CORS(app)
-db = SqliteDatabase('label.db')
-
+db = SqliteDatabase('label.db')  # pylint: disable=C0103
 
 
 class HTTPError(Exception):
@@ -41,6 +34,7 @@ class HTTPError(Exception):
         error['message'] = self.message
         return error
 
+
 @app.errorhandler(HTTPError)
 def handle_http_error(error):
     """
@@ -52,14 +46,13 @@ def handle_http_error(error):
     return response
 
 
-
 class Label(Model):
     datetime = CharField(primary_key=True)
     label_id = IntegerField()
     playlist_id = IntegerField()
-    class Meta:
-        database = db
 
+    class Meta:  # pylint: disable=R0903
+        database = db
 
 
 @app.route('/')
@@ -83,9 +76,9 @@ def select_label():
 
     # Save the label selected to the database
     label = Label.create(
-        datetime = label_selected['datetime'],
-        playlist_id = XOS_PLAYLIST_ID,
-        label_id = label_selected.get('label_id', 0),
+        datetime=label_selected['datetime'],
+        playlist_id=XOS_PLAYLIST_ID,
+        label_id=label_selected.get('label_id', 0),
     )
     # Clear out other messages beyond the last 5
     delete_records = Label.delete().where(

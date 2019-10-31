@@ -12,3 +12,5 @@ __pycache__/
 app/static/cache/*
 
 *.swp
+
+node_modules/

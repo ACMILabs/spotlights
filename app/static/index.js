@@ -53,10 +53,10 @@ const content = window.playlist_labels.map(function (x) {
 const root = document.getElementById('root')
 
 const video = document.createElement('video')
-root.appendChild(video)
 video.className = 'video'
 video.autoplay = true
-video.muted = true
+video.setAttribute('muted', true)
+root.appendChild(video)
 
 const video_track = document.createElement('track')
 video.appendChild(video_track)
@@ -313,5 +313,3 @@ left_arrow.classList.add('hidden_arrow')
 is_left_arrow_hidden = true
 
 update()
-
-video.play()

@@ -27,7 +27,7 @@ steps:
       - make linttest
   deploy_to_Balena:
     title: Deploying repository to Balena
-    image: acmilabs/balena-cli:arm
+    image: acmilabs/balena-cli:latest
     stage: deploy
     commands:
       - bash /code/add-key.sh github.com $GITHUB_FINGERPRINT

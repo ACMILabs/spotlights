@@ -40,7 +40,7 @@ steps:
       - npm install && npm run lint-test
   deploy_to_Balena:
     title: Deploying repository to Balena
-    image: acmilabs/balena-cli:latest
+    image: acmilabs/balena-cli:x86
     stage: deploy
     commands:
       - bash /code/add-key.sh github.com $GITHUB_FINGERPRINT

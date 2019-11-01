@@ -1,4 +1,9 @@
 const debug_el = document.createElement('div')
+debug_el.style.position = 'fixed'
+debug_el.style.top = '0'
+debug_el.style.left = '0'
+debug_el.style.background = '#fff'
+debug_el.style.zIndex = 1
 document.body.appendChild(debug_el)
 
 window.addEventListener('error', function (e) {
@@ -34,7 +39,7 @@ const MIN_TARGET_D = 0.02
 const MIN_DRAG = 10
 
 
-const content = window.playlist_labels.map(function (x) {
+const playlist_content = window.playlist_labels.map(function (x) {
   return {
     id: x.label.id,
     title: x.label.title,
@@ -55,8 +60,9 @@ const root = document.getElementById('root')
 const video = document.createElement('video')
 video.className = 'video'
 video.autoplay = true
-video.setAttribute('muted', true)
+video.defaultMuted = true
 root.appendChild(video)
+
 
 const video_track = document.createElement('track')
 video.appendChild(video_track)
@@ -77,29 +83,31 @@ list.className = 'list'
 const list_items = []
 let current_index = 0
 
-for (let i=0; i<content.length; i++) {
-  const p = content[i]
+// Build playlist DOM elements
+
+for (let i=0; i<playlist_content.length; i++) {
+  const item_data = playlist_content[i]
 
   const item = document.createElement('div')
   list_items.push(item)
   list.appendChild(item)
   item.className = 'list_item'
-  item.style.backgroundImage = 'url('+p.image_url+')'
+  item.style.backgroundImage = 'url('+item_data.image_url+')'
 
   const title = document.createElement('div')
   item.appendChild(title)
   title.className = 'list_item_title'
-  title.innerHTML = p.title
+  title.innerHTML = item_data.title
 
   const secondary_title = document.createElement('div')
   item.appendChild(secondary_title)
   secondary_title.className = 'list_item_secondary_title'
-  secondary_title.innerHTML = p.secondary_title
+  secondary_title.innerHTML = item_data.secondary_title
 
   const description = document.createElement('div')
   item.appendChild(description)
   description.className = 'list_item_description'
-  description.innerHTML = p.description
+  description.innerHTML = item_data.description
 
   item.addEventListener('click', function (e) {
     if (has_dragged) {
@@ -108,13 +116,16 @@ for (let i=0; i<content.length; i++) {
     else if (list_items[current_index] != item) {
       list_items[current_index].classList.remove('active')
       item.classList.add('active')
-      video.src = content[i].video_url
-      video_track.src = 'data:text/vtt;'+content[i].subtitles
-      save_label(content[i].id)
+      video.src = playlist_content[i].video_url
+      video_track.src = 'data:text/vtt;'+playlist_content[i].subtitles
+      save_label(playlist_content[i].id)
       current_index = i
     }
   })
 }
+
+
+// Arrows
 
 const left_arrow = document.createElement('div')
 list_cont.appendChild(left_arrow)
@@ -126,7 +137,7 @@ right_arrow.className = 'right_arrow'
 
 
 
-// Physics,
+// Dragging and post-arrow-click physics,
 // Cache to avoid unnecessary thrashing,
 // Arrow clicks move target for animation,
 // And only animate to target after arrow clicks.
@@ -141,14 +152,14 @@ let target_list_offset = 0
 
 let is_targeting = false
 
-let min_list_offset = -LIST_ITEM_WIDTH * content.length + window.innerWidth - 2*LIST_PADDING
+let min_list_offset = -LIST_ITEM_WIDTH * playlist_content.length + window.innerWidth - 2*LIST_PADDING
 window.addEventListener('resize', function () {
-  min_list_offset = -LIST_ITEM_WIDTH * content.length + window.innerWidth - 2*LIST_PADDING
+  min_list_offset = -LIST_ITEM_WIDTH * playlist_content.length + window.innerWidth - 2*LIST_PADDING
 })
 
 
 
-// ARROWS
+// ARROWS BEHAVIOUR
 
 function handle_left_arrow_mousedown (e) {
   e.preventDefault()
@@ -218,12 +229,12 @@ list_cont.addEventListener('touchcancel', handle_list_mouseup)
 // AUTOPLAY
 
 video.addEventListener('ended', function () {
-  const next_index = (current_index + 1) % content.length
+  const next_index = (current_index + 1) % playlist_content.length
   list_items[current_index].classList.remove('active')
   list_items[next_index].classList.add('active')
-  video.src = content[next_index].video_url
-  video_track.src = 'data:text/vtt;'+content[next_index].subtitles
-  save_label(content[next_index].id)
+  video.src = playlist_content[next_index].video_url
+  video_track.src = 'data:text/vtt;'+playlist_content[next_index].subtitles
+  save_label(playlist_content[next_index].id)
   current_index = next_index
 
   target_list_offset = Math.min(0, Math.max(min_list_offset, -(next_index - 1) * LIST_ITEM_WIDTH))
@@ -233,12 +244,20 @@ video.addEventListener('ended', function () {
 
 let t0 = null
 
-// MAIN LOOP
+// 60fps MAIN LOOP
+// Updates everything that needs regular updating:
+// - list offset & velocity
+// - current list target
+// - arrows' hidden state & CSS class
+// - video progress bar
+// - etc.
+
 function update (t1) {
 
-  // Framerate independent sim: dt = t1 - t0. 
-  // offset [px] += offset [px] + velocity [px/frame] * dt [ms/frame] / ideal dt [ms/frame]
-  // 1 / ideal dt [ms/frame] = 1 / 16 [ms/frame] = 0.0625 [frames/ms]
+  // Framerate independence:
+  // time since last frame started, dt = t1 - t0. 
+  // offset [px] += offset [px] + velocity [px/frame] * dt [ms/frame] / ideal dt [ms/frame],
+  // where 1 / ideal dt [ms/frame] = 1 / 16 [ms/frame] = 0.0625 [frames/ms]
 
   const dt = t1 - t0
   t0 = t1
@@ -302,12 +321,12 @@ function update (t1) {
 
 // Init
 
-save_label(content[current_index].id)
+save_label(playlist_content[current_index].id)
 
 list_items[current_index].classList.add('active')
 
-video.src = content[0].video_url
-video_track.src = content[0].subtitles
+video.src = playlist_content[0].video_url
+video_track.src = playlist_content[0].subtitles
 
 left_arrow.classList.add('hidden_arrow')
 is_left_arrow_hidden = true

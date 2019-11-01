@@ -16,7 +16,17 @@ python -u app/main.py &
 sleep 5
 
 #chromium --app=http://localhost:8081 --enable-accelerated-video --enable-accelerated-mjpeg-decode --ignore-gpu-blacklist --enable-gpu-rasterization --enable-oop-rasterization --enable-zero-copy --enable-native-gpu-memory-buffers --test-type --start-fullscreen --user-data-dir --kiosk --disable-application-cache --incognito --no-sandbox
-chromium --app=http://localhost:8081 --no-sandbox --force-gpu-rasterization --enable-oop-rasterization --enable-zero-copy --enable-native-gpu-memory-buffers --ignore-gpu-blacklist  --enable-logging=stderr --v=1 --kiosk
+LIBVA_DRIVER_NAME=iHD chromium http://localhost:8081 \
+  --no-sandbox \
+  --enable-native-gpu-memory-buffers --force-gpu-rasterization --enable-oop-rasterization --enable-zero-copy \
+  --ignore-gpu-blacklist \
+  --window-position=0,0 --window-size=1080,1920 --start-fullscreen --kiosk --test-type \
+  --enable-logging=stderr --v=1
+# Running as root
+# https://software.intel.com/en-us/articles/software-vs-gpu-rasterization-in-chromium
+# Intel Kaby Lake Graphics are blacklisted
+# All required for screen size
+# Logging
 
 # Use this for remote debug
 #chromium --no-sandbox --disable-gpu --remote-debugging-address=0.0.0.0 --remote-debugging-port=9222 --headless http://localhost:8080

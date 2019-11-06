@@ -20,12 +20,16 @@ python -u app/main.py &
 sleep 5
 
 chromium http://localhost:8081 \
+  --kiosk \
   --no-sandbox \
   --ignore-gpu-blacklist \
   --window-position=0,0 --window-size=1920,1080 --test-type
 
 
 # USEFUL CHROMIUM FLAGS:
+
+# Goes fullscreen, disables right clicks and devtools
+#  --kiosk
 
 # Running as root:
 #  --no-sandbox

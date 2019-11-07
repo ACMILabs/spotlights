@@ -1,242 +1,248 @@
-/* eslint-disable no-loop-func */
-const debugEl = document.createElement("div");
-debugEl.style.position = "fixed";
-debugEl.style.top = "0";
-debugEl.style.left = "0";
-debugEl.style.background = "#fff";
-debugEl.style.zIndex = 1;
-document.body.appendChild(debugEl);
+const debug_el = document.createElement('div')
+debug_el.style.position = 'fixed'
+debug_el.style.top = '0'
+debug_el.style.left = '0'
+debug_el.style.background = '#fff'
+debug_el.style.zIndex = 1
+document.body.appendChild(debug_el)
 
-window.addEventListener("error", e => {
-  debugEl.innerHTML += `${e.message}. l${e.lineno}:c${e.colno}`;
-});
+window.addEventListener('error', function (e) {
+  debug_el.innerHTML += e.message +'. l'+ e.lineno +':c'+ e.colno
+})
 
-function saveLabel(labelId) {
-  fetch("http://localhost:8081/api/labels/", {
-    method: "POST",
-    mode: "cors",
-    cache: "no-cache",
-    credentials: "same-origin",
-    headers: { "Content-Type": "application/json" },
-    redirect: "follow",
-    referrer: "no-referrer",
-    body: JSON.stringify({
-      datetime: Date.now(),
-      label_id: labelId
-    })
-  });
+
+
+function save_label(label_id) {
+  fetch('http://localhost:8081/api/labels/', {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {'Content-Type': 'application/json'},
+      redirect: 'follow',
+      referrer: 'no-referrer',
+      body: JSON.stringify({
+        datetime: Date.now(),
+        label_id: label_id,
+      }),
+  })
 }
 
-const LIST_ITEM_WIDTH = 240;
-const LIST_PADDING = 30;
 
-const FRICTION = 0.9;
-const MIN_LIST_VELOCITY = 0.02;
-const MIN_TARGET_D = 0.02;
-const MIN_DRAG = 10;
 
-let isDragging = false;
-let lastMouseX = 0;
-let hasDragged = false;
-let amountDragged = 0;
+const LIST_ITEM_WIDTH = 240
+const LIST_PADDING = 30
 
-const playlistContent = window.playlist_labels.map(x => {
+const FRICTION = 0.9
+const MIN_LIST_VELOCITY = 0.02
+const MIN_TARGET_D = 0.02
+const MIN_DRAG = 10
+
+
+const playlist_content = window.playlist_labels.map(function (x) {
   return {
     id: x.label.id,
     title: x.label.title,
-    secondaryTitle: x.label.title,
+    secondary_title: x.label.title,
     description: x.label.description,
     video_url: x.resource,
     image_url: x.image,
-    subtitles: `data:text/vtt;base64,${btoa(x.subtitles)}`
-  };
-});
+    subtitles: 'data:text/vtt;base64,'+btoa(x.subtitles),
+  }
+})
+
+
 
 // DOM
 
-const root = document.getElementById("root");
+const root = document.getElementById('root')
 
-const video = document.createElement("video");
-root.appendChild(video);
-video.className = "video";
-video.autoplay = true;
-video.defaultMuted = true;
+const video = document.createElement('video')
+video.className = 'video'
+video.autoplay = true
+video.defaultMuted = true
+root.appendChild(video)
 
-const videoTrack = document.createElement("track");
-video.appendChild(videoTrack);
-videoTrack.default = true;
 
-const videoProgress = document.createElement("div");
-root.appendChild(videoProgress);
-videoProgress.className = "video_progress";
+const video_track = document.createElement('track')
+video.appendChild(video_track)
+video_track.default = true
 
-const listCont = document.createElement("div");
-root.appendChild(listCont);
-listCont.className = "list_cont";
+const video_progress = document.createElement('div')
+root.appendChild(video_progress)
+video_progress.className = 'video_progress'
 
-const list = document.createElement("div");
-listCont.appendChild(list);
-list.className = "list";
+const list_cont = document.createElement('div')
+root.appendChild(list_cont)
+list_cont.className = 'list_cont'
 
-const listItems = [];
-let currentIndex = 0;
+const list = document.createElement('div')
+list_cont.appendChild(list)
+list.className = 'list'
+
+const list_items = []
+let current_index = 0
 
 // Build playlist DOM elements
 
-for (let i = 0; i < playlistContent.length; i++) {
-  const itemData = playlistContent[i];
+for (let i=0; i<playlist_content.length; i++) {
+  const item_data = playlist_content[i]
 
-  const item = document.createElement("div");
-  listItems.push(item);
-  list.appendChild(item);
-  item.className = "list_item";
-  item.style.backgroundImage = `url(${itemData.image_url})`;
+  const item = document.createElement('div')
+  list_items.push(item)
+  list.appendChild(item)
+  item.className = 'list_item'
+  item.style.backgroundImage = 'url('+item_data.image_url+')'
 
-  const title = document.createElement("div");
-  item.appendChild(title);
-  title.className = "list_item_title";
-  title.innerHTML = itemData.title;
+  const title = document.createElement('div')
+  item.appendChild(title)
+  title.className = 'list_item_title'
+  title.innerHTML = item_data.title
 
-  const secondaryTitle = document.createElement("div");
-  item.appendChild(secondaryTitle);
-  secondaryTitle.className = "list_item_secondaryTitle";
-  secondaryTitle.innerHTML = itemData.secondaryTitle;
+  const secondary_title = document.createElement('div')
+  item.appendChild(secondary_title)
+  secondary_title.className = 'list_item_secondary_title'
+  secondary_title.innerHTML = item_data.secondary_title
 
-  const description = document.createElement("div");
-  item.appendChild(description);
-  description.className = "list_item_description";
-  description.innerHTML = itemData.description;
+  const description = document.createElement('div')
+  item.appendChild(description)
+  description.className = 'list_item_description'
+  description.innerHTML = item_data.description
 
-  item.addEventListener("click", e => {
-    if (hasDragged) {
-      e.preventDefault();
-    } else if (listItems[currentIndex] !== item) {
-      listItems[currentIndex].classList.remove("active");
-      item.classList.add("active");
-      video.src = playlistContent[i].video_url;
-      videoTrack.src = `data:text/vtt;${playlistContent[i].subtitles}`;
-      saveLabel(playlistContent[i].id);
-      currentIndex = i;
+  item.addEventListener('click', function (e) {
+    if (has_dragged) {
+      e.preventDefault()
     }
-  });
+    else if (list_items[current_index] != item) {
+      list_items[current_index].classList.remove('active')
+      item.classList.add('active')
+      video.src = playlist_content[i].video_url
+      video_track.src = 'data:text/vtt;'+playlist_content[i].subtitles
+      save_label(playlist_content[i].id)
+      current_index = i
+    }
+  })
 }
+
 
 // Arrows
 
-const leftArrow = document.createElement("div");
-listCont.appendChild(leftArrow);
-leftArrow.className = "leftArrow";
+const left_arrow = document.createElement('div')
+list_cont.appendChild(left_arrow)
+left_arrow.className = 'left_arrow'
 
-const rightArrow = document.createElement("div");
-listCont.appendChild(rightArrow);
-rightArrow.className = "rightArrow";
+const right_arrow = document.createElement('div')
+list_cont.appendChild(right_arrow)
+right_arrow.className = 'right_arrow'
+
+
 
 // Dragging and post-arrow-click physics,
 // Cache to avoid unnecessary thrashing,
 // Arrow clicks move target for animation,
 // And only animate to target after arrow clicks.
 
-let listOffset = 0;
-let listVelocity = 0;
+let list_offset = 0
+let list_velocity = 0
 
-let isLeftArrowHidden = false;
-let isRightArrowHidden = false;
+let is_left_arrow_hidden = false
+let is_right_arrow_hidden = false
 
-let targetListOffset = 0;
+let target_list_offset = 0
 
-let isTargeting = false;
+let is_targeting = false
 
-let minListOffset =
-  -LIST_ITEM_WIDTH * playlistContent.length +
-  window.innerWidth -
-  2 * LIST_PADDING;
-window.addEventListener("resize", () => {
-  minListOffset =
-    -LIST_ITEM_WIDTH * playlistContent.length +
-    window.innerWidth -
-    2 * LIST_PADDING;
-});
+let min_list_offset = -LIST_ITEM_WIDTH * playlist_content.length + window.innerWidth - 2*LIST_PADDING
+window.addEventListener('resize', function () {
+  min_list_offset = -LIST_ITEM_WIDTH * playlist_content.length + window.innerWidth - 2*LIST_PADDING
+})
+
+
 
 // ARROWS BEHAVIOUR
 
-function handleLeftArrowMousedown(e) {
-  e.preventDefault();
-  e.stopPropagation();
-  targetListOffset = Math.min(0, targetListOffset + LIST_ITEM_WIDTH);
-  isTargeting = true;
+function handle_left_arrow_mousedown (e) {
+  e.preventDefault()
+  e.stopPropagation()
+  target_list_offset = Math.min(0, target_list_offset + LIST_ITEM_WIDTH)
+  is_targeting = true
 }
 
-function handleRightArrowMousedown(e) {
-  e.preventDefault();
-  e.stopPropagation();
-  targetListOffset = Math.max(
-    minListOffset,
-    targetListOffset - LIST_ITEM_WIDTH
-  );
-  isTargeting = true;
+function handle_right_arrow_mousedown (e) {
+  e.preventDefault()
+  e.stopPropagation()
+  target_list_offset = Math.max(min_list_offset, target_list_offset - LIST_ITEM_WIDTH)
+  is_targeting = true
 }
 
-leftArrow.addEventListener("mousedown", handleLeftArrowMousedown);
-leftArrow.addEventListener("touchstart", handleLeftArrowMousedown);
-rightArrow.addEventListener("mousedown", handleRightArrowMousedown);
-rightArrow.addEventListener("touchstart", handleRightArrowMousedown);
+left_arrow.addEventListener('mousedown', handle_left_arrow_mousedown)
+left_arrow.addEventListener('touchstart', handle_left_arrow_mousedown)
+right_arrow.addEventListener('mousedown', handle_right_arrow_mousedown)
+right_arrow.addEventListener('touchstart', handle_right_arrow_mousedown)
+
+
 
 // DRAGGING
 
-function handleListMousedown(e) {
-  isDragging = true;
-  listVelocity = 0;
-  lastMouseX = e.touches ? e.touches[0].clientX : e.clientX;
-  isTargeting = false;
-  amountDragged = 0;
-  hasDragged = false;
+let is_dragging = false
+let last_mouse_x = 0
+let has_dragged = false
+let amount_dragged = 0
+
+function handle_list_mousedown (e) {
+  is_dragging = true
+  list_velocity = 0
+  last_mouse_x = e.touches ? e.touches[0].clientX : e.clientX
+  is_targeting = false
+  amount_dragged = 0
+  has_dragged = false
 }
 
-function handleListMousemove(e) {
-  if (isDragging) {
-    const d = (e.touches ? e.touches[0].clientX : e.clientX) - lastMouseX;
-    amountDragged += d;
-    if (amountDragged > MIN_DRAG || amountDragged < -MIN_DRAG) {
-      hasDragged = true;
+function handle_list_mousemove (e) {
+  if (is_dragging) {
+    const d = (e.touches ? e.touches[0].clientX : e.clientX) - last_mouse_x
+    amount_dragged += d
+    if (amount_dragged > MIN_DRAG || amount_dragged < -MIN_DRAG) {
+      has_dragged = true
     }
-    listVelocity = d;
-    listOffset = Math.min(0, Math.max(minListOffset, listOffset + d));
-    lastMouseX = e.touches ? e.touches[0].clientX : e.clientX;
+    list_velocity = d
+    list_offset = Math.min(0, Math.max(min_list_offset, list_offset + d))
+    last_mouse_x = e.touches ? e.touches[0].clientX : e.clientX
   }
 }
 
-function handleListMouseup() {
-  isDragging = false;
+function handle_list_mouseup () {
+  is_dragging = false
 }
 
-listCont.addEventListener("mousedown", handleListMousedown);
-listCont.addEventListener("touchstart", handleListMousedown);
-listCont.addEventListener("mousemove", handleListMousemove);
-listCont.addEventListener("touchmove", handleListMousemove);
-listCont.addEventListener("mouseup", handleListMouseup);
-listCont.addEventListener("touchend", handleListMouseup);
-listCont.addEventListener("mouseleave", handleListMouseup);
-listCont.addEventListener("touchcancel", handleListMouseup);
+list_cont.addEventListener('mousedown', handle_list_mousedown)
+list_cont.addEventListener('touchstart', handle_list_mousedown)
+list_cont.addEventListener('mousemove', handle_list_mousemove)
+list_cont.addEventListener('touchmove', handle_list_mousemove)
+list_cont.addEventListener('mouseup', handle_list_mouseup)
+list_cont.addEventListener('touchend', handle_list_mouseup)
+list_cont.addEventListener('mouseleave', handle_list_mouseup)
+list_cont.addEventListener('touchcancel', handle_list_mouseup)
+
+
 
 // AUTOPLAY
 
-video.addEventListener("ended", () => {
-  const nextIndex = (currentIndex + 1) % playlistContent.length;
-  listItems[currentIndex].classList.remove("active");
-  listItems[nextIndex].classList.add("active");
-  video.src = playlistContent[nextIndex].video_url;
-  videoTrack.src = `data:text/vtt;${playlistContent[nextIndex].subtitles}`;
-  saveLabel(playlistContent[nextIndex].id);
-  currentIndex = nextIndex;
+video.addEventListener('ended', function () {
+  const next_index = (current_index + 1) % playlist_content.length
+  list_items[current_index].classList.remove('active')
+  list_items[next_index].classList.add('active')
+  video.src = playlist_content[next_index].video_url
+  video_track.src = 'data:text/vtt;'+playlist_content[next_index].subtitles
+  save_label(playlist_content[next_index].id)
+  current_index = next_index
 
-  targetListOffset = Math.min(
-    0,
-    Math.max(minListOffset, -(nextIndex - 1) * LIST_ITEM_WIDTH)
-  );
-  isTargeting = true;
-});
+  target_list_offset = Math.min(0, Math.max(min_list_offset, -(next_index - 1) * LIST_ITEM_WIDTH))
+  is_targeting = true
+})
 
-let t0 = null;
+
+let t0 = null
 
 // 60fps MAIN LOOP
 // Updates everything that needs regular updating:
@@ -246,82 +252,83 @@ let t0 = null;
 // - video progress bar
 // - etc.
 
-function update(t1) {
+function update (t1) {
+
   // Framerate independence:
-  // time since last frame started, dt = t1 - t0.
+  // time since last frame started, dt = t1 - t0. 
   // offset [px] += offset [px] + velocity [px/frame] * dt [ms/frame] / ideal dt [ms/frame],
   // where 1 / ideal dt [ms/frame] = 1 / 16 [ms/frame] = 0.0625 [frames/ms]
 
-  const dt = t1 - t0;
-  t0 = t1;
-  if (listVelocity > MIN_LIST_VELOCITY || listVelocity < -MIN_LIST_VELOCITY) {
-    listVelocity *= FRICTION;
-    listOffset = Math.min(
-      0,
-      Math.max(minListOffset, listOffset + listVelocity * dt * 0.0625)
-    );
-    list.style.transform = `translateX(${listOffset}px)`;
+  const dt = t1 - t0
+  t0 = t1
+  if (list_velocity > MIN_LIST_VELOCITY || list_velocity < -MIN_LIST_VELOCITY) {
+    list_velocity *= FRICTION
+    list_offset = Math.min(0, Math.max(min_list_offset, list_offset + list_velocity*dt*0.0625))
+    list.style.transform = 'translateX('+list_offset+'px)'
 
     // Set current target for when arrows are eventually clicked
-    if (!isTargeting) {
-      targetListOffset =
-        Math.round(listOffset / LIST_ITEM_WIDTH) * LIST_ITEM_WIDTH;
+    if (!is_targeting) {
+      target_list_offset = Math.round(list_offset / LIST_ITEM_WIDTH) * LIST_ITEM_WIDTH
     }
   }
+
 
   // Cached arrow state to avoid unnecessary thrashing
-  if (!isLeftArrowHidden) {
-    if (targetListOffset === 0) {
-      leftArrow.classList.add("hidden_arrow");
-      isLeftArrowHidden = true;
+  if (!is_left_arrow_hidden) {
+    if (target_list_offset == 0) {
+      left_arrow.classList.add('hidden_arrow')
+      is_left_arrow_hidden = true
     }
   }
-  if (isLeftArrowHidden) {
-    if (targetListOffset !== 0) {
-      leftArrow.classList.remove("hidden_arrow");
-      isLeftArrowHidden = false;
+  if (is_left_arrow_hidden) {
+    if (target_list_offset != 0) {
+      left_arrow.classList.remove('hidden_arrow')
+      is_left_arrow_hidden = false
     }
   }
-  if (!isRightArrowHidden) {
-    if (listOffset === minListOffset || targetListOffset === minListOffset) {
-      rightArrow.classList.add("hidden_arrow");
-      isRightArrowHidden = true;
+  if (!is_right_arrow_hidden) {
+    if (list_offset == min_list_offset || target_list_offset == min_list_offset) {
+      right_arrow.classList.add('hidden_arrow')
+      is_right_arrow_hidden = true
     }
   }
-  if (isRightArrowHidden) {
-    if (listOffset !== minListOffset && targetListOffset !== minListOffset) {
-      rightArrow.classList.remove("hidden_arrow");
-      isRightArrowHidden = false;
+  if (is_right_arrow_hidden) {
+    if (list_offset != min_list_offset && target_list_offset != min_list_offset) {
+      right_arrow.classList.remove('hidden_arrow')
+      is_right_arrow_hidden = false
     }
   }
+
 
   // Only animate to target after arrow clicks
-  if (isTargeting) {
-    const targetD = targetListOffset - listOffset;
-    if (targetD > MIN_TARGET_D || targetD < -MIN_TARGET_D) {
-      listVelocity = 0.1 * targetD;
+  if (is_targeting) {
+    const target_d = target_list_offset - list_offset
+    if (target_d > MIN_TARGET_D || target_d < -MIN_TARGET_D) {
+      list_velocity = 0.1 * target_d
     }
   }
 
-  // Progress bar
-  const { duration } = video;
-  videoProgress.style.transform = `scaleX(${
-    duration ? video.currentTime / duration : 0
-  })`;
 
-  requestAnimationFrame(update);
+  // Progress bar
+  const duration = video.duration
+  video_progress.style.transform = 'scaleX('+(duration ? (video.currentTime / duration) : 0)+')'
+
+
+  requestAnimationFrame(update)
 }
+
+
 
 // Init
 
-saveLabel(playlistContent[currentIndex].id);
+save_label(playlist_content[current_index].id)
 
-listItems[currentIndex].classList.add("active");
+list_items[current_index].classList.add('active')
 
-video.src = playlistContent[0].video_url;
-videoTrack.src = playlistContent[0].subtitles;
+video.src = playlist_content[0].video_url
+video_track.src = playlist_content[0].subtitles
 
-leftArrow.classList.add("hidden_arrow");
-isLeftArrowHidden = true;
+left_arrow.classList.add('hidden_arrow')
+is_left_arrow_hidden = true
 
-update();
+update()

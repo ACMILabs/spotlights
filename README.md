@@ -1,27 +1,15 @@
-Label interactive
-=================
+Spotlights
+==========
 
-An interactive label selector prototype running on a Raspberry Pi connected to a 12.3" screen.
+An interactive video player that loads a playlist of videos from XOS specified by the XOS_PLAYLIST_ID.
+It autoplays by default and a user is able to select from the menu of videos to begin playing them.
+This is intended for use on an Optiplex 7050 with a touchscreen.
 
-## Installation on Raspbian
+## Dev installation
 
-To install and run on a Raspbian OS Raspberry Pi for prototyping:
+- Pull museumos and run `docker-compose up --build` from its root directory
+- From the spotlights root directory, run `cd development && docker-compose up --build`, then open localhost:8081 in Chrome.
 
-* Install [Pyenv](http://www.knight-of-pi.org/pyenv-for-python-version-management-on-raspbian-stretch/) and Python 3.7.3
-* Install the required packages `pip install -r requirements.txt`
-* Copy `config.tmpl.env` to `source config.env` and fill in the relevant environment variables
-* Run `source config.env`
-* Run `./scripts/pi.sh`
+## Push to Balena
 
-## Installation via Balena
-
-* Clone this repo.
-* Add the Balena remote
-* Git push your changes
-* Push your edits to Balena `git push balena master`
-
-## Keyboard input from a shell
-
-* Install xdotool `sudo apt install xdotool`
-* To zoom out in the browser `xdotool key Ctrl+minus`
-* To refresh the page `xdotool key "ctrl+F5"`
+`balena push s__spotlights-x86`

@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Spotlights: {{ playlist_json.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+
+  <body>
+    <div id='root'></div>
+    <script>
+      window.playlist_labels = {{ playlist_json.playlist_labels|tojson }}
+    </script>
+    <script src="{{ url_for('static', filename='index.js') }}" type="module"></script>
+  </script>
+  </body>
+</html>

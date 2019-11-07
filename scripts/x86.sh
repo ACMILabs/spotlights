@@ -11,8 +11,8 @@ sleep 10
 
 unclutter -display :0 -idle 0.1 &
 
-#xrandr -o left
-#xinput set-prop "eGalax Inc. eGalaxTouch EXC3000-1990-46.00.00" --type=float "Coordinate Transformation Matrix" 0 -1 1 1 0 0 0 0 1
+xrandr -o left
+xinput set-prop "eGalax Inc. eGalaxTouch EXC3000-1990-46.00.00" --type=float "Coordinate Transformation Matrix" 0 -1 1 1 0 0 0 0 1
 
 python -u app/cache.py
 python -u app/main.py &
@@ -23,7 +23,7 @@ chromium http://localhost:8081 \
   --kiosk \
   --no-sandbox \
   --ignore-gpu-blacklist \
-  --window-position=0,0 --window-size=1920,1080 --test-type
+  --window-position=0,0 --window-size=1080,1920 --test-type
 
 
 # USEFUL CHROMIUM FLAGS:

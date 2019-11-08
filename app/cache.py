@@ -20,6 +20,7 @@ def create_cache():
     Fetches a playlist, saves the images and videos to the CACHE_DIR;
     Converts srt subs to vtt, inlines them as plaintext in the playlist json, which is saved in this file's directory.
     """
+    print('in cache')
     try:
         playlist_json = requests.get(f'{XOS_API_ENDPOINT}playlists/{XOS_PLAYLIST_ID}/').json()
 
@@ -75,8 +76,9 @@ def create_cache():
             json.dump(playlist_json, outfile)
 
     except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError) as exception:
-        print(f'Error downloading playlist JSON from XOS: {exception}')
         sentry_sdk.capture_exception(exception)
+        print(f'Error downloading playlist JSON from XOS: {exception}')
+        raise exception
 
 
 if __name__ == '__main__':

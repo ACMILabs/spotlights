@@ -6,6 +6,7 @@ from peewee import SqliteDatabase
 
 from app.main import Label
 
+from app.cache import create_cache
 
 def file_to_string_strip_new_lines(filename):
     """
@@ -63,3 +64,10 @@ def test_message():
     )
     assert label
     assert label.datetime is timestamp
+
+def test_cache(capsys):
+    """
+    Test the cache downloads and saves subs, images and videos
+    """
+    with capsys.disabled():
+        create_cache()

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-python -u app/cache.py
+python -u -m app.cache
 
 export FLASK_ENV=development
-python -u app/main.py
+python -u -m app.main

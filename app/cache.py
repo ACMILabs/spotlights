@@ -16,6 +16,10 @@ CACHE_DIR = '/data/'
 
 
 def create_cache():
+    """
+    Fetches a playlist, saves the images and videos to the CACHE_DIR;
+    Converts srt subs to vtt, inlines them as plaintext in the playlist json, which is saved in this file's directory.
+    """
     try:
         playlist_json = requests.get(f'{XOS_API_ENDPOINT}playlists/{XOS_PLAYLIST_ID}/').json()
 

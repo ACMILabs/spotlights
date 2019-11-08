@@ -28,49 +28,43 @@ RUN apt install xz-utils
 RUN curl -o chromium-vaapi-78.0.3904.87-1-x86_64.pkg.tar.xz https://pkgbuild.com/~maximbaz/repo/chromium-vaapi-78.0.3904.87-1-x86_64.pkg.tar.xz
 RUN tar -xf chromium-vaapi-78.0.3904.87-1-x86_64.pkg.tar.xz 
 
-RUN curl -o icu-64.2-1-x86_64.pkg.tar.xz http://mirror.ubrco.de/archlinux/core/os/x86_64/icu-64.2-1-x86_64.pkg.tar.xz
-RUN tar -xf icu-64.2-1-x86_64.pkg.tar.xz 
+RUN curl -Lo icu.pkg.tar.xz https://www.archlinux.org/packages/core/x86_64/icu/download/
+RUN tar -xf icu.pkg.tar.xz 
 
-RUN curl -o libwebp-1.0.3-1-x86_64.pkg.tar.xz http://mirror.ubrco.de/archlinux/extra/os/x86_64/libwebp-1.0.3-1-x86_64.pkg.tar.xz
-RUN tar -xf libwebp-1.0.3-1-x86_64.pkg.tar.xz 
+RUN curl -Lo libwebp.pkg.tar.xz https://www.archlinux.org/packages/extra/x86_64/libwebp/download/
+RUN tar -xf libwebp.pkg.tar.xz 
 
-RUN curl -o libjpeg-turbo-2.0.3-1-x86_64.pkg.tar.xz http://mirror.ubrco.de/archlinux/extra/os/x86_64/libjpeg-turbo-2.0.3-1-x86_64.pkg.tar.xz
-RUN tar -xf libjpeg-turbo-2.0.3-1-x86_64.pkg.tar.xz 
+RUN curl -Lo libjpeg-turbo.pkg.tar.xz https://www.archlinux.org/packages/extra/x86_64/libjpeg-turbo/download/
+RUN tar -xf libjpeg-turbo.pkg.tar.xz 
 
-RUN curl -o harfbuzz-2.6.4-1-x86_64.pkg.tar.xz http://mirror.ubrco.de/archlinux/extra/os/x86_64/harfbuzz-2.6.4-1-x86_64.pkg.tar.xz
-RUN tar -xf harfbuzz-2.6.4-1-x86_64.pkg.tar.xz
+RUN curl -Lo harfbuzz.pkg.tar.xz https://www.archlinux.org/packages/extra/x86_64/harfbuzz/download/
+RUN tar -xf harfbuzz.pkg.tar.xz
 
-RUN curl -o re2-20191101-1-x86_64.pkg.tar.xz http://mirror.ubrco.de/archlinux/extra/os/x86_64/re2-20191101-1-x86_64.pkg.tar.xz
-RUN tar -xf re2-20191101-1-x86_64.pkg.tar.xz 
+RUN curl -Lo re2.pkg.tar.xz https://www.archlinux.org/packages/extra/x86_64/re2/download/
+RUN tar -xf re2.pkg.tar.xz 
 
-#RUN curl -o nss-3.47-1-x86_64.pkg.tar.xz http://mirror.orbit-os.com/archlinux/core/os/x86_64/nss-3.47-1-x86_64.pkg.tar.xz
-#RUN tar -xf nss-3.47-1-x86_64.pkg.tar.xz
-
-#RUN curl -o nspr-4.23-1-x86_64.pkg.tar.xz http://mirror.orbit-os.com/archlinux/core/os/x86_64/nspr-4.23-1-x86_64.pkg.tar.xz
-#RUN tar -xf nspr-4.23-1-x86_64.pkg.tar.xz
-
-RUN curl -o glibc-2.30-2-x86_64.pkg.tar.xz http://mirror.ubrco.de/archlinux/core/os/x86_64/glibc-2.30-2-x86_64.pkg.tar.xz
-RUN tar -xf glibc-2.30-2-x86_64.pkg.tar.xz
+RUN curl -Lo glibc.pkg.tar.xz https://www.archlinux.org/packages/core/x86_64/glibc/download/
+RUN tar -xf glibc.pkg.tar.xz
 RUN rm /lib/x86_64-linux-gnu/libm.so.6
 RUN ln -s /usr/lib/libm.so.6 /lib/x86_64-linux-gnu/libm.so.6
 
-RUN curl -o gcc-libs-9.2.0-3-x86_64.pkg.tar.xz http://mirror.ubrco.de/archlinux/core/os/x86_64/gcc-libs-9.2.0-3-x86_64.pkg.tar.xz
-RUN tar -xf gcc-libs-9.2.0-3-x86_64.pkg.tar.xz 
+RUN curl -Lo gcc-libs.pkg.tar.xz https://www.archlinux.org/packages/core/x86_64/gcc-libs/download/
+RUN tar -xf gcc-libs.pkg.tar.xz 
 RUN rm /usr/lib/x86_64-linux-gnu/libstdc++.so.6
 RUN ln -s /usr/lib/libstdc++.so.6 /usr/lib/x86_64-linux-gnu/libstdc++.so.6
 
-RUN curl -o freetype2-2.10.1-1-x86_64.pkg.tar.xz http://mirror.ubrco.de/archlinux/extra/os/x86_64/freetype2-2.10.1-1-x86_64.pkg.tar.xz
-RUN tar -xf freetype2-2.10.1-1-x86_64.pkg.tar.xz 
+RUN curl -Lo freetype2.pkg.tar.xz https://www.archlinux.org/packages/extra/x86_64/freetype2/download/
+RUN tar -xf freetype2.pkg.tar.xz 
 RUN rm /usr/lib/x86_64-linux-gnu/libfreetype.so.6
 RUN ln -s /usr/lib/libfreetype.so.6 /usr/lib/x86_64-linux-gnu/libfreetype.so.6
 
-RUN curl -o libva-intel-driver-2.3.0-2-x86_64.pkg.tar.xz http://mirror.ubrco.de/archlinux/extra/os/x86_64/libva-intel-driver-2.3.0-2-x86_64.pkg.tar.xz
-RUN tar -xf libva-intel-driver-2.3.0-2-x86_64.pkg.tar.xz
+RUN curl -Lo libva-intel-driver.pkg.tar.xz https://www.archlinux.org/packages/extra/x86_64/libva-intel-driver/download/
+RUN tar -xf libva-intel-driver.pkg.tar.xz
 RUN ln -s /usr/lib/dri/i965_drv_video.so /usr/lib/x86_64-linux-gnu/dri/i965_drv_video.so
 
 
-RUN curl -o libva-2.5.0-1-x86_64.pkg.tar.xz http://mirror.ubrco.de/archlinux/extra/os/x86_64/libva-2.5.0-1-x86_64.pkg.tar.xz
-RUN tar -xf libva-2.5.0-1-x86_64.pkg.tar.xz
+RUN curl -Lo libva.pkg.tar.xz https://www.archlinux.org/packages/extra/x86_64/libva/download/
+RUN tar -xf libva.pkg.tar.xz
 RUN rm /usr/lib/x86_64-linux-gnu/libva-drm.so.2
 RUN rm /usr/lib/x86_64-linux-gnu/libva-x11.so.2
 RUN rm /usr/lib/x86_64-linux-gnu/libva.so.2

@@ -24,6 +24,7 @@ chromium http://localhost:8081 \
   --no-sandbox \
   --ignore-gpu-blacklist \
   --window-position=0,0 --window-size=1080,1920 --test-type
+  --enable-native-gpu-memory-buffers --force-gpu-rasterization --enable-oop-rasterization --enable-zero-copy
 
 
 # USEFUL CHROMIUM FLAGS:

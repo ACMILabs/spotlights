@@ -7,7 +7,7 @@ This is intended for use on an Optiplex 7050 with a touchscreen.
 
 ## Run the development container
 
-- Pull museumos and run `docker-compose up --build` from its root directory
+- Pull XOS and run `docker-compose up --build` from its root directory
 - From the spotlights root directory, run `cd development && docker-compose up --build`, then open localhost:8081 in Chrome.
 
 ## Run tests locally

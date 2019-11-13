@@ -1,7 +1,7 @@
 // This fuzzer test runs most of the code in index.js
 describe("App", () => {
   it("shouldn't crash from fuzzer", () => {
-    global.playlist_labels = (require('./playlist_1.json')).playlist_labels
+    global.playlist_labels = (require('../../data/playlist.json')).playlist_labels
     document.body.innerHTML = "<div id='root'/>"
 
     require("../../../app/static/index.js")

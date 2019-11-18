@@ -25,8 +25,8 @@ RUN apt purge chromium
 RUN apt update
 RUN apt install xz-utils
 
-RUN curl -o chromium-vaapi-78.0.3904.87-1-x86_64.pkg.tar.xz https://pkgbuild.com/~maximbaz/repo/chromium-vaapi-78.0.3904.87-1-x86_64.pkg.tar.xz
-RUN tar -xf chromium-vaapi-78.0.3904.87-1-x86_64.pkg.tar.xz 
+RUN curl -o chromium-vaapi-78.0.3904.97-2-x86_64.pkg.tar.xz https://pkgbuild.com/~maximbaz/repo/chromium-vaapi-78.0.3904.97-2-x86_64.pkg.tar.xz
+RUN tar -xf chromium-vaapi-78.0.3904.97-2-x86_64.pkg.tar.xz
 
 RUN curl -Lo icu.pkg.tar.xz https://www.archlinux.org/packages/core/x86_64/icu/download/
 RUN tar -xf icu.pkg.tar.xz 

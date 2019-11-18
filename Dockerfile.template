@@ -19,6 +19,11 @@ RUN install_packages \
 
 
 # BEGIN ARCH CHROME-VAAPI
+# Chrome for Linux doesn't run the gpu video decoder.
+# This uses chromium compiled with the vaapi flag, from the Arch AUR.
+# However this means we have to get all the libraries for chrome ourselves.
+# There's a zenhub ticket for changing this to use git makepkg,
+# so that the chrome version doesn't go out of sync with new library versions.
 
 RUN apt purge chromium
 

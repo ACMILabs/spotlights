@@ -1,5 +1,9 @@
 #!/bin/bash
 
+
+echo "________Start of x86.sh________"
+
+
 rm /tmp/.X0-lock &>/dev/null || true
 
 startx &
@@ -15,23 +19,37 @@ python -u -m app.main &
 
 sleep 5
 
-#chromium --app=http://localhost:8081 --enable-accelerated-video --enable-accelerated-mjpeg-decode --ignore-gpu-blacklist --enable-gpu-rasterization --enable-oop-rasterization --enable-zero-copy --enable-native-gpu-memory-buffers --test-type --start-fullscreen --user-data-dir --kiosk --disable-application-cache --incognito --no-sandbox
-LIBVA_DRIVER_NAME=iHD chromium http://localhost:8081 \
+chromium http://localhost:8081 \
+  --kiosk \
   --no-sandbox \
-  --enable-native-gpu-memory-buffers --force-gpu-rasterization --enable-oop-rasterization --enable-zero-copy \
   --ignore-gpu-blacklist \
-  --window-position=0,0 --window-size=1080,1920 --start-fullscreen --kiosk --test-type \
-  --enable-logging=stderr --v=1
-# Running as root
+  --window-position=0,0 --window-size=1080,1920 --test-type
+  --enable-native-gpu-memory-buffers --force-gpu-rasterization --enable-oop-rasterization --enable-zero-copy
+
+
+# USEFUL CHROMIUM FLAGS:
+
+# Goes fullscreen, disables right clicks and devtools
+#  --kiosk
+
+# Running as root:
+#  --no-sandbox
+
 # https://software.intel.com/en-us/articles/software-vs-gpu-rasterization-in-chromium
-# Intel Kaby Lake Graphics are blacklisted
-# All required for screen size
-# Logging
+# --enable-native-gpu-memory-buffers --force-gpu-rasterization --enable-oop-rasterization --enable-zero-copy
 
-# Use this for remote debug
-#chromium --no-sandbox --disable-gpu --remote-debugging-address=0.0.0.0 --remote-debugging-port=9222 --headless http://localhost:8080
+# Intel Kaby Lake Graphics are blacklisted:
+# --ignore-gpu-blacklist
 
-# For debugging
-echo "Chromium browser exited unexpectedly."
-free -h
-echo "End of pi.sh ..."
+# All required for matching screen size:
+# --window-position=0,0 --window-size=1920,1080 --test-type
+
+# Logging:
+# --enable-logging=stderr --v=1
+
+
+# Use this for remote debug:
+# chromium --no-sandbox --disable-gpu --remote-debugging-address=0.0.0.0 --remote-debugging-port=9222 --headless http://localhost:8080
+
+
+echo "________End of x86.sh________"

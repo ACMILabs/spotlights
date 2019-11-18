@@ -27,7 +27,6 @@ def database():
     )
 
 
-
 def test_label(database):
     """
     Test the Label class initialises.

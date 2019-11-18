@@ -13,8 +13,7 @@ RUN install_packages \
   xserver-xorg-input-evdev \
   xinput \
   chromium \
-  x11-xserver-utils \
-  vim
+  x11-xserver-utils
 
 
 

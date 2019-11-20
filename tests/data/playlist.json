@@ -1,0 +1,48 @@
+{
+    "id": 1,
+    "title": "Default playlist",
+    "playlist_labels": [
+        {
+            "label": {
+                "id": 44,
+                "title": "Placeholder video 1",
+                "description": "This is the first placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
+                "publication": "Melbourne, 2019",
+                "rights": "",
+                "works": [
+                    {
+                        "id": 60889,
+                        "title": "Placeholder video 1",
+                        "image": "https://xos-prod-media.s3.amazonaws.com/xos/works/image/placeholder-1.jpg?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=vkQdEozNAtYYTegJChvoFr%2FHrNI%3D&Expires=1573609287",
+                        "abstract": "This is the first placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
+                        "brief_description": "This is the first placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
+                        "first_production_year": "2019"
+                    }
+                ]
+            },
+            "resource": "https://xos-prod-media.s3.amazonaws.com/xos/placeholder-1.mp4?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=QrN%2BWcaSeTYrkyJwqqanBCgp5VY%3D&Expires=1573609287",
+            "subtitles": "https://xos-prod-media.s3.amazonaws.com/xos/placeholder-1.srt?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=BagZOux%2BAL20qwFt0JKqBgmyV3E%3D&Expires=1573609287"
+        },
+        {
+            "label": {
+                "id": 45,
+                "title": "Placeholder video 2",
+                "description": "This is the second placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
+                "publication": "Melbourne, 2019",
+                "rights": "",
+                "works": [
+                    {
+                        "id": 60890,
+                        "title": "Placeholder video 2",
+                        "image": "https://xos-prod-media.s3.amazonaws.com/xos/works/image/placeholder-2.jpg?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=n1dUGRnX7%2B%2BP81N9jtWeqUBzCaQ%3D&Expires=1573609287",
+                        "abstract": "This is the second placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
+                        "brief_description": "This is the second placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
+                        "first_production_year": "2019"
+                    }
+                ]
+            },
+            "resource": "https://xos-prod-media.s3.amazonaws.com/xos/placeholder-2.mp4?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=hEVw2aqNSIZ1M7FRrPOnG107qXk%3D&Expires=1573609287",
+            "subtitles": "https://xos-prod-media.s3.amazonaws.com/xos/placeholder-2.srt?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=1amuOB%2BYFRoImWIlbg5e5335njY%3D&Expires=1573609287"
+        }
+    ]
+}

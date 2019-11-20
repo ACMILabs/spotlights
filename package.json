@@ -38,16 +38,10 @@
     "moment": "*",
     "babel-eslint": "*",
     "eslint": "*",
-    "eslint-config-airbnb": "*",
-    "eslint-config-prettier": "*",
-    "eslint-config-react-app": "*",
     "eslint-plugin-flowtype": "*",
     "eslint-plugin-import": "*",
     "eslint-plugin-jest": "*",
-    "eslint-plugin-jsx-a11y": "*",
-    "eslint-plugin-prettier": "*",
-    "eslint-plugin-react": "*",
-    "prettier": "*"
+    "eslint-plugin-jsx-a11y": "*"
   },
   "babel": {
     "plugins": [

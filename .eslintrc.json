@@ -1,7 +1,10 @@
 {
+  "plugins": ["jest"],
   "env": {
+    "node": true,
     "es2017": true,
-    "browser": true
+    "browser": true,
+    "jest/globals": true
   },
   "extends": ["eslint:recommended"],
   "rules": {

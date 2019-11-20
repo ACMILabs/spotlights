@@ -15,7 +15,7 @@ install:
 	npm install
 test:
 	# Run python tests
-	pytest -v
+	env `cat /code/config.tmpl.env | xargs` pytest -v
 lintjs:
 	# Lint the javascript code
 	npm run lint

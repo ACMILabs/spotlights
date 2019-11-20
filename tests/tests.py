@@ -9,8 +9,6 @@ from peewee import SqliteDatabase
 from app.cache import create_cache
 from app.main import Label
 
-XOS_PLAYLIST_ID = os.environ['XOS_PLAYLIST_ID']
-
 
 @pytest.fixture
 def database():
@@ -66,7 +64,7 @@ class MockTextResponse:
 
 
 def mocked_requests_get(*args, **kwargs):
-    if '/api/playlists/' in args[0]:
+    if args[0] == 'https://xos.acmi.net.au/api/playlists/1/':
         with open('tests/data/playlist.json', 'r') as file_obj:
             return MockJsonResponse(file_obj.read(), 200)
 
@@ -86,7 +84,7 @@ def mocked_requests_get(*args, **kwargs):
 
 
 def mocked_requests_post(*args, **kwargs):
-    if 'https://' in args[0] and '/api/taps/' in args[0]:
+    if args[0] == 'https://xos.acmi.net.au/api/taps/':
         with open('tests/data/xos_tap.json', 'r') as f:
             return MockJsonResponse(f.read(), 201)
 
@@ -115,7 +113,7 @@ def test_cache(capsys):
     # capsys.disabled forwards stdout and stderr
     with capsys.disabled():
         create_cache()
-        with open('playlist_'+XOS_PLAYLIST_ID+'.json', 'r') as f:
+        with open('playlist_1.json', 'r') as f:
             playlist = json.loads(f.read())['playlist_labels']
         assert len(playlist) == 2
         assert playlist[0]['label']['title'] == 'Placeholder video 1'

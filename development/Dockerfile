@@ -8,5 +8,7 @@ COPY ./requirements/base.txt /code/requirements/base.txt
 COPY ./requirements/test.txt /code/requirements/test.txt
 RUN pip install -Ur /code/requirements/test.txt
 
+RUN mkdir /data
+
 COPY . /code/
 WORKDIR /code/

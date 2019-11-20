@@ -6,11 +6,11 @@ from unittest.mock import patch
 import pytest
 from peewee import SqliteDatabase
 
+from app.cache import create_cache
 from app.main import Label
 
-from app.cache import create_cache
-
 XOS_PLAYLIST_ID = os.environ['XOS_PLAYLIST_ID']
+
 
 @pytest.fixture
 def database():
@@ -44,24 +44,25 @@ def test_label(database):
     assert label.datetime is timestamp
 
 
-
 class MockJsonResponse:
     def __init__(self, data, status_code):
         self.content = json.loads(data)
         self.status_code = status_code
+
     def json(self):
         return self.content
+
 
 class MockBinaryResponse:
     def __init__(self, data):
         self.content = data
         self.status_code = 200
 
+
 class MockTextResponse:
     def __init__(self, data):
         self.text = data
         self.status_code = 200
-
 
 
 def mocked_requests_get(*args, **kwargs):
@@ -90,8 +91,6 @@ def mocked_requests_post(*args, **kwargs):
             return MockJsonResponse(f.read(), 201)
 
     raise Exception("No mocked sample data for request: "+args[0])
-
-
 
 
 @patch('requests.post', side_effect=mocked_requests_post)

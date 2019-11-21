@@ -12,8 +12,10 @@ body {
 }
 
 .video {
+  height: auto;
+  position: absolute;
+  bottom: 320px;
   display: block;
-  height: calc(100vh - 320px);
   width: 100%;
   background: #000;
 }
@@ -36,7 +38,10 @@ body {
 }
 
 .list_cont {
-  position: relative;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
   overflow: hidden;
   padding: 0 30px;
   box-sizing: border-box;

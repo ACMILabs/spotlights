@@ -1,3 +1,5 @@
+// DEBUG
+/*
 const debug_el = document.createElement('div')
 debug_el.style.position = 'fixed'
 debug_el.style.top = '0'
@@ -9,6 +11,7 @@ document.body.appendChild(debug_el)
 window.addEventListener('error', function (e) {
   debug_el.innerHTML += e.message +'. l'+ e.lineno +':c'+ e.colno
 })
+*/
 
 
 

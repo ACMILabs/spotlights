@@ -1,6 +1,61 @@
-// To be deleted on first actual test
-describe("HelloWorld", () => {
-  it("should add two numbers", () => {
-    expect(1 + 2).toBe(3);
+describe("App", () => {
+  beforeAll(() => {
+    global.playlist_labels = (require('../../data/playlist.json')).playlist_labels
+    document.body.innerHTML = "<div id='root'/>"
+
+    require("../../../app/static/index.js")
   });
-});
+
+
+  it("doesn't crash from clicking any divs", () => {
+    const elements = document.getElementsByTagName('div')
+    for (let i=0; i<elements.length; i++) {
+      elements[i].dispatchEvent(new MouseEvent('click'))
+    }
+  });
+
+
+  it("doesn't crash from dragging any divs", () => {
+    const elements = document.getElementsByTagName('div')
+    for (let i=0; i<elements.length; i++) {
+      elements[i].dispatchEvent(new MouseEvent('mousedown', {clientX: 0}))
+      elements[i].dispatchEvent(new MouseEvent('mousemove', {clientX: -100}))
+      elements[i].dispatchEvent(new MouseEvent('mouseup'))
+      elements[i].dispatchEvent(new MouseEvent('click'))
+    }
+  });
+
+
+  it("doesn't crash from dragging the video list", () => {
+    const list_cont = document.getElementsByClassName('list_cont')[0]
+    list_cont.dispatchEvent(new MouseEvent('mousedown', {clientX: 0}))
+    list_cont.dispatchEvent(new MouseEvent('mousemove', {clientX: 0}))
+    list_cont.dispatchEvent(new MouseEvent('mousemove', {clientX: -100}))
+    list_cont.dispatchEvent(new MouseEvent('mouseup'))
+  });
+
+
+  it("responds to arrow clicks", () => {
+    //const initial_transform
+    const right_arrow = document.getElementsByClassName('right_arrow')[0]
+    for (let i=0; i<6; i++) {
+      setTimeout(right_arrow.dispatchEvent(new MouseEvent('mousedown')))
+    }
+    const left_arrow = document.getElementsByClassName('left_arrow')[0]
+    for (let i=0; i<6; i++) {
+      setTimeout(left_arrow.dispatchEvent(new MouseEvent('mousedown')))
+    }
+  });
+
+
+  it("doesn't crash on resize", () => {
+    window.dispatchEvent(new Event('resize'))
+  });
+
+  it("automatically plays next video", () => {
+    const video = document.getElementsByTagName('video')[0]
+    const initial_video_src = video.src
+    video.dispatchEvent(new Event('ended'))
+    expect(video.src).not.toBe(initial_video_src)
+  })
+})

@@ -12,7 +12,10 @@ sleep 10
 unclutter -display :0 -idle 0.1 &
 
 xrandr -o left
-xinput set-prop "eGalax Inc. eGalaxTouch EXC3000-1990-46.00.00" --type=float "Coordinate Transformation Matrix" 0 -1 1 1 0 0 0 0 1
+#TODO: Use touch input name from `xinput list`
+#xinput set-prop "eGalax Inc. eGalaxTouch EXC3000-1990-46.00.00" --type=float "Coordinate Transformation Matrix" 0 -1 1 1 0 0 0 0 1
+xinput set-prop "TSD Touchsystems TSD USB Touchscreen" --type=float "Coordinate Transformation Matrix" 0 -1 1 1 0 0 0 0 1
+
 
 python -u -m app.cache
 python -u -m app.main &

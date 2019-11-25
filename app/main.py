@@ -104,7 +104,7 @@ def collect_item():
     response = requests.post(xos_tap_endpoint, json=xos_tap, headers=headers)
     if response.status_code != requests.codes['created']:
         raise HTTPError('Could not save tap to XOS.')
-    return jsonify(xos_tap), response.status_code
+    return jsonify(response.content), response.status_code
 
 
 @app.route('/cache/<path:filename>')

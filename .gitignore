@@ -2,7 +2,7 @@ config.env
 .DS_Store
 .venv
 *.db
-playlist*.json
+playlist_*.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

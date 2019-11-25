@@ -11,9 +11,11 @@ lint:
 	pylint *
 	flake8
 	isort -rc --check-only .
+install:
+	npm install
 test:
 	# Run python tests
-	pytest -v
+	env `cat /code/config.tmpl.env | xargs` pytest -v
 lintjs:
 	# Lint the javascript code
 	npm run lint
@@ -21,5 +23,5 @@ testjs:
 	# Run javascript tests
 	npm run test
 linttest: lint test
-linttestjs: lintjs testjs
+linttestjs: install lintjs testjs
 linttestall: lint test lintjs testjs

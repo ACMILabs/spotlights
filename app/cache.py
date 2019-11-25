@@ -76,8 +76,9 @@ def create_cache():
             json.dump(playlist_json, outfile)
 
     except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError) as exception:
-        print(f'Error downloading playlist JSON from XOS: {exception}')
         sentry_sdk.capture_exception(exception)
+        print(f'Error downloading playlist JSON from XOS: {exception}')
+        raise exception
 
 
 if __name__ == '__main__':

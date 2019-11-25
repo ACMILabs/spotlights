@@ -1,59 +1,35 @@
 import datetime
 import json
-import os
+from unittest.mock import patch
 
+import pytest
 from peewee import SqliteDatabase
 
+from app.cache import create_cache
 from app.main import Label
 
 
-def file_to_string_strip_new_lines(filename):
+@pytest.fixture
+def database():
     """
-    Read file and return as string with new line characters stripped
-    :param filename: a filename relative to the current working directory.
-    e.g. 'xml_files/example.xml' or 'example.xml'
-    :return: a string representation of the contents of filename, with new line characters removed
+    Setup the test database.
     """
-    # get current working directory
-    cwd = os.path.dirname(__file__)
-    file_as_string = ""
+    test_db = SqliteDatabase(':memory:')
+    test_db.bind([Label], bind_refs=False, bind_backrefs=False)
+    test_db.connect()
+    test_db.create_tables([Label])
 
-    # open filename assuming filename is relative to current working directory
-    with open(os.path.join(cwd, filename), 'r') as file_obj:
-        # strip new line characters
-        file_as_string = file_obj.read().replace('\n', '')
-    # return string
-    return file_as_string
-
-
-def mocked_requests_get(*args, **kwargs):
-    """
-    Thanks to https://stackoverflow.com/questions/15753390/how-can-i-mock-requests-and-the-response
-    """
-    class MockResponse:
-        def __init__(self, json_data, status_code):
-            self.content = json.loads(json_data)
-            self.status_code = status_code
-
-        def json(self):
-            return self.content
-
-        def raise_for_status(self):
-            return None
-
-    if args[0].startswith('https://xos.acmi.net.au/api/playlists/'):
-        return MockResponse(file_to_string_strip_new_lines('data/playlist.json'), 200)
-
-    return MockResponse(None, 404)
+    Label.create(
+        datetime=datetime.datetime.now().timestamp(),
+        playlist_id=10,
+        label_id=10,
+    )
 
 
-def test_message():
+def test_label(database):
     """
     Test the Label class initialises.
     """
-
-    db = SqliteDatabase('label_test.db')
-    db.create_tables([Label])
     timestamp = datetime.datetime.now().timestamp()
 
     label = Label.create(
@@ -63,3 +39,93 @@ def test_message():
     )
     assert label
     assert label.datetime is timestamp
+
+
+class MockJsonResponse:
+    def __init__(self, data, status_code):
+        self.content = json.loads(data)
+        self.status_code = status_code
+
+    def json(self):
+        return self.content
+
+
+class MockBinaryResponse:
+    def __init__(self, data):
+        self.content = data
+        self.status_code = 200
+
+
+class MockTextResponse:
+    def __init__(self, data):
+        self.text = data
+        self.status_code = 200
+
+
+def mocked_requests_get(*args, **kwargs):
+    if args[0] == 'https://xos.acmi.net.au/api/playlists/1/':
+        with open('tests/data/playlist.json', 'r') as file_obj:
+            return MockJsonResponse(file_obj.read(), 200)
+
+    if '.mp4' in args[0]:
+        with open('tests/data/sample.mp4', 'rb') as file_obj:
+            return MockBinaryResponse(file_obj.read())
+
+    if '.jpg' in args[0]:
+        with open('tests/data/sample.jpg', 'rb') as file_obj:
+            return MockBinaryResponse(file_obj.read())
+
+    if '.srt' in args[0]:
+        with open('tests/data/sample.srt', 'r') as file_obj:
+            return MockTextResponse(file_obj.read())
+
+    raise Exception("No mocked sample data for request: "+args[0])
+
+
+def mocked_requests_post(*args, **kwargs):
+    if args[0] == 'https://xos.acmi.net.au/api/taps/':
+        with open('tests/data/xos_tap.json', 'r') as f:
+            return MockJsonResponse(f.read(), 201)
+
+    raise Exception("No mocked sample data for request: "+args[0])
+
+
+@patch('requests.post', side_effect=mocked_requests_post)
+def test_route_collect_item(mocked_requests_post, client):
+    """
+    Test that the collect a tap route forwards the expected data to XOS.
+    """
+
+    with open('tests/data/lens_tap.json', 'r') as f:
+        lens_tap_data = f.read()
+
+    response = client.post('/api/taps/', data=lens_tap_data, headers={'Content-Type': 'application/json'})
+    assert response.json["nfc_tag"]["short_code"] == "nbadbb"
+    assert response.status_code == 201
+
+
+@patch('requests.get', side_effect=mocked_requests_get)
+def test_cache(capsys):
+    """
+    Test the cache downloads and saves subs, images and videos
+    """
+    # capsys.disabled forwards stdout and stderr
+    with capsys.disabled():
+        create_cache()
+        with open('playlist_1.json', 'r') as f:
+            playlist = json.loads(f.read())['playlist_labels']
+        assert len(playlist) == 2
+        assert playlist[0]['label']['title'] == 'Placeholder video 1'
+
+
+def test_index_renders(client):
+    """
+    Test that the index route renders the expected data.
+    """
+
+    response = client.get('/')
+
+    assert response.status_code == 200
+    assert b'<!doctype html>' in response.data
+    assert b'<div id="root">' in response.data
+    assert b'<script src="/static/index.js">' in response.data

@@ -27,7 +27,6 @@ chromium http://localhost:8081 \
   --no-sandbox \
   --ignore-gpu-blacklist \
   --window-position=0,0 --window-size=1080,1920 --test-type
-  --enable-native-gpu-memory-buffers --force-gpu-rasterization --enable-oop-rasterization --enable-zero-copy
 
 
 # USEFUL CHROMIUM FLAGS:
@@ -38,7 +37,7 @@ chromium http://localhost:8081 \
 # Running as root:
 #  --no-sandbox
 
-# https://software.intel.com/en-us/articles/software-vs-gpu-rasterization-in-chromium
+# Faster but unstable: https://software.intel.com/en-us/articles/software-vs-gpu-rasterization-in-chromium 
 # --enable-native-gpu-memory-buffers --force-gpu-rasterization --enable-oop-rasterization --enable-zero-copy
 
 # Intel Kaby Lake Graphics are blacklisted:

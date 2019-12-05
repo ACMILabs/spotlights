@@ -51,7 +51,7 @@ class Label(Model):
     label_id = IntegerField()
     playlist_id = IntegerField()
 
-    class Meta:  # pylint: disable=R0903
+    class Meta:
         database = db
 
 

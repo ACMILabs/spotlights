@@ -7,7 +7,7 @@ extension-pkg-whitelist=alsaaudio
 
 # Add files or directories to the blacklist. They should be base names, not
 # paths.
-ignore=CVS, migrations, settings, venv, Makefile, Dockerfile, Dockerfile.template, Dockerfile.raspberrypi4-64, requirements, resources, tests, setupJest.js, package.json, package-lock.json, node_modules, scripts, .git, __pycache__, npm-debug.log, test
+ignore=CVS, migrations, settings, venv, Makefile, Dockerfile, Dockerfile.template, Dockerfile.raspberrypi4-64, requirements, resources, setupJest.js, package.json, package-lock.json, node_modules, scripts, .git, __pycache__, npm-debug.log
 
 # Add files or directories matching the regex patterns to the blacklist. The
 # regex matches against base names, not paths.
@@ -297,7 +297,7 @@ dummy-variables-rgx=_+$|(_[a-zA-Z0-9_]*[a-zA-Z0-9]+?$)|dummy|^ignored_|^unused_
 
 # Argument names that match this expression will be ignored. Default to name
 # with leading underscore.
-ignored-argument-names=_.*|^ignored_|^unused_
+ignored-argument-names=_.*|^ignored_|^unused_|args|kwargs
 
 # Tells whether we should check for unused import in __init__ files.
 init-import=no
@@ -554,7 +554,7 @@ max-returns=6
 max-statements=50
 
 # Minimum number of public methods for a class (see R0903).
-min-public-methods=2
+min-public-methods=0
 
 
 [EXCEPTIONS]

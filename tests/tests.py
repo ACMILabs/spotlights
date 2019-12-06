@@ -1,32 +1,15 @@
 import datetime
 import json
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
-from peewee import SqliteDatabase
 
 from app.cache import create_cache
 from app.main import Label
 
 
-@pytest.fixture
-def database():
-    """
-    Setup the test database.
-    """
-    test_db = SqliteDatabase(':memory:')
-    test_db.bind([Label], bind_refs=False, bind_backrefs=False)
-    test_db.connect()
-    test_db.create_tables([Label])
-
-    Label.create(
-        datetime=datetime.datetime.now().timestamp(),
-        playlist_id=10,
-        label_id=10,
-    )
-
-
-def test_label(database):
+@pytest.mark.usefixtures('database')
+def test_label():
     """
     Test the Label class initialises.
     """
@@ -84,27 +67,27 @@ def mocked_requests_get(*args, **kwargs):
 
 def mocked_requests_post(*args, **kwargs):
     if args[0] == 'https://xos.acmi.net.au/api/taps/':
-        with open('tests/data/xos_tap.json', 'r') as f:
-            return MockJsonResponse(f.read(), 201)
+        with open('tests/data/xos_tap.json', 'r') as taps_file:
+            return MockJsonResponse(taps_file.read(), 201)
 
     raise Exception("No mocked sample data for request: "+args[0])
 
 
-@patch('requests.post', side_effect=mocked_requests_post)
-def test_route_collect_item(mocked_requests_post, client):
+@patch('requests.post', MagicMock(side_effect=mocked_requests_post))
+def test_route_collect_item(client):
     """
     Test that the collect a tap route forwards the expected data to XOS.
     """
 
-    with open('tests/data/lens_tap.json', 'r') as f:
-        lens_tap_data = f.read()
+    with open('tests/data/lens_tap.json', 'r') as taps_file:
+        lens_tap_data = taps_file.read()
 
     response = client.post('/api/taps/', data=lens_tap_data, headers={'Content-Type': 'application/json'})
     assert response.json["nfc_tag"]["short_code"] == "nbadbb"
     assert response.status_code == 201
 
 
-@patch('requests.get', side_effect=mocked_requests_get)
+@patch('requests.get', MagicMock(side_effect=mocked_requests_get))
 def test_cache(capsys):
     """
     Test the cache downloads and saves subs, images and videos
@@ -112,8 +95,8 @@ def test_cache(capsys):
     # capsys.disabled forwards stdout and stderr
     with capsys.disabled():
         create_cache()
-        with open('playlist_1.json', 'r') as f:
-            playlist = json.loads(f.read())['playlist_labels']
+        with open('playlist_1.json', 'r') as playlist_cache:
+            playlist = json.loads(playlist_cache.read())['playlist_labels']
         assert len(playlist) == 2
         assert playlist[0]['label']['title'] == 'Placeholder video 1'
 

@@ -14,7 +14,8 @@ RUN install_packages \
   xinput \
   chromium \
   x11-xserver-utils \
-  git
+  git \
+  alsa-utils
 
 
 

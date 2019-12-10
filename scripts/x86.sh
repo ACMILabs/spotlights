@@ -16,6 +16,9 @@ xrandr -o left
 #xinput set-prop "eGalax Inc. eGalaxTouch EXC3000-1990-46.00.00" --type=float "Coordinate Transformation Matrix" 0 -1 1 1 0 0 0 0 1
 xinput set-prop "TSD Touchsystems TSD USB Touchscreen" --type=float "Coordinate Transformation Matrix" 0 -1 1 1 0 0 0 0 1
 
+amixer sset Speaker off
+amixer sset Master 100% on
+
 
 python -u -m app.cache
 python -u -m app.main &
@@ -26,7 +29,9 @@ chromium http://localhost:8081 \
   --kiosk \
   --no-sandbox \
   --ignore-gpu-blacklist \
-  --window-position=0,0 --window-size=1080,1920 --test-type
+  --window-position=0,0 --window-size=1080,1920 --test-type \
+  --enable-native-gpu-memory-buffers --force-gpu-rasterization --enable-oop-rasterization --enable-zero-copy \
+  --autoplay-policy=no-user-gesture-required
 
 
 # USEFUL CHROMIUM FLAGS:
@@ -48,6 +53,9 @@ chromium http://localhost:8081 \
 
 # Logging:
 # --enable-logging=stderr --v=1
+
+# Enable html5 video autoplay without setting muted
+# --autoplay-policy=no-user-gesture-required
 
 
 # Use this for remote debug:

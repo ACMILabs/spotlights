@@ -23,3 +23,30 @@ To run the javascript tests:
 ## Push to Balena
 
 `balena push s__spotlights-x86`
+
+## Chromium flags
+Goes fullscreen, disables right clicks and devtools
+ --kiosk
+
+Running as root:
+ --no-sandbox
+
+Faster but unstable: https://software.intel.com/en-us/articles/software-vs-gpu-rasterization-in-chromium 
+--enable-native-gpu-memory-buffers --force-gpu-rasterization --enable-oop-rasterization --enable-zero-copy
+
+Intel Kaby Lake Graphics are blacklisted:
+--ignore-gpu-blacklist
+
+All required for matching screen size:
+--window-position=0,0 --window-size=1920,1080 --test-type
+
+Logging:
+--enable-logging=stderr --v=1
+
+Enable html5 video autoplay without setting muted
+--autoplay-policy=no-user-gesture-required
+
+Remote debug:
+chromium --no-sandbox --disable-gpu --remote-debugging-address=0.0.0.0 --remote-debugging-port=9222 --headless http://localhost:8080
+
+

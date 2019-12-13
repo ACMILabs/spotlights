@@ -62,8 +62,6 @@ const root = document.getElementById('root')
 
 const video = document.createElement('video')
 video.className = 'video'
-video.defaultMuted = true
-video.muted = true
 video.autoplay = true
 root.appendChild(video)
 

@@ -196,7 +196,7 @@ body {
 
 .list_item_collect:after {
   content: "↓";
-  font-size: 18px;
+  font-size: 22px;
   margin-left: 10px;
   line-height: 0;
 }
@@ -206,8 +206,12 @@ body {
 }
 
 .list_item_collect.active:after  {
-  content: "";
-  margin: 0;
+  background: url('tick.png') center/contain no-repeat;
+  content: " ";
+  width: 17px;
+  height: 14px;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .list_item_collect.active.hidden,

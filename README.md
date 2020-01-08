@@ -11,6 +11,8 @@ This is intended for use on an Optiplex 7050 with a touchscreen.
 $ virtualenv .venv
 $ pip install -r requirements/prod.txt
 $ cp config.tmpl.env config.env
+$ mkdir .venv/data
+$ echo CACHE_DIR=.venv/data >> config.env
 $ env `cat config.env | xargs` python -u app/cache.py
 $ env `cat config.env | xargs` python -u app/main.py
 ```

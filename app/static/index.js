@@ -33,7 +33,7 @@ function save_label(label_id) {
 
 
 
-const LIST_ITEM_WIDTH = 320
+const LIST_ITEM_WIDTH = 400
 const LIST_PADDING = 220
 
 const FRICTION = 0.9

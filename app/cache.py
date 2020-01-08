@@ -12,7 +12,7 @@ SENTRY_ID = os.getenv('SENTRY_ID')
 
 sentry_sdk.init(dsn=SENTRY_ID)
 
-CACHE_DIR = '/data/'
+CACHE_DIR = os.getenv('CACHE_DIR', '/data/')
 
 
 def create_cache():

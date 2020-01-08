@@ -32,6 +32,7 @@ function save_label(label_id) {
 }
 
 
+const POLL_TAPS_INTERVAL = 100
 
 const LIST_ITEM_WIDTH = 400
 const LIST_PADDING = 220
@@ -96,6 +97,8 @@ list_cont.appendChild(list)
 list.className = 'list'
 
 const list_items = []
+let active_collect_element = null
+const collect_elements = []
 let current_index = 0
 
 // Build playlist DOM elements
@@ -127,6 +130,12 @@ for (let i=0; i<playlist_content.length; i++) {
   item_inner.appendChild(description)
   description.className = 'list_item_description'
   description.innerHTML = item_data.description
+
+  const collect = document.createElement('div')
+  item_inner.appendChild(collect)
+  collect.className = 'list_item_collect'
+  collect.innerHTML = 'COLLECT'
+  collect_elements.push(collect)
 
   item.addEventListener('click', function (e) {
     if (has_dragged) {
@@ -264,6 +273,36 @@ function update (t1) {
 }
 
 
+var poll_request = new XMLHttpRequest()
+
+function poll_taps () {
+  poll_request.open('HEAD', '/api/has-tapped/')
+  poll_request.send()
+}
+
+poll_request.onreadystatechange = function () {
+  if (poll_request.readyState == poll_request.DONE) {
+    if (poll_request.status == 204) {
+      active_collect_element = collect_elements[current_index]
+      active_collect_element.className = 'list_item_collect hidden'
+      window.setTimeout(function () {
+        active_collect_element.innerHTML = 'COLLECTED'
+        active_collect_element.className = 'list_item_collect active'
+      }, 1000)
+      window.setTimeout(function () {
+        active_collect_element.className = 'list_item_collect active hidden'
+      }, 3000)
+      window.setTimeout(function () {
+        active_collect_element.className = 'list_item_collect'
+        active_collect_element.innerHTML = 'COLLECT'
+      }, 4000)
+
+    }
+    window.setTimeout(poll_taps, POLL_TAPS_INTERVAL)
+  }
+}
+
+
 
 // Init
 
@@ -275,3 +314,4 @@ video.src = playlist_content[0].video_url
 video_track.src = playlist_content[0].subtitles
 
 update()
+poll_taps()

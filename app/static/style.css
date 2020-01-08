@@ -183,3 +183,40 @@ body {
   opacity: 1;
   height: auto;
 }
+
+.list_item_collect {
+  position: absolute;
+  right: 0;
+  top: 25px;
+  color: #fff;
+  padding: 30px 40px 20px;
+  display: none;
+  transition: background 1s, color 1s;
+}
+
+.list_item_collect:after {
+  content: "↓";
+  font-size: 18px;
+  margin-left: 10px;
+  line-height: 0;
+}
+
+.active .list_item_collect {
+  display: block;
+}
+
+.list_item_collect.active:after  {
+  content: "";
+  margin: 0;
+}
+
+.list_item_collect.active.hidden,
+.list_item_collect.hidden {
+  color: rgba(0,0,0,0);
+  background: rgba(0,0,0,0);
+}
+
+.list_item_collect.active {
+  background: #fff;
+  color: #000;
+}

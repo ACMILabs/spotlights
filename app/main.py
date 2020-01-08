@@ -24,6 +24,9 @@ CORS(app)
 db = SqliteDatabase('label.db')  # pylint: disable=C0103
 
 
+has_tapped_bool = False
+
+
 class HTTPError(Exception):
     def __init__(self, message, status_code=400, payload=None):
         super().__init__()
@@ -104,9 +107,20 @@ def collect_item():
     xos_tap.setdefault('data', {})['playlist_info'] = record
     headers = {'Authorization': 'Token ' + AUTH_TOKEN}
     response = requests.post(xos_tap_endpoint, json=xos_tap, headers=headers)
+    global has_tapped_bool
+    has_tapped_bool = True
     if response.status_code != requests.codes['created']:
         raise HTTPError('Could not save tap to XOS.')
     return jsonify(response.content), response.status_code
+
+
+@app.route('/api/has-tapped/', methods=['HEAD'])
+def has_tapped():
+    global has_tapped_bool
+    if has_tapped_bool:
+        has_tapped_bool = False
+        return '', 204
+    return '', 200
 
 
 @app.route('/cache/<path:filename>')

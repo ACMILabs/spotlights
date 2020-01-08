@@ -5,6 +5,16 @@ An interactive video player that loads a playlist of videos from XOS specified b
 It autoplays by default and a user is able to select from the menu of videos to begin playing them.
 This is intended for use on an Optiplex 7050 with a touchscreen.
 
+## Run with virtualenv for dev
+
+```
+$ virtualenv .venv
+$ pip install -r requirements/prod.txt
+$ cp config.tmpl.env config.env
+$ env `cat config.env | xargs` python -u app/cache.py
+$ env `cat config.env | xargs` python -u app/main.py
+```
+
 ## Run the development container
 
 - Pull XOS and run `docker-compose up --build` from its root directory

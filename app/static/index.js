@@ -33,8 +33,8 @@ function save_label(label_id) {
 
 
 
-const LIST_ITEM_WIDTH = 240
-const LIST_PADDING = 30
+const LIST_ITEM_WIDTH = 320
+const LIST_PADDING = 220
 
 const FRICTION = 0.9
 const MIN_LIST_VELOCITY = 0.02
@@ -54,6 +54,19 @@ const playlist_content = window.playlist_labels.map(function (x) {
   }
 })
 
+
+// Width dependent variables
+
+let min_list_offset = 0
+let window_inner_width = window.innerWidth
+
+function handle_window_resize () {
+  window_inner_width = window.innerWidth
+  min_list_offset = -LIST_ITEM_WIDTH * (playlist_content.length + 1) + window.innerWidth - 2 * LIST_PADDING
+}
+
+handle_window_resize()
+window.addEventListener('resize', handle_window_resize)
 
 
 // DOM
@@ -96,18 +109,22 @@ for (let i=0; i<playlist_content.length; i++) {
   item.className = 'list_item'
   item.style.backgroundImage = 'url('+item_data.image_url+')'
 
+  const item_inner = document.createElement('div')
+  item_inner.className = 'list_item_inner'
+  item.appendChild(item_inner)
+
   const title = document.createElement('div')
-  item.appendChild(title)
+  item_inner.appendChild(title)
   title.className = 'list_item_title'
   title.innerHTML = item_data.title
 
   const secondary_title = document.createElement('div')
-  item.appendChild(secondary_title)
+  item_inner.appendChild(secondary_title)
   secondary_title.className = 'list_item_secondary_title'
   secondary_title.innerHTML = item_data.secondary_title
 
   const description = document.createElement('div')
-  item.appendChild(description)
+  item_inner.appendChild(description)
   description.className = 'list_item_description'
   description.innerHTML = item_data.description
 
@@ -122,65 +139,21 @@ for (let i=0; i<playlist_content.length; i++) {
       video_track.src = 'data:text/vtt;'+playlist_content[i].subtitles
       save_label(playlist_content[i].id)
       current_index = i
+
+      target_list_offset = Math.min(0, Math.max(min_list_offset, -(current_index + 1) * LIST_ITEM_WIDTH + (window_inner_width - 2 * LIST_PADDING) * 0.5))
+      is_targeting = true
     }
   })
 }
 
 
-// Arrows
 
-const left_arrow = document.createElement('div')
-list_cont.appendChild(left_arrow)
-left_arrow.className = 'left_arrow'
-
-const right_arrow = document.createElement('div')
-list_cont.appendChild(right_arrow)
-right_arrow.className = 'right_arrow'
-
-
-
-// Dragging and post-arrow-click physics,
-// Cache to avoid unnecessary thrashing,
-// Arrow clicks move target for animation,
-// And only animate to target after arrow clicks.
+// Dragging, animation, physics variables.
 
 let list_offset = 0
 let list_velocity = 0
-
-let is_left_arrow_hidden = false
-let is_right_arrow_hidden = false
-
 let target_list_offset = 0
-
 let is_targeting = false
-
-let min_list_offset = -LIST_ITEM_WIDTH * playlist_content.length + window.innerWidth - 2*LIST_PADDING
-window.addEventListener('resize', function () {
-  min_list_offset = -LIST_ITEM_WIDTH * playlist_content.length + window.innerWidth - 2*LIST_PADDING
-})
-
-
-
-// ARROWS BEHAVIOUR
-
-function handle_left_arrow_mousedown (e) {
-  e.preventDefault()
-  e.stopPropagation()
-  target_list_offset = Math.min(0, target_list_offset + LIST_ITEM_WIDTH)
-  is_targeting = true
-}
-
-function handle_right_arrow_mousedown (e) {
-  e.preventDefault()
-  e.stopPropagation()
-  target_list_offset = Math.max(min_list_offset, target_list_offset - LIST_ITEM_WIDTH)
-  is_targeting = true
-}
-
-left_arrow.addEventListener('mousedown', handle_left_arrow_mousedown)
-left_arrow.addEventListener('touchstart', handle_left_arrow_mousedown)
-right_arrow.addEventListener('mousedown', handle_right_arrow_mousedown)
-right_arrow.addEventListener('touchstart', handle_right_arrow_mousedown)
 
 
 
@@ -239,7 +212,7 @@ video.addEventListener('ended', function () {
   save_label(playlist_content[next_index].id)
   current_index = next_index
 
-  target_list_offset = Math.min(0, Math.max(min_list_offset, -(next_index - 1) * LIST_ITEM_WIDTH))
+  target_list_offset = Math.min(0, Math.max(min_list_offset, -(next_index + 1) * LIST_ITEM_WIDTH + (window_inner_width - 2 * LIST_PADDING) * 0.5))
   is_targeting = true
 })
 
@@ -250,7 +223,6 @@ let t0 = null
 // Updates everything that needs regular updating:
 // - list offset & velocity
 // - current list target
-// - arrows' hidden state & CSS class
 // - video progress bar
 // - etc.
 
@@ -268,41 +240,13 @@ function update (t1) {
     list_offset = Math.min(0, Math.max(min_list_offset, list_offset + list_velocity*dt*0.0625))
     list.style.transform = 'translateX('+list_offset+'px)'
 
-    // Set current target for when arrows are eventually clicked
     if (!is_targeting) {
       target_list_offset = Math.round(list_offset / LIST_ITEM_WIDTH) * LIST_ITEM_WIDTH
     }
   }
 
 
-  // Cached arrow state to avoid unnecessary thrashing
-  if (!is_left_arrow_hidden) {
-    if (target_list_offset == 0) {
-      left_arrow.classList.add('hidden_arrow')
-      is_left_arrow_hidden = true
-    }
-  }
-  if (is_left_arrow_hidden) {
-    if (target_list_offset != 0) {
-      left_arrow.classList.remove('hidden_arrow')
-      is_left_arrow_hidden = false
-    }
-  }
-  if (!is_right_arrow_hidden) {
-    if (list_offset == min_list_offset || target_list_offset == min_list_offset) {
-      right_arrow.classList.add('hidden_arrow')
-      is_right_arrow_hidden = true
-    }
-  }
-  if (is_right_arrow_hidden) {
-    if (list_offset != min_list_offset && target_list_offset != min_list_offset) {
-      right_arrow.classList.remove('hidden_arrow')
-      is_right_arrow_hidden = false
-    }
-  }
-
-
-  // Only animate to target after arrow clicks
+  // Only animate to target after videos change
   if (is_targeting) {
     const target_d = target_list_offset - list_offset
     if (target_d > MIN_TARGET_D || target_d < -MIN_TARGET_D) {
@@ -329,8 +273,5 @@ list_items[current_index].classList.add('active')
 
 video.src = playlist_content[0].video_url
 video_track.src = playlist_content[0].subtitles
-
-left_arrow.classList.add('hidden_arrow')
-is_left_arrow_hidden = true
 
 update()

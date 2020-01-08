@@ -15,6 +15,8 @@ SENTRY_ID = os.environ.get('SENTRY_ID')
 XOS_API_ENDPOINT = os.environ['XOS_API_ENDPOINT']
 XOS_PLAYLIST_ID = os.environ['XOS_PLAYLIST_ID']
 
+CACHE_DIR = os.getenv('CACHE_DIR', '/data/')
+
 sentry_sdk.init(dsn=SENTRY_ID, integrations=[FlaskIntegration()])
 
 app = Flask(__name__)  # pylint: disable=C0103
@@ -109,7 +111,7 @@ def collect_item():
 
 @app.route('/cache/<path:filename>')
 def cache(filename):
-    return send_from_directory('/data/', filename)
+    return send_from_directory(CACHE_DIR, filename)
 
 
 if __name__ == '__main__':

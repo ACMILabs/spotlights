@@ -15,7 +15,8 @@ RUN install_packages \
   chromium \
   x11-xserver-utils \
   git \
-  alsa-utils
+  alsa-utils \
+  zstd
 
 
 

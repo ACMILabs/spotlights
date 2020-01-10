@@ -1,9 +1,10 @@
 import json
+import time
 import os
 
 import requests
 import sentry_sdk
-from flask import Flask, jsonify, render_template, request, send_from_directory
+from flask import Flask, jsonify, render_template, request, send_from_directory, Response
 from flask_cors import CORS, cross_origin
 from peewee import CharField, IntegerField, Model, SqliteDatabase
 from playhouse.shortcuts import model_to_dict
@@ -114,13 +115,19 @@ def collect_item():
     return jsonify(response.content), response.status_code
 
 
-@app.route('/api/has-tapped/', methods=['HEAD'])
-def has_tapped():
+def eventStream():
     global has_tapped_bool
-    if has_tapped_bool:
-        has_tapped_bool = False
-        return '', 204
-    return '', 200
+    while True:
+        time.sleep(0.1)
+        if has_tapped_bool:
+            has_tapped_bool = False
+            yield 'data: {}\n\n'
+
+
+@app.route('/api/tap-source/')
+def tap_source():
+    return Response(eventStream(), mimetype="text/event-stream")
+
 
 
 @app.route('/cache/<path:filename>')
@@ -130,4 +137,4 @@ def cache(filename):
 
 if __name__ == '__main__':
     db.create_tables([Label])
-    app.run(host='0.0.0.0', port=8081)
+    app.run(host='0.0.0.0', port=8081, threaded=True)

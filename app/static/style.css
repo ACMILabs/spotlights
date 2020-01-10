@@ -196,7 +196,7 @@ body {
 
 .list_item_collect:after {
   content: "↓";
-  font-size: 22px;
+  font-size: 18px;
   margin-left: 10px;
   line-height: 0;
 }
@@ -208,8 +208,8 @@ body {
 .list_item_collect.active:after  {
   background: url('tick.png') center/contain no-repeat;
   content: " ";
-  width: 17px;
-  height: 14px;
+  width: 13.5px;
+  height: 10.5px;
   display: inline-block;
   vertical-align: middle;
 }

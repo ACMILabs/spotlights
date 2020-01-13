@@ -1,9 +1,10 @@
 import json
+import time
 import os
 
 import requests
 import sentry_sdk
-from flask import Flask, jsonify, render_template, request, send_from_directory
+from flask import Flask, jsonify, render_template, request, send_from_directory, Response
 from flask_cors import CORS, cross_origin
 from peewee import CharField, IntegerField, Model, SqliteDatabase
 from playhouse.shortcuts import model_to_dict
@@ -22,6 +23,9 @@ sentry_sdk.init(dsn=SENTRY_ID, integrations=[FlaskIntegration()])
 app = Flask(__name__)  # pylint: disable=C0103
 CORS(app)
 db = SqliteDatabase('label.db')  # pylint: disable=C0103
+
+
+has_tapped_bool = False
 
 
 class HTTPError(Exception):
@@ -104,9 +108,26 @@ def collect_item():
     xos_tap.setdefault('data', {})['playlist_info'] = record
     headers = {'Authorization': 'Token ' + AUTH_TOKEN}
     response = requests.post(xos_tap_endpoint, json=xos_tap, headers=headers)
+    global has_tapped_bool
+    has_tapped_bool = True
     if response.status_code != requests.codes['created']:
         raise HTTPError('Could not save tap to XOS.')
     return jsonify(response.content), response.status_code
+
+
+def eventStream():
+    global has_tapped_bool
+    while True:
+        time.sleep(0.1)
+        if has_tapped_bool:
+            has_tapped_bool = False
+            yield 'data: {}\n\n'
+
+
+@app.route('/api/tap-source/')
+def tap_source():
+    return Response(eventStream(), mimetype="text/event-stream")
+
 
 
 @app.route('/cache/<path:filename>')
@@ -116,4 +137,4 @@ def cache(filename):
 
 if __name__ == '__main__':
     db.create_tables([Label])
-    app.run(host='0.0.0.0', port=8081)
+    app.run(host='0.0.0.0', port=8081, threaded=True)

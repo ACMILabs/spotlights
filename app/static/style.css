@@ -37,6 +37,8 @@ html {
   background: #000;
   margin: 0;
   padding: 0;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 body {
@@ -49,7 +51,7 @@ body {
 .video {
   height: auto;
   position: absolute;
-  bottom: 320px;
+  bottom: 400px;
   display: block;
   width: 100%;
   background: #000;
@@ -66,10 +68,12 @@ body {
 
 .video_progress {
   position: absolute;
-  height: 3px;
-  background: #ccc;
-  z-index: 1;
-  margin-top: -3px;
+  height: 8px;
+  background: #fff;
+  z-index: 3;
+  margin-top: -8px;
+  bottom: calc(400px - 8px);
+  left: 0;
   transform-origin: left;
   width: 100%;
 }
@@ -106,8 +110,8 @@ body {
 .list_item {
   display: inline-block;
   vertical-align: top;
-  width: 320px;
-  height: 320px;
+  width: 400px;
+  height: 400px;
   white-space: normal;
   background: #000 center/cover;
   user-select: none;
@@ -134,7 +138,7 @@ body {
   left: 0;
   bottom: 0;
   box-sizing: border-box;
-  padding: 15px 20px;
+  padding: 45px;
 }
 
 .list_item.active {
@@ -178,4 +182,47 @@ body {
 .active .list_item_description {
   opacity: 1;
   height: auto;
+}
+
+.list_item_collect {
+  position: absolute;
+  right: 0;
+  top: 25px;
+  color: #fff;
+  padding: 30px 40px 20px;
+  display: none;
+  font-family: PxGrotesk;
+  font-size: 16px;
+  transition: background 1s, color 1s;
+}
+
+.list_item_collect:after {
+  content: "↓";
+  font-size: 18px;
+  margin-left: 10px;
+  line-height: 0;
+}
+
+.active .list_item_collect {
+  display: block;
+}
+
+.list_item_collect.active:after  {
+  background: url('tick.png') center/contain no-repeat;
+  content: " ";
+  width: 13.5px;
+  height: 10.5px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.list_item_collect.active.hidden,
+.list_item_collect.hidden {
+  color: rgba(0,0,0,0);
+  background: rgba(0,0,0,0);
+}
+
+.list_item_collect.active {
+  background: #fff;
+  color: #000;
 }

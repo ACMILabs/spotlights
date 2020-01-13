@@ -29,6 +29,8 @@ chromium http://localhost:8081 \
   --ignore-gpu-blacklist \
   --window-position=0,0 --window-size=1080,1920 --test-type \
   --enable-native-gpu-memory-buffers --force-gpu-rasterization --enable-oop-rasterization --enable-zero-copy \
-  --autoplay-policy=no-user-gesture-required
+  --autoplay-policy=no-user-gesture-required \
+  --disable-pinch
+
 
 echo "________End of x86.sh________"

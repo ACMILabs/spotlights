@@ -222,6 +222,7 @@ video.addEventListener('play', function () {
 
 const tap_source = new EventSource("/api/tap-source");
 let has_tapped = false
+let is_animating_collect = false
 let video_duration = 0
 
 
@@ -274,8 +275,9 @@ function update () {
   video_progress.style.transform = 'scaleX('+(video_duration ? (video.currentTime / video_duration) : 0)+')'
 
 
-  if (has_tapped) {
+  if (has_tapped && !is_animating_collect) {
     has_tapped = false
+    is_animating_collect = true
     active_collect_element = collect_elements[current_index]
     active_collect_element.className = 'list_item_collect hidden'
     window.setTimeout(function () {
@@ -288,6 +290,7 @@ function update () {
     window.setTimeout(function () {
       active_collect_element.className = 'list_item_collect'
       active_collect_element.innerHTML = 'COLLECT'
+      is_animating_collect = false
     }, 4000)
   }
 

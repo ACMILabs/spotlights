@@ -61,6 +61,13 @@ class Label(Model):
         database = db
 
 
+class HasTapped(Model):
+    has_tapped = IntegerField()
+
+    class Meta:  # pylint: disable=R0903
+        database = db
+
+
 @app.route('/')
 def index():
     # Read in the cached JSON
@@ -101,6 +108,9 @@ def collect_item():
     """
     Collect a tap and forward it on to XOS with the label ID.
     """
+    has_tapped = HasTapped.get_or_none(has_tapped=0)
+    has_tapped.has_tapped = 1
+    has_tapped.save()
     xos_tap_endpoint = f'{XOS_API_ENDPOINT}taps/'
     xos_tap = dict(request.get_json())
     record = model_to_dict(Label.select().order_by(Label.datetime.desc()).get())
@@ -108,8 +118,6 @@ def collect_item():
     xos_tap.setdefault('data', {})['playlist_info'] = record
     headers = {'Authorization': 'Token ' + AUTH_TOKEN}
     response = requests.post(xos_tap_endpoint, json=xos_tap, headers=headers)
-    global has_tapped_bool
-    has_tapped_bool = True
     if response.status_code != requests.codes['created']:
         raise HTTPError('Could not save tap to XOS.')
     return jsonify(response.content), response.status_code
@@ -119,8 +127,10 @@ def eventStream():
     global has_tapped_bool
     while True:
         time.sleep(0.1)
-        if has_tapped_bool:
-            has_tapped_bool = False
+        has_tapped = HasTapped.get_or_none(has_tapped=1)
+        if has_tapped:
+            has_tapped.has_tapped = 0
+            has_tapped.save()
             yield 'data: {}\n\n'
 
 
@@ -136,5 +146,6 @@ def cache(filename):
 
 
 if __name__ == '__main__':
-    db.create_tables([Label])
+    db.create_tables([Label, HasTapped])
+    HasTapped.create(has_tapped=0)
     app.run(host='0.0.0.0', port=8081, threaded=True)

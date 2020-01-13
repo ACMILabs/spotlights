@@ -197,10 +197,15 @@ body {
 }
 
 .list_item_collect:after {
-  content: "↓";
-  font-size: 18px;
+  background: url('down.svg') center/contain no-repeat;
+  content: " ";
+  width: 18px;
+  height: 16px;
+  display: inline-block;
   margin-left: 10px;
   line-height: 0;
+  vertical-align: -2px;
+  transition: opacity 1s;
 }
 
 .active .list_item_collect {
@@ -208,12 +213,12 @@ body {
 }
 
 .list_item_collect.active:after  {
-  background: url('tick.png') center/contain no-repeat;
+  background: url('tick.svg') center/contain no-repeat;
   content: " ";
-  width: 13.5px;
-  height: 10.5px;
+  width: 13px;
+  height: 10px;
   display: inline-block;
-  vertical-align: middle;
+  vertical-align: 1px;
 }
 
 .list_item_collect.active.hidden,
@@ -225,4 +230,9 @@ body {
 .list_item_collect.active {
   background: #fff;
   color: #000;
+}
+
+.list_item_collect.active.hidden:after,
+.list_item_collect.hidden:after {
+  opacity: 0;
 }

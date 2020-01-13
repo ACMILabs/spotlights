@@ -191,6 +191,8 @@ body {
   color: #fff;
   padding: 30px 40px 20px;
   display: none;
+  font-family: PxGrotesk;
+  font-size: 16px;
   transition: background 1s, color 1s;
 }
 

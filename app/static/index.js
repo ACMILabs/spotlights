@@ -1,9 +1,8 @@
 // DEBUG
-/*
 const debug_el = document.createElement('div')
 debug_el.style.position = 'fixed'
 debug_el.style.top = '0'
-debug_el.style.left = '0'
+debug_el.style.right = '0'
 debug_el.style.background = '#fff'
 debug_el.style.zIndex = 1
 document.body.appendChild(debug_el)
@@ -11,7 +10,6 @@ document.body.appendChild(debug_el)
 window.addEventListener('error', function (e) {
   debug_el.innerHTML += e.message +'. l'+ e.lineno +':c'+ e.colno
 })
-*/
 
 
 
@@ -30,8 +28,6 @@ function save_label(label_id) {
       }),
   })
 }
-
-
 
 const LIST_ITEM_WIDTH = 400
 const LIST_PADDING = 220
@@ -96,6 +92,8 @@ list_cont.appendChild(list)
 list.className = 'list'
 
 const list_items = []
+let active_collect_element = null
+const collect_elements = []
 let current_index = 0
 
 // Build playlist DOM elements
@@ -128,6 +126,12 @@ for (let i=0; i<playlist_content.length; i++) {
   description.className = 'list_item_description'
   description.innerHTML = item_data.description
 
+  const collect = document.createElement('div')
+  item_inner.appendChild(collect)
+  collect.className = 'list_item_collect'
+  collect.innerHTML = 'COLLECT'
+  collect_elements.push(collect)
+
   item.addEventListener('click', function (e) {
     if (has_dragged) {
       e.preventDefault()
@@ -159,41 +163,37 @@ let is_targeting = false
 
 // DRAGGING
 
-let is_dragging = false
+let is_mouse_down = false
 let last_mouse_x = 0
+let mouse_x = 0
 let has_dragged = false
 let amount_dragged = 0
 
 function handle_list_mousedown (e) {
-  is_dragging = true
+  is_mouse_down = true
   list_velocity = 0
-  last_mouse_x = e.touches ? e.touches[0].clientX : e.clientX
+  mouse_x = e.touches ? e.touches[0].screenX : e.screenX
+  last_mouse_x = mouse_x
   is_targeting = false
   amount_dragged = 0
   has_dragged = false
 }
-
 function handle_list_mousemove (e) {
-  if (is_dragging) {
-    const d = (e.touches ? e.touches[0].clientX : e.clientX) - last_mouse_x
-    amount_dragged += d
-    if (amount_dragged > MIN_DRAG || amount_dragged < -MIN_DRAG) {
-      has_dragged = true
-    }
-    list_velocity = d
-    list_offset = Math.min(0, Math.max(min_list_offset, list_offset + d))
-    last_mouse_x = e.touches ? e.touches[0].clientX : e.clientX
+  if (is_mouse_down) {
+    mouse_x = e.touches ? e.touches[0].screenX : e.screenX
   }
+  e.preventDefault()
+  return false
 }
 
 function handle_list_mouseup () {
-  is_dragging = false
+  is_mouse_down = false
 }
 
 list_cont.addEventListener('mousedown', handle_list_mousedown)
-list_cont.addEventListener('touchstart', handle_list_mousedown)
+list_cont.addEventListener('touchstart', handle_list_mousedown, {passive: false})
 list_cont.addEventListener('mousemove', handle_list_mousemove)
-list_cont.addEventListener('touchmove', handle_list_mousemove)
+list_cont.addEventListener('touchmove', handle_list_mousemove, {passive: false})
 list_cont.addEventListener('mouseup', handle_list_mouseup)
 list_cont.addEventListener('touchend', handle_list_mouseup)
 list_cont.addEventListener('mouseleave', handle_list_mouseup)
@@ -215,9 +215,19 @@ video.addEventListener('ended', function () {
   target_list_offset = Math.min(0, Math.max(min_list_offset, -(next_index + 1) * LIST_ITEM_WIDTH + (window_inner_width - 2 * LIST_PADDING) * 0.5))
   is_targeting = true
 })
+video.addEventListener('play', function () {
+  video_duration = video.duration
+})
 
 
-let t0 = null
+const tap_source = new EventSource("/api/tap-source");
+let has_tapped = false
+let video_duration = 0
+
+
+tap_source.onmessage = function(e) {
+  has_tapped = true
+}
 
 // 60fps MAIN LOOP
 // Updates everything that needs regular updating:
@@ -226,19 +236,24 @@ let t0 = null
 // - video progress bar
 // - etc.
 
-function update (t1) {
+function update () {
+  if (is_mouse_down) {
+    const d = mouse_x - last_mouse_x
+    amount_dragged += d
+    if (amount_dragged > MIN_DRAG || amount_dragged < -MIN_DRAG) {
+      has_dragged = true
+    }
+    if (d > MIN_LIST_VELOCITY || d < -MIN_LIST_VELOCITY) {
+      list_velocity = d
+    }
+    last_mouse_x = mouse_x
+    debug_el.innerHTML = list_velocity
+  }
 
-  // Framerate independence:
-  // time since last frame started, dt = t1 - t0. 
-  // offset [px] += offset [px] + velocity [px/frame] * dt [ms/frame] / ideal dt [ms/frame],
-  // where 1 / ideal dt [ms/frame] = 1 / 16 [ms/frame] = 0.0625 [frames/ms]
-
-  const dt = t1 - t0
-  t0 = t1
   if (list_velocity > MIN_LIST_VELOCITY || list_velocity < -MIN_LIST_VELOCITY) {
-    list_velocity *= FRICTION
-    list_offset = Math.min(0, Math.max(min_list_offset, list_offset + list_velocity*dt*0.0625))
+    list_offset = Math.min(0, Math.max(min_list_offset, list_offset + list_velocity))
     list.style.transform = 'translateX('+list_offset+'px)'
+    list_velocity *= FRICTION
 
     if (!is_targeting) {
       target_list_offset = Math.round(list_offset / LIST_ITEM_WIDTH) * LIST_ITEM_WIDTH
@@ -256,9 +271,25 @@ function update (t1) {
 
 
   // Progress bar
-  const duration = video.duration
-  video_progress.style.transform = 'scaleX('+(duration ? (video.currentTime / duration) : 0)+')'
+  video_progress.style.transform = 'scaleX('+(video_duration ? (video.currentTime / video_duration) : 0)+')'
 
+
+  if (has_tapped) {
+    has_tapped = false
+    active_collect_element = collect_elements[current_index]
+    active_collect_element.className = 'list_item_collect hidden'
+    window.setTimeout(function () {
+      active_collect_element.innerHTML = 'COLLECTED'
+      active_collect_element.className = 'list_item_collect active'
+    }, 1000)
+    window.setTimeout(function () {
+      active_collect_element.className = 'list_item_collect active hidden'
+    }, 3000)
+    window.setTimeout(function () {
+      active_collect_element.className = 'list_item_collect'
+      active_collect_element.innerHTML = 'COLLECT'
+    }, 4000)
+  }
 
   requestAnimationFrame(update)
 }

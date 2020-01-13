@@ -225,7 +225,7 @@ let has_tapped = false
 let video_duration = 0
 
 
-tap_source.onmessage = function(e) {
+tap_source.onmessage = function() {
   has_tapped = true
 }
 

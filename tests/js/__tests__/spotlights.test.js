@@ -1,3 +1,7 @@
+global.EventSource = function () {
+  return
+}
+
 describe("App", () => {
   beforeAll(() => {
     global.playlist_labels = (require('../../data/playlist.json')).playlist_labels
@@ -32,19 +36,6 @@ describe("App", () => {
     list_cont.dispatchEvent(new MouseEvent('mousemove', {clientX: 0}))
     list_cont.dispatchEvent(new MouseEvent('mousemove', {clientX: -100}))
     list_cont.dispatchEvent(new MouseEvent('mouseup'))
-  });
-
-
-  it("responds to arrow clicks", () => {
-    //const initial_transform
-    const right_arrow = document.getElementsByClassName('right_arrow')[0]
-    for (let i=0; i<6; i++) {
-      setTimeout(right_arrow.dispatchEvent(new MouseEvent('mousedown')))
-    }
-    const left_arrow = document.getElementsByClassName('left_arrow')[0]
-    for (let i=0; i<6; i++) {
-      setTimeout(left_arrow.dispatchEvent(new MouseEvent('mousedown')))
-    }
   });
 
 

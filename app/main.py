@@ -25,9 +25,6 @@ CORS(app)
 db = SqliteDatabase('label.db')  # pylint: disable=C0103
 
 
-has_tapped_bool = False
-
-
 class HTTPError(Exception):
     def __init__(self, message, status_code=400, payload=None):
         super().__init__()
@@ -123,8 +120,7 @@ def collect_item():
     return jsonify(response.content), response.status_code
 
 
-def eventStream():
-    global has_tapped_bool
+def event_stream():
     while True:
         time.sleep(0.1)
         has_tapped = HasTapped.get_or_none(has_tapped=1)
@@ -136,7 +132,7 @@ def eventStream():
 
 @app.route('/api/tap-source/')
 def tap_source():
-    return Response(eventStream(), mimetype="text/event-stream")
+    return Response(event_stream(), mimetype="text/event-stream")
 
 
 

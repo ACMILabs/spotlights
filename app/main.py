@@ -135,7 +135,6 @@ def tap_source():
     return Response(event_stream(), mimetype="text/event-stream")
 
 
-
 @app.route('/cache/<path:filename>')
 def cache(filename):
     return send_from_directory(CACHE_DIR, filename)

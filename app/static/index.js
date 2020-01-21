@@ -43,7 +43,7 @@ const playlist_content = window.playlist_labels.map(function (x) {
     id: x.label.id,
     title: x.label.title,
     secondary_title: x.label.title,
-    description: x.label.description,
+    description: "<div>"+x.label.columns[0].content+"</div><div>"+x.label.columns[1].content+"</div><div>"+x.label.columns[2].content+"</div>",
     video_url: x.resource,
     image_url: x.image,
     subtitles: 'data:text/vtt;base64,'+btoa(x.subtitles),

@@ -1,10 +1,11 @@
 import json
-import time
 import os
+import time
 
 import requests
 import sentry_sdk
-from flask import Flask, jsonify, render_template, request, send_from_directory, Response
+from flask import (Flask, Response, jsonify, render_template, request,
+                   send_from_directory)
 from flask_cors import CORS, cross_origin
 from peewee import CharField, IntegerField, Model, SqliteDatabase
 from playhouse.shortcuts import model_to_dict

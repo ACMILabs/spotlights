@@ -236,3 +236,8 @@ body {
 .list_item_collect.hidden:after {
   opacity: 0;
 }
+
+.content_smaller {
+  font-size: 24px;
+  line-height: 34px;
+}

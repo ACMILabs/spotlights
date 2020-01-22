@@ -1,3 +1,4 @@
+/*
 // DEBUG
 const debug_el = document.createElement('div')
 debug_el.style.position = 'fixed'
@@ -10,6 +11,7 @@ document.body.appendChild(debug_el)
 window.addEventListener('error', function (e) {
   debug_el.innerHTML += e.message +'. l'+ e.lineno +':c'+ e.colno
 })
+*/
 
 
 
@@ -43,7 +45,12 @@ const playlist_content = window.playlist_labels.map(function (x) {
     id: x.label.id,
     title: x.label.title,
     secondary_title: x.label.subtitles,
-    description: "<div>"+x.label.columns[0].content+"</div><div>"+x.label.columns[1].content+"</div><div>"+x.label.columns[2].content+"</div>",
+    content0: x.label.columns[0].content,
+    content1: x.label.columns[1].content,
+    content2: x.label.columns[2].content,
+    style0: x.label.columns[0].style,
+    style1: x.label.columns[1].style,
+    style2: x.label.columns[2].style,
     video_url: x.resource,
     image_url: x.image,
     subtitles: 'data:text/vtt;base64,'+btoa(x.subtitles),
@@ -124,7 +131,22 @@ for (let i=0; i<playlist_content.length; i++) {
   const description = document.createElement('div')
   item_inner.appendChild(description)
   description.className = 'list_item_description'
-  description.innerHTML = item_data.description
+
+  const content0 = document.createElement('div')
+  content0.className = item_data.style0 === 'smaller' ? 'content_smaller' : ''
+  description.appendChild(content0)
+  content0.innerHTML = item_data.content0
+
+  const content1 = document.createElement('div')
+  content1.className = item_data.style1 === 'smaller' ? 'content_smaller' : ''
+  description.appendChild(content1)
+  content1.innerHTML = item_data.content1
+
+  const content2 = document.createElement('div')
+  content2.className = item_data.style2 === 'smaller' ? 'content_smaller' : ''
+  description.appendChild(content2)
+  content2.innerHTML = item_data.content2
+
 
   const collect = document.createElement('div')
   item_inner.appendChild(collect)
@@ -248,7 +270,6 @@ function update () {
       list_velocity = d
     }
     last_mouse_x = mouse_x
-    debug_el.innerHTML = list_velocity
   }
 
   if (list_velocity > MIN_LIST_VELOCITY || list_velocity < -MIN_LIST_VELOCITY) {

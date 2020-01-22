@@ -42,7 +42,7 @@ const playlist_content = window.playlist_labels.map(function (x) {
   return {
     id: x.label.id,
     title: x.label.title,
-    secondary_title: x.label.title,
+    secondary_title: x.label.subtitles,
     description: "<div>"+x.label.columns[0].content+"</div><div>"+x.label.columns[1].content+"</div><div>"+x.label.columns[2].content+"</div>",
     video_url: x.resource,
     image_url: x.image,

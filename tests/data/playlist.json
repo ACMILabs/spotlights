@@ -6,7 +6,20 @@
             "label": {
                 "id": 44,
                 "title": "Placeholder video 1",
-                "description": "This is the first placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
+                "columns": [
+                  {
+                    "content": "When Dracula leaves the captive Jonathan Harker and Transylvania for London in search of Mina Harkerâ€”the spitting image of Dracula's long-dead wife, Elisabetaâ€”obsessed vampire hunter, Dr. Van Helsing sets out to end the madness.",
+                    "style": "standard"
+                  },
+                  {
+                    "content": "When Dracula leaves the captive Jonathan Harker and Transylvania for London in search of Mina Harkerâ€”the spitting image of Dracula's long-dead wife, Elisabetaâ€”obsessed vampire hunter, Dr. Van Helsing sets out to end the madness.",
+                    "style": "small"
+                  },
+                  {
+                    "content": "When Dracula leaves the captive Jonathan Harker and Transylvania for London in search of Mina Harkerâ€”the spitting image of Dracula's long-dead wife, Elisabetaâ€”obsessed vampire hunter, Dr. Van Helsing sets out to end the madness.",
+                    "style": "standard"
+                  }
+                ],
                 "publication": "Melbourne, 2019",
                 "rights": "",
                 "works": [
@@ -27,7 +40,20 @@
             "label": {
                 "id": 45,
                 "title": "Placeholder video 2",
-                "description": "This is the second placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
+                "columns": [
+                  {
+                    "content": "When Dracula leaves the captive Jonathan Harker and Transylvania for London in search of Mina Harkerâ€”the spitting image of Dracula's long-dead wife, Elisabetaâ€”obsessed vampire hunter, Dr. Van Helsing sets out to end the madness.",
+                    "style": "standard"
+                  },
+                  {
+                    "content": "When Dracula leaves the captive Jonathan Harker and Transylvania for London in search of Mina Harkerâ€”the spitting image of Dracula's long-dead wife, Elisabetaâ€”obsessed vampire hunter, Dr. Van Helsing sets out to end the madness.",
+                    "style": "small"
+                  },
+                  {
+                    "content": "When Dracula leaves the captive Jonathan Harker and Transylvania for London in search of Mina Harkerâ€”the spitting image of Dracula's long-dead wife, Elisabetaâ€”obsessed vampire hunter, Dr. Van Helsing sets out to end the madness.",
+                    "style": "standard"
+                  }
+                ],
                 "publication": "Melbourne, 2019",
                 "rights": "",
                 "works": [

@@ -4,7 +4,7 @@ import pytest
 from peewee import SqliteDatabase
 
 from app import main
-from app.main import Label
+from app.main import HasTapped, Label
 
 
 @pytest.fixture
@@ -27,3 +27,5 @@ def database():
         playlist_id=10,
         label_id=10,
     )
+
+    HasTapped.create(has_tapped=0)

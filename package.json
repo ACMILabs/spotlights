@@ -33,15 +33,20 @@
   },
   "homepage": "https://github.com/ACMILabs/spotlights#readme",
   "dependencies": {
+    "babel-eslint": "*",
     "babel-jest": "*",
     "babel-plugin-transform-es2015-modules-commonjs": "*",
-    "moment": "*",
-    "babel-eslint": "*",
     "eslint": "*",
+    "eslint-config-airbnb": "*",
+    "eslint-config-prettier": "*",
     "eslint-plugin-flowtype": "*",
     "eslint-plugin-import": "*",
     "eslint-plugin-jest": "*",
-    "eslint-plugin-jsx-a11y": "*"
+    "eslint-plugin-jsx-a11y": "*",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-react": "^7.18.0",
+    "moment": "*",
+    "prettier": "^1.19.1"
   },
   "babel": {
     "plugins": [

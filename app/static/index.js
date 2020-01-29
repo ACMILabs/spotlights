@@ -165,7 +165,7 @@ for (let i = 0; i < playlist_content.length; i++) {
   collect.innerHTML = "COLLECT";
   collect_elements.push(collect);
 
-  item.addEventListener("click", function clk(e) {
+  item.addEventListener("click", function handle_item_click(e) {
     if (has_dragged) {
       e.preventDefault();
     } else if (list_items[current_index] !== item) {
@@ -233,7 +233,7 @@ let has_tapped = false;
 let is_animating_collect = false;
 let video_duration = 0;
 
-video.addEventListener("ended", function endd() {
+video.addEventListener("ended", function handle_video_ended() {
   const next_index = (current_index + 1) % playlist_content.length;
   list_items[current_index].classList.remove("active");
   list_items[next_index].classList.add("active");
@@ -253,11 +253,11 @@ video.addEventListener("ended", function endd() {
   is_targeting = true;
 });
 
-video.addEventListener("play", function ply() {
+video.addEventListener("play", function handle_video_play() {
   video_duration = video.duration;
 });
 
-tap_source.onmessage = function tpmsg() {
+tap_source.onmessage = function handle_tap_message() {
   has_tapped = true;
 };
 
@@ -317,7 +317,7 @@ function update() {
       active_collect_element.innerHTML = "COLLECTED";
       active_collect_element.className = "list_item_collect active";
     }, 1000);
-    window.setTimeout(function timeout1() {
+    window.setTimeout(function timeout2() {
       active_collect_element.className = "list_item_collect active hidden";
     }, 3000);
     window.setTimeout(function timeout3() {

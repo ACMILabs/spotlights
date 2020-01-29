@@ -29,7 +29,6 @@ function save_label(label_id) {
   });
 }
 
-
 // CONSTANTS
 
 const LIST_ITEM_WIDTH = 400;
@@ -38,7 +37,6 @@ const FRICTION = 0.9;
 const MIN_LIST_VELOCITY = 0.02;
 const MIN_TARGET_D = 0.02;
 const MIN_DRAG = 10;
-
 
 // CONTENT
 
@@ -58,7 +56,6 @@ const playlist_content = window.playlist_labels.map(function r(x) {
     subtitles: `data:text/vtt;base64,${btoa(x.subtitles)}`
   };
 });
-
 
 // GLOBAL VARS
 
@@ -83,7 +80,6 @@ let current_index = 0;
 let is_animating_collect = false;
 
 let video_duration = 0;
-
 
 // DOM
 
@@ -184,7 +180,6 @@ for (let i = 0; i < playlist_content.length; i++) {
   });
 }
 
-
 // EVENT HANDLERS
 
 function handle_window_resize() {
@@ -246,7 +241,7 @@ function handle_tap_message() {
   if (!is_animating_collect) {
     // Debounced with is_animating_collect
     is_animating_collect = true;
-    let active_collect_element = collect_elements[current_index];
+    const active_collect_element = collect_elements[current_index];
 
     // Animation plays: collect -> hidden -> collected -> hidden -> collect
     active_collect_element.className = "list_item_collect hidden";
@@ -280,8 +275,8 @@ list_cont.addEventListener("touchcancel", handle_list_mouseup);
 window.addEventListener("resize", handle_window_resize);
 video.addEventListener("ended", handle_video_ended);
 video.addEventListener("play", handle_video_play);
-(new EventSource("/api/tap-source")).onmessage = handle_tap_message;
-
+const tap_source = new EventSource("/api/tap-source");
+tap_source.onmessage = handle_tap_message;
 
 // Updates everything that needs regular updating, at 60fps
 function main_loop() {

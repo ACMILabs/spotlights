@@ -29,13 +29,18 @@ function save_label(label_id) {
   });
 }
 
+
+// CONSTANTS
+
 const LIST_ITEM_WIDTH = 400;
 const LIST_PADDING = 220;
-
 const FRICTION = 0.9;
 const MIN_LIST_VELOCITY = 0.02;
 const MIN_TARGET_D = 0.02;
 const MIN_DRAG = 10;
+
+
+// CONTENT
 
 const playlist_content = window.playlist_labels.map(function r(x) {
   return {
@@ -54,34 +59,48 @@ const playlist_content = window.playlist_labels.map(function r(x) {
   };
 });
 
-// Width dependent variables
 
-let min_list_offset = 0;
+// GLOBAL VARS
+
 let window_inner_width = window.innerWidth;
 
-function handle_window_resize() {
-  window_inner_width = window.innerWidth;
-  min_list_offset =
-    -LIST_ITEM_WIDTH * (playlist_content.length + 1) +
-    window.innerWidth -
-    2 * LIST_PADDING;
-}
+let min_list_offset = 0;
+let list_offset = 0;
+let list_velocity = 0;
+let target_list_offset = 0;
 
-handle_window_resize();
-window.addEventListener("resize", handle_window_resize);
+let is_targeting = false;
+let is_mouse_down = false;
+let last_mouse_x = 0;
+let mouse_x = 0;
+let has_dragged = false;
+let amount_dragged = 0;
+
+const list_items = [];
+let active_collect_element = null;
+const collect_elements = [];
+let current_index = 0;
+
+let has_tapped = false;
+let is_animating_collect = false;
+
+let video_duration = 0;
+
 
 // DOM
 
 const root = document.getElementById("root");
 
 const video = document.createElement("video");
+root.appendChild(video);
 video.className = "video";
 video.autoplay = true;
-root.appendChild(video);
+video.src = playlist_content[0].video_url;
 
 const video_track = document.createElement("track");
 video.appendChild(video_track);
 video_track.default = true;
+video_track.src = playlist_content[0].subtitles;
 
 const video_progress = document.createElement("div");
 root.appendChild(video_progress);
@@ -94,28 +113,6 @@ list_cont.className = "list_cont";
 const list = document.createElement("div");
 list_cont.appendChild(list);
 list.className = "list";
-
-const list_items = [];
-let active_collect_element = null;
-const collect_elements = [];
-let current_index = 0;
-
-// Dragging, animation, physics variables.
-
-let list_offset = 0;
-let list_velocity = 0;
-let target_list_offset = 0;
-let is_targeting = false;
-
-// DRAGGING
-
-let is_mouse_down = false;
-let last_mouse_x = 0;
-let mouse_x = 0;
-let has_dragged = false;
-let amount_dragged = 0;
-
-// Build playlist DOM elements
 
 for (let i = 0; i < playlist_content.length; i++) {
   const item_data = playlist_content[i];
@@ -189,7 +186,16 @@ for (let i = 0; i < playlist_content.length; i++) {
   });
 }
 
-// DRAGGING
+
+// EVENT HANDLERS
+
+function handle_window_resize() {
+  window_inner_width = window.innerWidth;
+  min_list_offset =
+    -LIST_ITEM_WIDTH * (playlist_content.length + 1) +
+    window.innerWidth -
+    2 * LIST_PADDING;
+}
 
 function handle_list_mousedown(e) {
   is_mouse_down = true;
@@ -213,27 +219,7 @@ function handle_list_mouseup() {
   is_mouse_down = false;
 }
 
-list_cont.addEventListener("mousedown", handle_list_mousedown);
-list_cont.addEventListener("touchstart", handle_list_mousedown, {
-  passive: false
-});
-list_cont.addEventListener("mousemove", handle_list_mousemove);
-list_cont.addEventListener("touchmove", handle_list_mousemove, {
-  passive: false
-});
-list_cont.addEventListener("mouseup", handle_list_mouseup);
-list_cont.addEventListener("touchend", handle_list_mouseup);
-list_cont.addEventListener("mouseleave", handle_list_mouseup);
-list_cont.addEventListener("touchcancel", handle_list_mouseup);
-
-// AUTOPLAY
-
-const tap_source = new EventSource("/api/tap-source");
-let has_tapped = false;
-let is_animating_collect = false;
-let video_duration = 0;
-
-video.addEventListener("ended", function handle_video_ended() {
+function handle_video_ended() {
   const next_index = (current_index + 1) % playlist_content.length;
   list_items[current_index].classList.remove("active");
   list_items[next_index].classList.add("active");
@@ -251,24 +237,37 @@ video.addEventListener("ended", function handle_video_ended() {
     )
   );
   is_targeting = true;
-});
+}
 
-video.addEventListener("play", function handle_video_play() {
+function handle_video_play() {
   video_duration = video.duration;
-});
+}
 
-tap_source.onmessage = function handle_tap_message() {
+function handle_tap_message() {
   has_tapped = true;
-};
+}
 
-// 60fps MAIN LOOP
-// Updates everything that needs regular updating:
-// - list offset & velocity
-// - current list target
-// - video progress bar
-// - etc.
+list_cont.addEventListener("mousedown", handle_list_mousedown);
+list_cont.addEventListener("touchstart", handle_list_mousedown, {
+  passive: false
+});
+list_cont.addEventListener("mousemove", handle_list_mousemove);
+list_cont.addEventListener("touchmove", handle_list_mousemove, {
+  passive: false
+});
+list_cont.addEventListener("mouseup", handle_list_mouseup);
+list_cont.addEventListener("touchend", handle_list_mouseup);
+list_cont.addEventListener("mouseleave", handle_list_mouseup);
+list_cont.addEventListener("touchcancel", handle_list_mouseup);
+window.addEventListener("resize", handle_window_resize);
+video.addEventListener("ended", handle_video_ended);
+video.addEventListener("play", handle_video_play);
+(new EventSource("/api/tap-source")).onmessage = handle_tap_message;
 
-function update() {
+
+// Updates everything that needs regular updating, at 60fps
+function main_loop() {
+  // HANDLE DRAGGING
   if (is_mouse_down) {
     const d = mouse_x - last_mouse_x;
     amount_dragged += d;
@@ -281,6 +280,7 @@ function update() {
     last_mouse_x = mouse_x;
   }
 
+  // UPDATE LIST OFFSET PHYSICS AND UI
   if (list_velocity > MIN_LIST_VELOCITY || list_velocity < -MIN_LIST_VELOCITY) {
     list_offset = Math.min(
       0,
@@ -295,7 +295,7 @@ function update() {
     }
   }
 
-  // Only animate to target after videos change
+  // UPDATE LIST OFFSET WHEN VIDEO CHANGES
   if (is_targeting) {
     const target_d = target_list_offset - list_offset;
     if (target_d > MIN_TARGET_D || target_d < -MIN_TARGET_D) {
@@ -303,11 +303,12 @@ function update() {
     }
   }
 
-  // Progress bar
+  // UPDATE VIDEO PROGRESS BAR
   video_progress.style.transform = `scaleX(${
     video_duration ? video.currentTime / video_duration : 0
   })`;
 
+  // UPDATE 'COLLECTED' UI
   if (has_tapped && !is_animating_collect) {
     has_tapped = false;
     is_animating_collect = true;
@@ -327,16 +328,11 @@ function update() {
     }, 4000);
   }
 
-  requestAnimationFrame(update);
+  requestAnimationFrame(main_loop);
 }
 
-// Init
-
+// INIT
+handle_window_resize();
 save_label(playlist_content[current_index].id);
-
 list_items[current_index].classList.add("active");
-
-video.src = playlist_content[0].video_url;
-video_track.src = playlist_content[0].subtitles;
-
-update();
+main_loop();

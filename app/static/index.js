@@ -1,9 +1,9 @@
-// DEBUG
 /*
+// DEBUG
 const debug_el = document.createElement('div')
 debug_el.style.position = 'fixed'
 debug_el.style.top = '0'
-debug_el.style.left = '0'
+debug_el.style.right = '0'
 debug_el.style.background = '#fff'
 debug_el.style.zIndex = 1
 document.body.appendChild(debug_el)
@@ -31,10 +31,8 @@ function save_label(label_id) {
   })
 }
 
-
-
-const LIST_ITEM_WIDTH = 240
-const LIST_PADDING = 30
+const LIST_ITEM_WIDTH = 400
+const LIST_PADDING = 220
 
 const FRICTION = 0.9
 const MIN_LIST_VELOCITY = 0.02
@@ -46,14 +44,32 @@ const playlist_content = window.playlist_labels.map(function (x) {
   return {
     id: x.label.id,
     title: x.label.title,
-    secondary_title: x.label.title,
-    description: x.label.description,
+    secondary_title: x.label.subtitles,
+    content0: x.label.columns[0].content,
+    content1: x.label.columns[1].content,
+    content2: x.label.columns[2].content,
+    style0: x.label.columns[0].style,
+    style1: x.label.columns[1].style,
+    style2: x.label.columns[2].style,
     video_url: x.resource,
     image_url: x.image,
     subtitles: 'data:text/vtt;base64,'+btoa(x.subtitles),
   }
 })
 
+
+// Width dependent variables
+
+let min_list_offset = 0
+let window_inner_width = window.innerWidth
+
+function handle_window_resize () {
+  window_inner_width = window.innerWidth
+  min_list_offset = -LIST_ITEM_WIDTH * (playlist_content.length + 1) + window.innerWidth - 2 * LIST_PADDING
+}
+
+handle_window_resize()
+window.addEventListener('resize', handle_window_resize)
 
 
 // DOM
@@ -83,6 +99,8 @@ list_cont.appendChild(list)
 list.className = 'list'
 
 const list_items = []
+let active_collect_element = null
+const collect_elements = []
 let current_index = 0
 
 // Build playlist DOM elements
@@ -96,20 +114,45 @@ for (let i=0; i<playlist_content.length; i++) {
   item.className = 'list_item'
   item.style.backgroundImage = 'url('+item_data.image_url+')'
 
+  const item_inner = document.createElement('div')
+  item_inner.className = 'list_item_inner'
+  item.appendChild(item_inner)
+
   const title = document.createElement('div')
-  item.appendChild(title)
+  item_inner.appendChild(title)
   title.className = 'list_item_title'
   title.innerHTML = item_data.title
 
   const secondary_title = document.createElement('div')
-  item.appendChild(secondary_title)
+  item_inner.appendChild(secondary_title)
   secondary_title.className = 'list_item_secondary_title'
   secondary_title.innerHTML = item_data.secondary_title
 
   const description = document.createElement('div')
-  item.appendChild(description)
+  item_inner.appendChild(description)
   description.className = 'list_item_description'
-  description.innerHTML = item_data.description
+
+  const content0 = document.createElement('div')
+  content0.className = item_data.style0 === 'smaller' ? 'content_smaller' : ''
+  description.appendChild(content0)
+  content0.innerHTML = item_data.content0
+
+  const content1 = document.createElement('div')
+  content1.className = item_data.style1 === 'smaller' ? 'content_smaller' : ''
+  description.appendChild(content1)
+  content1.innerHTML = item_data.content1
+
+  const content2 = document.createElement('div')
+  content2.className = item_data.style2 === 'smaller' ? 'content_smaller' : ''
+  description.appendChild(content2)
+  content2.innerHTML = item_data.content2
+
+
+  const collect = document.createElement('div')
+  item_inner.appendChild(collect)
+  collect.className = 'list_item_collect'
+  collect.innerHTML = 'COLLECT'
+  collect_elements.push(collect)
 
   item.addEventListener('click', function (e) {
     if (has_dragged) {
@@ -122,105 +165,57 @@ for (let i=0; i<playlist_content.length; i++) {
       video_track.src = 'data:text/vtt;'+playlist_content[i].subtitles
       save_label(playlist_content[i].id)
       current_index = i
+
+      target_list_offset = Math.min(0, Math.max(min_list_offset, -(current_index + 1) * LIST_ITEM_WIDTH + (window_inner_width - 2 * LIST_PADDING) * 0.5))
+      is_targeting = true
     }
   })
 }
 
 
-// Arrows
 
-const left_arrow = document.createElement('div')
-list_cont.appendChild(left_arrow)
-left_arrow.className = 'left_arrow'
-
-const right_arrow = document.createElement('div')
-list_cont.appendChild(right_arrow)
-right_arrow.className = 'right_arrow'
-
-
-
-// Dragging and post-arrow-click physics,
-// Cache to avoid unnecessary thrashing,
-// Arrow clicks move target for animation,
-// And only animate to target after arrow clicks.
+// Dragging, animation, physics variables.
 
 let list_offset = 0
 let list_velocity = 0
-
-let is_left_arrow_hidden = false
-let is_right_arrow_hidden = false
-
 let target_list_offset = 0
-
 let is_targeting = false
-
-let min_list_offset = -LIST_ITEM_WIDTH * playlist_content.length + window.innerWidth - 2*LIST_PADDING
-window.addEventListener('resize', function () {
-  min_list_offset = -LIST_ITEM_WIDTH * playlist_content.length + window.innerWidth - 2*LIST_PADDING
-})
-
-
-
-// ARROWS BEHAVIOUR
-
-function handle_left_arrow_mousedown (e) {
-  e.preventDefault()
-  e.stopPropagation()
-  target_list_offset = Math.min(0, target_list_offset + LIST_ITEM_WIDTH)
-  is_targeting = true
-}
-
-function handle_right_arrow_mousedown (e) {
-  e.preventDefault()
-  e.stopPropagation()
-  target_list_offset = Math.max(min_list_offset, target_list_offset - LIST_ITEM_WIDTH)
-  is_targeting = true
-}
-
-left_arrow.addEventListener('mousedown', handle_left_arrow_mousedown)
-left_arrow.addEventListener('touchstart', handle_left_arrow_mousedown)
-right_arrow.addEventListener('mousedown', handle_right_arrow_mousedown)
-right_arrow.addEventListener('touchstart', handle_right_arrow_mousedown)
 
 
 
 // DRAGGING
 
-let is_dragging = false
+let is_mouse_down = false
 let last_mouse_x = 0
+let mouse_x = 0
 let has_dragged = false
 let amount_dragged = 0
 
 function handle_list_mousedown (e) {
-  is_dragging = true
+  is_mouse_down = true
   list_velocity = 0
-  last_mouse_x = e.touches ? e.touches[0].clientX : e.clientX
+  mouse_x = e.touches ? e.touches[0].screenX : e.screenX
+  last_mouse_x = mouse_x
   is_targeting = false
   amount_dragged = 0
   has_dragged = false
 }
-
 function handle_list_mousemove (e) {
-  if (is_dragging) {
-    const d = (e.touches ? e.touches[0].clientX : e.clientX) - last_mouse_x
-    amount_dragged += d
-    if (amount_dragged > MIN_DRAG || amount_dragged < -MIN_DRAG) {
-      has_dragged = true
-    }
-    list_velocity = d
-    list_offset = Math.min(0, Math.max(min_list_offset, list_offset + d))
-    last_mouse_x = e.touches ? e.touches[0].clientX : e.clientX
+  if (is_mouse_down) {
+    mouse_x = e.touches ? e.touches[0].screenX : e.screenX
   }
+  e.preventDefault()
+  return false
 }
 
 function handle_list_mouseup () {
-  is_dragging = false
+  is_mouse_down = false
 }
 
 list_cont.addEventListener('mousedown', handle_list_mousedown)
-list_cont.addEventListener('touchstart', handle_list_mousedown)
+list_cont.addEventListener('touchstart', handle_list_mousedown, {passive: false})
 list_cont.addEventListener('mousemove', handle_list_mousemove)
-list_cont.addEventListener('touchmove', handle_list_mousemove)
+list_cont.addEventListener('touchmove', handle_list_mousemove, {passive: false})
 list_cont.addEventListener('mouseup', handle_list_mouseup)
 list_cont.addEventListener('touchend', handle_list_mouseup)
 list_cont.addEventListener('mouseleave', handle_list_mouseup)
@@ -239,70 +234,56 @@ video.addEventListener('ended', function () {
   save_label(playlist_content[next_index].id)
   current_index = next_index
 
-  target_list_offset = Math.min(0, Math.max(min_list_offset, -(next_index - 1) * LIST_ITEM_WIDTH))
+  target_list_offset = Math.min(0, Math.max(min_list_offset, -(next_index + 1) * LIST_ITEM_WIDTH + (window_inner_width - 2 * LIST_PADDING) * 0.5))
   is_targeting = true
+})
+video.addEventListener('play', function () {
+  video_duration = video.duration
 })
 
 
-let t0 = null
+const tap_source = new EventSource("/api/tap-source");
+let has_tapped = false
+let is_animating_collect = false
+let video_duration = 0
+
+
+tap_source.onmessage = function() {
+  has_tapped = true
+}
 
 // 60fps MAIN LOOP
 // Updates everything that needs regular updating:
 // - list offset & velocity
 // - current list target
-// - arrows' hidden state & CSS class
 // - video progress bar
 // - etc.
 
-function update (t1) {
+function update () {
+  if (is_mouse_down) {
+    const d = mouse_x - last_mouse_x
+    amount_dragged += d
+    if (amount_dragged > MIN_DRAG || amount_dragged < -MIN_DRAG) {
+      has_dragged = true
+    }
+    if (d > MIN_LIST_VELOCITY || d < -MIN_LIST_VELOCITY) {
+      list_velocity = d
+    }
+    last_mouse_x = mouse_x
+  }
 
-  // Framerate independence:
-  // time since last frame started, dt = t1 - t0. 
-  // offset [px] += offset [px] + velocity [px/frame] * dt [ms/frame] / ideal dt [ms/frame],
-  // where 1 / ideal dt [ms/frame] = 1 / 16 [ms/frame] = 0.0625 [frames/ms]
-
-  const dt = t1 - t0
-  t0 = t1
   if (list_velocity > MIN_LIST_VELOCITY || list_velocity < -MIN_LIST_VELOCITY) {
-    list_velocity *= FRICTION
-    list_offset = Math.min(0, Math.max(min_list_offset, list_offset + list_velocity*dt*0.0625))
+    list_offset = Math.min(0, Math.max(min_list_offset, list_offset + list_velocity))
     list.style.transform = 'translateX('+list_offset+'px)'
+    list_velocity *= FRICTION
 
-    // Set current target for when arrows are eventually clicked
     if (!is_targeting) {
       target_list_offset = Math.round(list_offset / LIST_ITEM_WIDTH) * LIST_ITEM_WIDTH
     }
   }
 
 
-  // Cached arrow state to avoid unnecessary thrashing
-  if (!is_left_arrow_hidden) {
-    if (target_list_offset == 0) {
-      left_arrow.classList.add('hidden_arrow')
-      is_left_arrow_hidden = true
-    }
-  }
-  if (is_left_arrow_hidden) {
-    if (target_list_offset != 0) {
-      left_arrow.classList.remove('hidden_arrow')
-      is_left_arrow_hidden = false
-    }
-  }
-  if (!is_right_arrow_hidden) {
-    if (list_offset == min_list_offset || target_list_offset == min_list_offset) {
-      right_arrow.classList.add('hidden_arrow')
-      is_right_arrow_hidden = true
-    }
-  }
-  if (is_right_arrow_hidden) {
-    if (list_offset != min_list_offset && target_list_offset != min_list_offset) {
-      right_arrow.classList.remove('hidden_arrow')
-      is_right_arrow_hidden = false
-    }
-  }
-
-
-  // Only animate to target after arrow clicks
+  // Only animate to target after videos change
   if (is_targeting) {
     const target_d = target_list_offset - list_offset
     if (target_d > MIN_TARGET_D || target_d < -MIN_TARGET_D) {
@@ -312,9 +293,27 @@ function update (t1) {
 
 
   // Progress bar
-  const duration = video.duration
-  video_progress.style.transform = 'scaleX('+(duration ? (video.currentTime / duration) : 0)+')'
+  video_progress.style.transform = 'scaleX('+(video_duration ? (video.currentTime / video_duration) : 0)+')'
 
+
+  if (has_tapped && !is_animating_collect) {
+    has_tapped = false
+    is_animating_collect = true
+    active_collect_element = collect_elements[current_index]
+    active_collect_element.className = 'list_item_collect hidden'
+    window.setTimeout(function () {
+      active_collect_element.innerHTML = 'COLLECTED'
+      active_collect_element.className = 'list_item_collect active'
+    }, 1000)
+    window.setTimeout(function () {
+      active_collect_element.className = 'list_item_collect active hidden'
+    }, 3000)
+    window.setTimeout(function () {
+      active_collect_element.className = 'list_item_collect'
+      active_collect_element.innerHTML = 'COLLECT'
+      is_animating_collect = false
+    }, 4000)
+  }
 
   requestAnimationFrame(update)
 }
@@ -329,8 +328,5 @@ list_items[current_index].classList.add('active')
 
 video.src = playlist_content[0].video_url
 video_track.src = playlist_content[0].subtitles
-
-left_arrow.classList.add('hidden_arrow')
-is_left_arrow_hidden = true
 
 update()

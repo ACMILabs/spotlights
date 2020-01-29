@@ -1,9 +1,11 @@
 import json
 import os
+import time
 
 import requests
 import sentry_sdk
-from flask import Flask, jsonify, render_template, request, send_from_directory
+from flask import (Flask, Response, jsonify, render_template, request,
+                   send_from_directory)
 from flask_cors import CORS, cross_origin
 from peewee import CharField, IntegerField, Model, SqliteDatabase
 from playhouse.shortcuts import model_to_dict
@@ -14,6 +16,8 @@ SENTRY_ID = os.environ.get('SENTRY_ID')
 # print("TODO: set up a sentry ID")
 XOS_API_ENDPOINT = os.environ['XOS_API_ENDPOINT']
 XOS_PLAYLIST_ID = os.environ['XOS_PLAYLIST_ID']
+
+CACHE_DIR = os.getenv('CACHE_DIR', '/data/')
 
 sentry_sdk.init(dsn=SENTRY_ID, integrations=[FlaskIntegration()])
 
@@ -52,6 +56,13 @@ class Label(Model):
     playlist_id = IntegerField()
 
     class Meta:
+        database = db
+
+
+class HasTapped(Model):
+    has_tapped = IntegerField()
+
+    class Meta:  # pylint: disable=R0903
         database = db
 
 
@@ -95,6 +106,9 @@ def collect_item():
     """
     Collect a tap and forward it on to XOS with the label ID.
     """
+    has_tapped = HasTapped.get_or_none(has_tapped=0)
+    has_tapped.has_tapped = 1
+    has_tapped.save()
     xos_tap_endpoint = f'{XOS_API_ENDPOINT}taps/'
     xos_tap = dict(request.get_json())
     record = model_to_dict(Label.select().order_by(Label.datetime.desc()).get())
@@ -107,11 +121,27 @@ def collect_item():
     return jsonify(response.content), response.status_code
 
 
+def event_stream():
+    while True:
+        time.sleep(0.1)
+        has_tapped = HasTapped.get_or_none(has_tapped=1)
+        if has_tapped:
+            has_tapped.has_tapped = 0
+            has_tapped.save()
+            yield 'data: {}\n\n'
+
+
+@app.route('/api/tap-source/')
+def tap_source():
+    return Response(event_stream(), mimetype="text/event-stream")
+
+
 @app.route('/cache/<path:filename>')
 def cache(filename):
-    return send_from_directory('/data/', filename)
+    return send_from_directory(CACHE_DIR, filename)
 
 
 if __name__ == '__main__':
-    db.create_tables([Label])
-    app.run(host='0.0.0.0', port=8081)
+    db.create_tables([Label, HasTapped])
+    HasTapped.create(has_tapped=0)
+    app.run(host='0.0.0.0', port=8081, threaded=True)

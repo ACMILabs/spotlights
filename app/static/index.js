@@ -77,11 +77,9 @@ let has_dragged = false;
 let amount_dragged = 0;
 
 const list_items = [];
-let active_collect_element = null;
 const collect_elements = [];
 let current_index = 0;
 
-let has_tapped = false;
 let is_animating_collect = false;
 
 let video_duration = 0;
@@ -244,7 +242,27 @@ function handle_video_play() {
 }
 
 function handle_tap_message() {
-  has_tapped = true;
+  // UPDATE 'COLLECTED' UI
+  if (!is_animating_collect) {
+    // Debounced with is_animating_collect
+    is_animating_collect = true;
+    let active_collect_element = collect_elements[current_index];
+
+    // Animation plays: collect -> hidden -> collected -> hidden -> collect
+    active_collect_element.className = "list_item_collect hidden";
+    window.setTimeout(function timeout1() {
+      active_collect_element.innerHTML = "COLLECTED";
+      active_collect_element.className = "list_item_collect active";
+    }, 1000);
+    window.setTimeout(function timeout2() {
+      active_collect_element.className = "list_item_collect active hidden";
+    }, 3000);
+    window.setTimeout(function timeout3() {
+      active_collect_element.className = "list_item_collect";
+      active_collect_element.innerHTML = "COLLECT";
+      is_animating_collect = false;
+    }, 4000);
+  }
 }
 
 list_cont.addEventListener("mousedown", handle_list_mousedown);
@@ -271,9 +289,11 @@ function main_loop() {
   if (is_mouse_down) {
     const d = mouse_x - last_mouse_x;
     amount_dragged += d;
+    // Prevent click event when scrolling
     if (amount_dragged > MIN_DRAG || amount_dragged < -MIN_DRAG) {
       has_dragged = true;
     }
+    // Prevent bad touch screens interfering with smooth friction effect
     if (d > MIN_LIST_VELOCITY || d < -MIN_LIST_VELOCITY) {
       list_velocity = d;
     }
@@ -307,26 +327,6 @@ function main_loop() {
   video_progress.style.transform = `scaleX(${
     video_duration ? video.currentTime / video_duration : 0
   })`;
-
-  // UPDATE 'COLLECTED' UI
-  if (has_tapped && !is_animating_collect) {
-    has_tapped = false;
-    is_animating_collect = true;
-    active_collect_element = collect_elements[current_index];
-    active_collect_element.className = "list_item_collect hidden";
-    window.setTimeout(function timeout1() {
-      active_collect_element.innerHTML = "COLLECTED";
-      active_collect_element.className = "list_item_collect active";
-    }, 1000);
-    window.setTimeout(function timeout2() {
-      active_collect_element.className = "list_item_collect active hidden";
-    }, 3000);
-    window.setTimeout(function timeout3() {
-      active_collect_element.className = "list_item_collect";
-      active_collect_element.innerHTML = "COLLECT";
-      is_animating_collect = false;
-    }, 4000);
-  }
 
   requestAnimationFrame(main_loop);
 }

@@ -1,74 +1,119 @@
 {
     "id": 1,
-    "title": "Default playlist",
+    "title": "title",
     "playlist_labels": [
         {
             "label": {
-                "id": 44,
-                "title": "Placeholder video 1",
+                "id": 3,
+                "title": "the label title",
+                "title_html": "<p>the label title</p>",
+                "subtitles": "the label subtitle",
+                "subtitles_html": "<p>the label subtitle</p>",
                 "columns": [
-                  {
-                    "content": "When Dracula leaves the captive Jonathan Harker and Transylvania for London in search of Mina Harkerâ€”the spitting image of Dracula's long-dead wife, Elisabetaâ€”obsessed vampire hunter, Dr. Van Helsing sets out to end the madness.",
-                    "style": "standard"
-                  },
-                  {
-                    "content": "When Dracula leaves the captive Jonathan Harker and Transylvania for London in search of Mina Harkerâ€”the spitting image of Dracula's long-dead wife, Elisabetaâ€”obsessed vampire hunter, Dr. Van Helsing sets out to end the madness.",
-                    "style": "small"
-                  },
-                  {
-                    "content": "When Dracula leaves the captive Jonathan Harker and Transylvania for London in search of Mina Harkerâ€”the spitting image of Dracula's long-dead wife, Elisabetaâ€”obsessed vampire hunter, Dr. Van Helsing sets out to end the madness.",
-                    "style": "standard"
-                  }
+                    {
+                        "content": "<p>column 1</p>",
+                        "style": "standard"
+                    },
+                    {
+                        "content": "",
+                        "style": "standard"
+                    },
+                    {
+                        "content": "",
+                        "style": "smaller"
+                    }
                 ],
-                "publication": "Melbourne, 2019",
-                "rights": "",
                 "works": [
                     {
-                        "id": 60889,
-                        "title": "Placeholder video 1",
-                        "image": "https://xos-prod-media.s3.amazonaws.com/xos/works/image/placeholder-1.jpg?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=vkQdEozNAtYYTegJChvoFr%2FHrNI%3D&Expires=1573609287",
-                        "abstract": "This is the first placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
-                        "brief_description": "This is the first placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
-                        "first_production_year": "2019"
-                    }
-                ]
-            },
-            "resource": "https://xos-prod-media.s3.amazonaws.com/xos/placeholder-1.mp4?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=QrN%2BWcaSeTYrkyJwqqanBCgp5VY%3D&Expires=1573609287",
-            "subtitles": "https://xos-prod-media.s3.amazonaws.com/xos/placeholder-1.srt?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=BagZOux%2BAL20qwFt0JKqBgmyV3E%3D&Expires=1573609287"
-        },
-        {
-            "label": {
-                "id": 45,
-                "title": "Placeholder video 2",
-                "columns": [
-                  {
-                    "content": "When Dracula leaves the captive Jonathan Harker and Transylvania for London in search of Mina Harkerâ€”the spitting image of Dracula's long-dead wife, Elisabetaâ€”obsessed vampire hunter, Dr. Van Helsing sets out to end the madness.",
-                    "style": "standard"
-                  },
-                  {
-                    "content": "When Dracula leaves the captive Jonathan Harker and Transylvania for London in search of Mina Harkerâ€”the spitting image of Dracula's long-dead wife, Elisabetaâ€”obsessed vampire hunter, Dr. Van Helsing sets out to end the madness.",
-                    "style": "small"
-                  },
-                  {
-                    "content": "When Dracula leaves the captive Jonathan Harker and Transylvania for London in search of Mina Harkerâ€”the spitting image of Dracula's long-dead wife, Elisabetaâ€”obsessed vampire hunter, Dr. Van Helsing sets out to end the madness.",
-                    "style": "standard"
-                  }
-                ],
-                "publication": "Melbourne, 2019",
-                "rights": "",
-                "works": [
+                        "id": 2,
+                        "title": "a second work",
+                        "public_images": [
+                            {
+                                "id": 3,
+                                "image_file": "http://localhost:8000/media/collection/image/puffin.jpg",
+                                "thumbnail_url": "/media/collection/image/puffin.jpg.150x150_q85.jpg",
+                                "caption": "caption",
+                                "credit_line": "credit line",
+                                "width": 1800,
+                                "height": 1350
+                            }
+                        ],
+                        "abstract": "",
+                        "brief_description": "",
+                        "first_production_year": null,
+                        "work_type": null,
+                        "recommendations": []
+                    },
                     {
-                        "id": 60890,
-                        "title": "Placeholder video 2",
-                        "image": "https://xos-prod-media.s3.amazonaws.com/xos/works/image/placeholder-2.jpg?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=n1dUGRnX7%2B%2BP81N9jtWeqUBzCaQ%3D&Expires=1573609287",
-                        "abstract": "This is the second placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
-                        "brief_description": "This is the second placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
-                        "first_production_year": "2019"
+                        "id": 1,
+                        "title": "the work title",
+                        "public_images": [
+                            {
+                                "id": 1,
+                                "image_file": "http://localhost:8000/media/collection/image/Dame_edna_glasses_xRdQ6sW.jpg",
+                                "thumbnail_url": "/media/collection/image/Dame_edna_glasses_xRdQ6sW.jpg.150x150_q85.jpg",
+                                "caption": "",
+                                "credit_line": "",
+                                "width": 600,
+                                "height": 600
+                            },
+                            {
+                                "id": 2,
+                                "image_file": "http://localhost:8000/media/collection/image/hollow_pSKTt7q.jpg",
+                                "thumbnail_url": "/media/collection/image/hollow_pSKTt7q.jpg.150x150_q85.jpg",
+                                "caption": "",
+                                "credit_line": "",
+                                "width": 785,
+                                "height": 1080
+                            }
+                        ],
+                        "abstract": "",
+                        "brief_description": "",
+                        "first_production_year": null,
+                        "work_type": null,
+                        "recommendations": []
                     }
-                ]
+                ],
+                "public_images": [
+                    {
+                        "id": 3,
+                        "image_file": "http://localhost:8000/media/collection/image/puffin.jpg",
+                        "thumbnail_url": "/media/collection/image/puffin.jpg.150x150_q85.jpg",
+                        "caption": "caption",
+                        "credit_line": "credit line",
+                        "width": 1800,
+                        "height": 1350
+                    },
+                    {
+                        "id": 2,
+                        "image_file": "http://localhost:8000/media/collection/image/hollow_pSKTt7q.jpg",
+                        "thumbnail_url": "/media/collection/image/hollow_pSKTt7q.jpg.150x150_q85.jpg",
+                        "caption": "",
+                        "credit_line": "",
+                        "width": 785,
+                        "height": 1080
+                    },
+                    {
+                        "id": 1,
+                        "image_file": "http://localhost:8000/media/collection/image/Dame_edna_glasses_xRdQ6sW.jpg",
+                        "thumbnail_url": "/media/collection/image/Dame_edna_glasses_xRdQ6sW.jpg.150x150_q85.jpg",
+                        "caption": "",
+                        "credit_line": "",
+                        "width": 600,
+                        "height": 600
+                    }
+                ],
+                "constellations": [],
+                "url_override": "",
+                "is_an_event": false,
+                "is_exhibition_label": true,
+                "is_indigenous": false
             },
-            "resource": "https://xos-prod-media.s3.amazonaws.com/xos/placeholder-2.mp4?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=hEVw2aqNSIZ1M7FRrPOnG107qXk%3D&Expires=1573609287",
-            "subtitles": "https://xos-prod-media.s3.amazonaws.com/xos/placeholder-2.srt?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=1amuOB%2BYFRoImWIlbg5e5335njY%3D&Expires=1573609287"
+            "resource": "http://localhost:8000/media/B9234567_ap01_placeholder-2.mp4",
+            "subtitles": null,
+            "region_svg": ""
         }
-    ]
+    ],
+    "background": null,
+    "background_dimensions": null
 }

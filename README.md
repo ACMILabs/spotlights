@@ -34,7 +34,7 @@ To run the javascript tests:
 
 ## Push to Balena
 
-`balena push s__spotlights-x86`
+`balena push p__spotlights-x86`
 
 ## Chromium flags
 Goes fullscreen, disables right clicks and devtools

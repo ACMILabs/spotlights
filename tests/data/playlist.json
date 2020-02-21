@@ -1,106 +1,59 @@
 {
     "id": 1,
-    "title": "title",
+    "title": "Default playlist",
     "playlist_labels": [
         {
             "label": {
-                "id": 3,
-                "title": "the label title",
-                "title_html": "<p>the label title</p>",
-                "subtitles": "the label subtitle",
-                "subtitles_html": "<p>the label subtitle</p>",
+                "id": 44,
+                "title": "Placeholder video 1",
+                "title_html": "<p>Placeholder video 1</p>",
+                "subtitles": "Secondary content",
+                "subtitles_html": "<p>Secondary content</p>",
                 "columns": [
                     {
-                        "content": "<p>column 1</p>",
+                        "content": "<p>This is the first placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.</p>",
                         "style": "standard"
                     },
                     {
-                        "content": "",
-                        "style": "standard"
-                    },
-                    {
-                        "content": "",
+                        "content": "<p>Melbourne, 2019</p>",
                         "style": "smaller"
+                    },
+                    {
+                        "content": "",
+                        "style": "standard"
                     }
                 ],
                 "works": [
                     {
-                        "id": 2,
-                        "title": "a second work",
+                        "id": 60889,
+                        "title": "Placeholder video 1",
                         "public_images": [
                             {
-                                "id": 3,
-                                "image_file": "http://localhost:8000/media/collection/image/puffin.jpg",
-                                "thumbnail_url": "/media/collection/image/puffin.jpg.150x150_q85.jpg",
-                                "caption": "caption",
-                                "credit_line": "credit line",
-                                "width": 1800,
-                                "height": 1350
-                            }
-                        ],
-                        "abstract": "",
-                        "brief_description": "",
-                        "first_production_year": null,
-                        "work_type": null,
-                        "recommendations": []
-                    },
-                    {
-                        "id": 1,
-                        "title": "the work title",
-                        "public_images": [
-                            {
-                                "id": 1,
-                                "image_file": "http://localhost:8000/media/collection/image/Dame_edna_glasses_xRdQ6sW.jpg",
-                                "thumbnail_url": "/media/collection/image/Dame_edna_glasses_xRdQ6sW.jpg.150x150_q85.jpg",
+                                "id": 554,
+                                "image_file": "https://xos-prod-media.s3.amazonaws.com/xos/works/image/placeholder-1.jpg?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=jfQtaHD7R7SQk0FCigeJVG1mr8c%3D&Expires=1582252714",
+                                "thumbnail_url": "https://xos-prod-media.s3.amazonaws.com/xos/works/image/placeholder-1.jpg.150x150_q85.jpg?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=rk7VtFdv2uSeLK55fwZ4YzvvoyU%3D&Expires=1582252714",
                                 "caption": "",
                                 "credit_line": "",
-                                "width": 600,
-                                "height": 600
-                            },
-                            {
-                                "id": 2,
-                                "image_file": "http://localhost:8000/media/collection/image/hollow_pSKTt7q.jpg",
-                                "thumbnail_url": "/media/collection/image/hollow_pSKTt7q.jpg.150x150_q85.jpg",
-                                "caption": "",
-                                "credit_line": "",
-                                "width": 785,
+                                "width": 1920,
                                 "height": 1080
                             }
                         ],
-                        "abstract": "",
-                        "brief_description": "",
-                        "first_production_year": null,
+                        "abstract": "This is the first placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
+                        "brief_description": "This is the first placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
+                        "first_production_year": "2019",
                         "work_type": null,
                         "recommendations": []
                     }
                 ],
                 "public_images": [
                     {
-                        "id": 3,
-                        "image_file": "http://localhost:8000/media/collection/image/puffin.jpg",
-                        "thumbnail_url": "/media/collection/image/puffin.jpg.150x150_q85.jpg",
-                        "caption": "caption",
-                        "credit_line": "credit line",
-                        "width": 1800,
-                        "height": 1350
-                    },
-                    {
-                        "id": 2,
-                        "image_file": "http://localhost:8000/media/collection/image/hollow_pSKTt7q.jpg",
-                        "thumbnail_url": "/media/collection/image/hollow_pSKTt7q.jpg.150x150_q85.jpg",
+                        "id": 554,
+                        "image_file": "https://xos-prod-media.s3.amazonaws.com/xos/works/image/placeholder-1.jpg?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=jfQtaHD7R7SQk0FCigeJVG1mr8c%3D&Expires=1582252714",
+                        "thumbnail_url": "https://xos-prod-media.s3.amazonaws.com/xos/works/image/placeholder-1.jpg.150x150_q85.jpg?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=rk7VtFdv2uSeLK55fwZ4YzvvoyU%3D&Expires=1582252714",
                         "caption": "",
                         "credit_line": "",
-                        "width": 785,
+                        "width": 1920,
                         "height": 1080
-                    },
-                    {
-                        "id": 1,
-                        "image_file": "http://localhost:8000/media/collection/image/Dame_edna_glasses_xRdQ6sW.jpg",
-                        "thumbnail_url": "/media/collection/image/Dame_edna_glasses_xRdQ6sW.jpg.150x150_q85.jpg",
-                        "caption": "",
-                        "credit_line": "",
-                        "width": 600,
-                        "height": 600
                     }
                 ],
                 "constellations": [],
@@ -109,9 +62,73 @@
                 "is_exhibition_label": true,
                 "is_indigenous": false
             },
-            "resource": "http://localhost:8000/media/B9234567_ap01_placeholder-2.mp4",
-            "subtitles": null,
-            "region_svg": ""
+            "resource": "https://xos-prod-media.s3.amazonaws.com/xos/placeholder-1.mp4?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=qIy7hu9%2FfVGkPAuRXDf%2FLGkLZ%2Fk%3D&Expires=1582252714",
+            "subtitles": "https://xos-prod-media.s3.amazonaws.com/xos/placeholder-1.srt?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=xU3OM2PUQdl0mW9Lbo5gVJ2NO40%3D&Expires=1582252714",
+            "region_svg": null
+        },
+        {
+            "label": {
+                "id": 45,
+                "title": "Placeholder video 2",
+                "title_html": "<p>Placeholder video 2</p>",
+                "subtitles": "Secondary content",
+                "subtitles_html": "<p>Secondary content</p>",
+                "columns": [
+                    {
+                        "content": "<p>This is the second placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.</p>",
+                        "style": "standard"
+                    },
+                    {
+                        "content": "<p>Melbourne, 2019</p>",
+                        "style": "smaller"
+                    },
+                    {
+                        "content": "",
+                        "style": "standard"
+                    }
+                ],
+                "works": [
+                    {
+                        "id": 60890,
+                        "title": "Placeholder video 2",
+                        "public_images": [
+                            {
+                                "id": 555,
+                                "image_file": "https://xos-prod-media.s3.amazonaws.com/xos/works/image/placeholder-2.jpg?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=m2rzvqQzgCwDhFM%2BOcE2R%2F8Mi1w%3D&Expires=1582252714",
+                                "thumbnail_url": "https://xos-prod-media.s3.amazonaws.com/xos/works/image/placeholder-2.jpg.150x150_q85.jpg?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=tcol5khLEzj9ms4k5n6FDr6BoVg%3D&Expires=1582252714",
+                                "caption": "",
+                                "credit_line": "",
+                                "width": 1920,
+                                "height": 1080
+                            }
+                        ],
+                        "abstract": "This is the second placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
+                        "brief_description": "This is the second placeholder video for the ACMI media players. On initial startup an unconfigured media player will play a playlist containing this video.",
+                        "first_production_year": "2019",
+                        "work_type": null,
+                        "recommendations": []
+                    }
+                ],
+                "public_images": [
+                    {
+                        "id": 555,
+                        "image_file": "https://xos-prod-media.s3.amazonaws.com/xos/works/image/placeholder-2.jpg?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=m2rzvqQzgCwDhFM%2BOcE2R%2F8Mi1w%3D&Expires=1582252714",
+                        "thumbnail_url": "https://xos-prod-media.s3.amazonaws.com/xos/works/image/placeholder-2.jpg.150x150_q85.jpg?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=tcol5khLEzj9ms4k5n6FDr6BoVg%3D&Expires=1582252714",
+                        "caption": "",
+                        "credit_line": "",
+                        "width": 1920,
+                        "height": 1080
+                    }
+                ],
+                "constellations": [],
+                "url_override": "",
+                "is_an_event": false,
+                "is_exhibition_label": true,
+                "is_indigenous": false
+            },
+            "resource": "https://xos-prod-media.s3.amazonaws.com/xos/placeholder-2.mp4?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=6ek8xWl84TbsotmrUDmAao1AMlM%3D&Expires=1582252714",
+            "subtitles": "https://xos-prod-media.s3.amazonaws.com/xos/placeholder-2.srt?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=sP5jCH%2F%2FzZX7dwblbILyS62HYws%3D&Expires=1582252714",
+            "region_svg": null
         }
     ],
     "background": null,

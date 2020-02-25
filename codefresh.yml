@@ -51,4 +51,4 @@ steps:
       - cd ${{CF_REPO_NAME}}
       - git checkout ${{CF_BRANCH}}
       - balena login --token $BALENA_TOKEN
-      - balena push s__spotlights-x86
+      - balena push p__spotlights-x86

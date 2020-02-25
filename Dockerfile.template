@@ -70,6 +70,10 @@ RUN curl -Lo libva-intel-driver.pkg.tar.xz https://www.archlinux.org/packages/ex
 RUN tar -xf libva-intel-driver.pkg.tar.xz
 RUN ln -s /usr/lib/dri/i965_drv_video.so /usr/lib/x86_64-linux-gnu/dri/i965_drv_video.so
 
+RUN curl -Lo libvpx-1.8.2-1-x86_64.pkg.tar.xz https://www.archlinux.org/packages/extra/x86_64/libvpx/download/
+RUN tar -xf libvpx-1.8.2-1-x86_64.pkg.tar.xz
+
+
 
 RUN curl -Lo libva.pkg.tar.xz https://www.archlinux.org/packages/extra/x86_64/libva/download/
 RUN tar -xf libva.pkg.tar.xz

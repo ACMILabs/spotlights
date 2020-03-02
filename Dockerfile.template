@@ -21,60 +21,46 @@ RUN install_packages \
 
 
 # BEGIN ARCH CHROME-VAAPI
+
 # Chrome for Linux doesn't run the gpu video decoder.
 # This uses chromium compiled with the vaapi flag, from the Arch AUR.
-# However this means we have to get all the libraries for chrome ourselves.
-# There's a zenhub ticket for changing this to use git makepkg,
-# so that the chrome version doesn't go out of sync with new library versions.
 
+# TODO: Try without preinstalling and purging debian chromium
 RUN apt purge chromium
 
 RUN apt update
 RUN apt install xz-utils
 
-RUN tar -I zstd -xf chromium-vaapi-80.0.3987.106-2-x86_64.pkg.tar.zst
+RUN tar -I zstd -xf lib/chromium-vaapi-80.0.3987.106-2-x86_64.pkg.tar.zst
 
-RUN curl -Lo icu.pkg.tar.xz https://www.archlinux.org/packages/core/x86_64/icu/download/
-RUN tar -xf icu.pkg.tar.xz 
+RUN tar -xf lib/icu-65.1-3-x86_64.pkg.tar.zst
 
-RUN curl -Lo libwebp.pkg.tar.xz https://www.archlinux.org/packages/extra/x86_64/libwebp/download/
-RUN tar -xf libwebp.pkg.tar.xz 
+RUN tar -xf lib/libwebp-1.1.0-1-x86_64.pkg.tar.zst
 
-RUN curl -Lo libjpeg-turbo.pkg.tar.xz https://www.archlinux.org/packages/extra/x86_64/libjpeg-turbo/download/
-RUN tar -xf libjpeg-turbo.pkg.tar.xz 
+RUN tar -xf lib/libjpeg-turbo-2.0.4-1-x86_64.pkg.tar.zst
 
-RUN curl -Lo harfbuzz.pkg.tar.xz https://www.archlinux.org/packages/extra/x86_64/harfbuzz/download/
-RUN tar -xf harfbuzz.pkg.tar.xz
+RUN tar -xf lib/harfbuzz-2.6.4-2-x86_64.pkg.tar.xz
 
-RUN curl -Lo re2.pkg.tar.xz https://www.archlinux.org/packages/extra/x86_64/re2/download/
-RUN tar -xf re2.pkg.tar.xz 
+RUN tar -xf lib/re2-1:20200101-1-x86_64.pkg.tar.zst
 
-RUN curl -Lo glibc.pkg.tar.xz https://www.archlinux.org/packages/core/x86_64/glibc/download/
-RUN tar -xf glibc.pkg.tar.xz
+RUN tar -xf lib/glibc-2.31-1-x86_64.pkg.tar.zst
 RUN rm /lib/x86_64-linux-gnu/libm.so.6
 RUN ln -s /usr/lib/libm.so.6 /lib/x86_64-linux-gnu/libm.so.6
 
-RUN curl -Lo gcc-libs.pkg.tar.xz https://www.archlinux.org/packages/core/x86_64/gcc-libs/download/
-RUN tar -xf gcc-libs.pkg.tar.xz 
+RUN tar -xf lib/gcc-libs-9.2.1+20200130-2-x86_64.pkg.tar.zst
 RUN rm /usr/lib/x86_64-linux-gnu/libstdc++.so.6
 RUN ln -s /usr/lib/libstdc++.so.6 /usr/lib/x86_64-linux-gnu/libstdc++.so.6
 
-RUN curl -Lo freetype2.pkg.tar.xz https://www.archlinux.org/packages/extra/x86_64/freetype2/download/
-RUN tar -xf freetype2.pkg.tar.xz 
+RUN tar -xf lib/freetype2-2.10.1-2-x86_64.pkg.tar.zst
 RUN rm /usr/lib/x86_64-linux-gnu/libfreetype.so.6
 RUN ln -s /usr/lib/libfreetype.so.6 /usr/lib/x86_64-linux-gnu/libfreetype.so.6
 
-RUN curl -Lo libva-intel-driver.pkg.tar.xz https://www.archlinux.org/packages/extra/x86_64/libva-intel-driver/download/
-RUN tar -xf libva-intel-driver.pkg.tar.xz
+RUN tar -xf lib/libva-intel-driver-2.4.0-1-x86_64.pkg.tar.xz
 RUN ln -s /usr/lib/dri/i965_drv_video.so /usr/lib/x86_64-linux-gnu/dri/i965_drv_video.so
 
-RUN curl -Lo libvpx-1.8.2-1-x86_64.pkg.tar.xz https://www.archlinux.org/packages/extra/x86_64/libvpx/download/
-RUN tar -xf libvpx-1.8.2-1-x86_64.pkg.tar.xz
+RUN tar -xf lib/libvpx-1.8.2-1-x86_64.pkg.tar.xz
 
-
-
-RUN curl -Lo libva.pkg.tar.xz https://www.archlinux.org/packages/extra/x86_64/libva/download/
-RUN tar -xf libva.pkg.tar.xz
+RUN tar -xf lib/libva-2.6.1-1-x86_64.pkg.tar.zst
 RUN rm /usr/lib/x86_64-linux-gnu/libva-drm.so.2
 RUN rm /usr/lib/x86_64-linux-gnu/libva-x11.so.2
 RUN rm /usr/lib/x86_64-linux-gnu/libva.so.2

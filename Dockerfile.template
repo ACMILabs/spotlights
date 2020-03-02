@@ -33,8 +33,8 @@ RUN apt update
 RUN apt install xz-utils
 
 RUN git clone https://aur.archlinux.org/chromium-vaapi-bin.git
-RUN curl -o chromium-vaapi.pkg.tar.xz `awk '$1 == "source" {print $3; exit}' chromium-vaapi-bin/.SRCINFO`
-RUN tar -xf chromium-vaapi.pkg.tar.xz
+RUN curl -o chromium-vaapi.pkg.tar.zst `awk '$1 == "source" {print $3; exit}' chromium-vaapi-bin/.SRCINFO`
+RUN tar -I zstd -xf chromium-vaapi.pkg.tar.zst
 
 RUN curl -Lo icu.pkg.tar.xz https://www.archlinux.org/packages/core/x86_64/icu/download/
 RUN tar -xf icu.pkg.tar.xz 

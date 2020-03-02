@@ -48,10 +48,10 @@ def create_cache():
                 label['resource'] = '/cache/' + name
 
             # Cache image
-            if 'public_images' in label['label'] and len(label['label']['public_images']) > 0:
-                image_url = label['label']['public_images'][0]['image_file']
+            if 'images' in label['label'] and len(label['label']['images']) > 0:
+                image_url = label['label']['images'][0]['image_file']
             else:
-                image_url = label['label']['works'][0]['public_images'][0]['image_file']
+                image_url = label['label']['works'][0]['images'][0]['image_file']
             name = urlparse(image_url).path.split('/')[-1]
             if name in old_files:
                 old_files.remove(name)

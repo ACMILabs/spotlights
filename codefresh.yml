@@ -3,7 +3,6 @@ stages:
   - checkout
   - package
   - test
-  - deploy
 steps:
   main_clone:
     title: Cloning main repository...
@@ -39,16 +38,3 @@ steps:
     stage: test
     commands:
       - npm install && npm run lint-test
-  deploy_to_Balena:
-    title: Deploying repository to Balena
-    image: acmilabs/balena-cli:x86
-    stage: deploy
-    commands:
-      - bash /code/add-key.sh github.com $GITHUB_FINGERPRINT
-      - echo "$SSH_KEY" | awk '{gsub(/\\n/,"\n")}1' >> keyfile
-      - chmod 600 keyfile
-      - ssh-agent bash -c 'ssh-add -k keyfile; git clone git@github.com:${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}.git'
-      - cd ${{CF_REPO_NAME}}
-      - git checkout ${{CF_BRANCH}}
-      - balena login --token $BALENA_TOKEN
-      - balena push p__spotlights-x86

@@ -52,3 +52,7 @@ steps:
       - git checkout ${{CF_BRANCH}}
       - balena login --token $BALENA_TOKEN
       - balena push p__spotlights-x86
+    when:
+      branch:
+        only:
+          - master

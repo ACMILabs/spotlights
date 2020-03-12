@@ -34,6 +34,8 @@ def create_cache():
         old_files = os.listdir(CACHE_DIR)
 
         for label in playlist_json['playlist_labels']:
+            del label['label']['works']
+
             # Cache video
             if 'resource' in label and label['resource']:
                 name = urlparse(label['resource']).path.split('/')[-1]
@@ -50,20 +52,19 @@ def create_cache():
             # Cache image
             if 'images' in label['label'] and len(label['label']['images']) > 0:
                 image_url = label['label']['images'][0]['image_file']
+                name = urlparse(image_url).path.split('/')[-1]
+                if name in old_files:
+                    old_files.remove(name)
+
+                if not os.path.isfile(CACHE_DIR+name):
+                    print('Downloading: ' + image_url)
+                    response = requests.get(image_url)
+                    with open(CACHE_DIR + name, 'wb') as cache_file:
+                        cache_file.write(response.content)
+
+                label['image'] = '/cache/' + name
             else:
-                image_url = label['label']['works'][0]['images'][0]['image_file']
-            name = urlparse(image_url).path.split('/')[-1]
-            if name in old_files:
-                old_files.remove(name)
-
-            if not os.path.isfile(CACHE_DIR+name):
-                print('Downloading: ' + image_url)
-                response = requests.get(image_url)
-                with open(CACHE_DIR + name, 'wb') as cache_file:
-                    cache_file.write(response.content)
-
-            label['image'] = '/cache/' + name
-            del label['label']['works']
+                image_url = ''
 
             # Convert and save subs
             if 'subtitles' in label and label['subtitles']:

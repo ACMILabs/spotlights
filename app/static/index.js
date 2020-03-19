@@ -172,7 +172,9 @@ for (let i = 0; i < playlist_content.length; i++) {
         0,
         Math.max(
           min_list_offset,
-          -LIST_ITEM_WIDTH * current_index - LIST_PADDING + window_inner_width * 0.5 - ACTIVE_LIST_ITEM_WIDTH * 0.5
+          -LIST_ITEM_WIDTH * current_index -
+          LIST_PADDING +
+          window_inner_width * 0.5 - ACTIVE_LIST_ITEM_WIDTH * 0.5
         )
       );
 

@@ -162,8 +162,8 @@ for (let i = 0; i < playlist_content.length; i++) {
     } else if (list_items[current_index] !== item) {
       list_items[current_index].classList.remove("active");
       item.classList.add("active");
-      video.style.opacity = 0;
       video.style.transition = 'none';
+      video.style.opacity = 0;
       video.src = playlist_content[i].video_url;
       video_track.src = `data:text/vtt;${playlist_content[i].subtitles}`;
       save_label(playlist_content[i].id);

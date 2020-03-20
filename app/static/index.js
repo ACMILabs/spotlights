@@ -162,7 +162,7 @@ for (let i = 0; i < playlist_content.length; i++) {
     } else if (list_items[current_index] !== item) {
       list_items[current_index].classList.remove("active");
       item.classList.add("active");
-      video.style.transition = 'none';
+      video.style.transition = "none";
       video.style.opacity = 0;
       video.src = playlist_content[i].video_url;
       video_track.src = `data:text/vtt;${playlist_content[i].subtitles}`;
@@ -181,10 +181,10 @@ for (let i = 0; i < playlist_content.length; i++) {
     }
   });
 }
-video.addEventListener('play', function() {
-  video.style.transition = 'opacity 500ms';
+video.addEventListener("play", function handle_play() {
+  video.style.transition = "opacity 500ms";
   video.style.opacity = 1;
-})
+});
 
 // EVENT HANDLERS
 

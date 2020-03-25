@@ -32,6 +32,7 @@ function save_label(label_id) {
 // CONSTANTS
 
 const LIST_ITEM_WIDTH = 400;
+const ACTIVE_LIST_ITEM_WIDTH = 640;
 const LIST_PADDING = 220;
 const FRICTION = 0.9;
 const MIN_LIST_VELOCITY = 0.02;
@@ -173,10 +174,13 @@ for (let i = 0; i < playlist_content.length; i++) {
         0,
         Math.max(
           min_list_offset,
-          -(current_index + 1) * LIST_ITEM_WIDTH +
-            (window_inner_width - 2 * LIST_PADDING) * 0.5
+          -LIST_ITEM_WIDTH * current_index -
+            LIST_PADDING +
+            window_inner_width * 0.5 -
+            ACTIVE_LIST_ITEM_WIDTH * 0.5
         )
       );
+
       is_targeting = true;
     }
   });

@@ -121,6 +121,7 @@ body {
 .list_item {
   display: inline-block;
   vertical-align: top;
+  /* Synchronise this with app/static/index.js LIST_ITEM_WIDTH */
   width: 400px;
   height: 400px;
   white-space: normal;
@@ -156,6 +157,7 @@ body {
 }
 
 .list_item.active {
+  /* Synchronise this with app/static/index.js ACTIVE_LIST_ITEM_WIDTH */
   width: 640px;
   background-image: none !important;
   animation: none;

@@ -55,6 +55,7 @@ body {
   display: block;
   width: 100%;
   background: #000;
+  transition: opacity 500ms;
 }
 
 .video::cue {
@@ -107,6 +108,16 @@ body {
   /*transition: transform 200ms;*/
 }
 
+@keyframes fadein {
+  0% { opacity: 0.0; }
+  100% { opacity: 1.0; }
+}
+
+@keyframes fadein_ {
+  0% { opacity: 0.0; }
+  100% { opacity: 1.0; }
+}
+
 .list_item {
   display: inline-block;
   vertical-align: top;
@@ -117,6 +128,9 @@ body {
   user-select: none;
   position: relative;
   overflow: hidden;
+  transition: width 200ms;
+  animation: fadein_ 500ms 200ms forwards;
+  opacity: 0;
 }
 
 .list_item:before {
@@ -144,6 +158,8 @@ body {
 .list_item.active {
   width: 640px;
   background-image: none !important;
+  animation: none;
+  opacity: 1;
 }
 
 .list_item.active:before {
@@ -152,6 +168,7 @@ body {
 
 .list_item.active .list_item_inner {
   position: static;
+  width: 640px;
 }
 
 .list_item_title {
@@ -160,6 +177,13 @@ body {
   font-size: 32px;
   line-height: 38px;
   color: #fff;
+}
+
+.list_item.active .list_item_title {
+  width: 414px;
+}
+.list_item.active .list_item_secondary_title {
+  width: 414px;
 }
 
 .list_item_secondary_title {

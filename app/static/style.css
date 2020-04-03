@@ -215,11 +215,11 @@ body {
   right: 0;
   top: 25px;
   color: #fff;
-  padding: 30px 40px 20px;
+  padding: 28px 40px 22px;
   display: none;
   font-family: PxGrotesk;
   font-size: 16px;
-  transition: background 1s, color 1s;
+  transition: background 500ms, color 500ms;
 }
 
 .list_item_collect:after {
@@ -231,7 +231,7 @@ body {
   margin-left: 10px;
   line-height: 0;
   vertical-align: -2px;
-  transition: opacity 1s;
+  transition: opacity 500ms;
 }
 
 .active .list_item_collect {

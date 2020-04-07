@@ -258,7 +258,7 @@ function handle_tap_message() {
     window.setTimeout(function timeout1() {
       active_collect_element.innerHTML = "COLLECTED";
       active_collect_element.className = "list_item_collect active";
-    }, 1000);
+    }, 500);
     window.setTimeout(function timeout2() {
       active_collect_element.className = "list_item_collect active hidden";
     }, 3000);
@@ -266,7 +266,7 @@ function handle_tap_message() {
       active_collect_element.className = "list_item_collect";
       active_collect_element.innerHTML = "COLLECT";
       is_animating_collect = false;
-    }, 4000);
+    }, 3500);
   }
 }
 

@@ -34,7 +34,7 @@ def create_cache():
         old_files = os.listdir(CACHE_DIR)
 
         for label in playlist_json['playlist_labels']:
-            del label['label']['works']
+            del label['label']['work']
 
             # Cache video
             if 'resource' in label and label['resource']:

@@ -5,6 +5,45 @@ An interactive video player that loads a playlist of videos from XOS specified b
 It autoplays by default and a user is able to select from the menu of videos to begin playing them.
 This is intended for use on an Optiplex 7050 with a touchscreen.
 
+## Features
+
+* Takes an XOS playlist of videos and labels
+* Renders and autoplays the first video, showing its label and the next couple of labels
+* When a visitor selects a different label, the corresponding video is played
+* Receives tap information from a lens reader and attaches the appropriate label data, before forwarding the Tap message to XOS API
+
+## Hardware
+
+* 1080p Touchscreen in portrait orientation
+* Dell Optiplex 3070 Micro i3 small form factor PC
+* [A set of lens reader hardware](https://github.com/ACMILabs/lens-reader) if lens reader integration is needed
+
+## Run a development server with docker
+
+* Run `cp config.tmpl.env config.env`
+* Run `cd development`
+* Run `docker-compose up --build`
+* Open a browser and visit: http://localhost:8081
+
+## Run Javascript tests with docker
+
+* Run `cd testing`
+* Run `docker-compose up --build`
+* In another Terminal run `docker exec -it javascripttests make linttestjs`
+
+## Run Python tests with docker
+
+* Run `cd development`
+* Run `docker-compose up --build`
+* In another Terminal run `docker exec -it spotlights make linttest`
+
+## Installation via Balena
+
+* Clone this repo.
+* Add the Balena remote
+* Git push your changes
+* Push your edits to Balena `git push balena master`
+
 ## Run with virtualenv for dev
 
 ```
@@ -17,26 +56,8 @@ $ env `cat config.env | xargs` python -u app/cache.py
 $ env `cat config.env | xargs` python -u app/main.py
 ```
 
-## Run the development container
-
-- Pull XOS and run `docker-compose up --build` from its root directory
-- From the spotlights root directory, run `cd development && docker-compose up --build`, then open localhost:8081 in Chrome.
-
-## Run tests locally
-
-To run the python tests:
-
-`$ cd development` and `$ docker-compose up --build` and `$ docker exec -it spotlights make linttest`
-
-To run the javascript tests:
-
-`$ cd testing` and `$ docker-compose up --build` and `$ docker exec -it javascripttests make linttestjs`
-
-## Push to Balena
-
-`balena push p__spotlights-x86`
-
 ## Chromium flags
+
 Goes fullscreen, disables right clicks and devtools
  --kiosk
 

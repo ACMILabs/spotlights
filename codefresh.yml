@@ -16,7 +16,7 @@ steps:
     title: Building Spotlights Docker Image
     type: build
     stage: package
-    image_name: spotlights
+    image_name: acmilabs/spotlights
     working_directory: ./
     tag: '${{CF_BRANCH_TAG_NORMALIZED}}'
     dockerfile: ./development/Dockerfile
@@ -24,7 +24,7 @@ steps:
     title: Building Javascript Test Docker Image
     type: build
     stage: package
-    image_name: javascripttests
+    image_name: acmilabs/spotlights
     tag: ${{CF_BRANCH_TAG_NORMALIZED}}-javascript
     dockerfile: ./testing/Dockerfile.node
   unit_test:

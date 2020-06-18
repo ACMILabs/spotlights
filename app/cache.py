@@ -22,7 +22,10 @@ def create_cache():
     which is saved in this file's directory.
     """
     try:
-        playlist_json = requests.get(f'{XOS_API_ENDPOINT}playlists/{XOS_PLAYLIST_ID}/').json()
+        playlist_json = requests.get(
+            f'{XOS_API_ENDPOINT}playlists/{XOS_PLAYLIST_ID}/',
+            timeout=5,
+        ).json()
 
         caption_replacements = [
             (re.compile(r'(\d\d:\d\d:\d\d),(\d\d\d)'), r'\1.\2'),

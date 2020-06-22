@@ -95,7 +95,7 @@ def test_cache(capsys):
     # capsys.disabled forwards stdout and stderr
     with capsys.disabled():
         create_cache()
-        with open('playlist_1.json', 'r') as playlist_cache:
+        with open('/data/playlist_1.json', 'r') as playlist_cache:
             playlist = json.loads(playlist_cache.read())['playlist_labels']
         assert len(playlist) == 2
         assert playlist[0]['label']['title'] == 'Placeholder video 1'

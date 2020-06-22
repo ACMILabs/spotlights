@@ -14,3 +14,5 @@ app/static/cache/*
 *.swp
 
 node_modules/
+
+data/

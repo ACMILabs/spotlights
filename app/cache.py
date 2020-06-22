@@ -22,7 +22,10 @@ def create_cache():
     which is saved in this file's directory.
     """
     try:
-        playlist_json = requests.get(f'{XOS_API_ENDPOINT}playlists/{XOS_PLAYLIST_ID}/').json()
+        playlist_json = requests.get(
+            f'{XOS_API_ENDPOINT}playlists/{XOS_PLAYLIST_ID}/',
+            timeout=5,
+        ).json()
 
         caption_replacements = [
             (re.compile(r'(\d\d:\d\d:\d\d),(\d\d\d)'), r'\1.\2'),
@@ -76,13 +79,12 @@ def create_cache():
         for old_file in old_files:
             os.remove(CACHE_DIR + old_file)
 
-        with open(f'playlist_{XOS_PLAYLIST_ID}.json', 'w') as outfile:
+        with open(f'{CACHE_DIR}playlist_{XOS_PLAYLIST_ID}.json', 'w') as outfile:
             json.dump(playlist_json, outfile)
 
     except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError) as exception:
         sentry_sdk.capture_exception(exception)
         print(f'Error downloading playlist JSON from XOS: {exception}')
-        raise exception
 
 
 if __name__ == '__main__':

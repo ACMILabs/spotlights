@@ -66,16 +66,27 @@ class HasTapped(Model):
         database = db
 
 
-@app.route('/')
-def index():
+def render_spotlights_playlist():
     # Read in the cached JSON
-    with open(f'playlist_{XOS_PLAYLIST_ID}.json', encoding='utf-8') as json_file:
+    with open(f'{CACHE_DIR}playlist_{XOS_PLAYLIST_ID}.json', encoding='utf-8') as json_file:
         json_data = json.load(json_file)
 
     return render_template(
         'index.html',
         playlist_json=json_data
     )
+
+
+def render_error_screen():
+    return render_template('no_playlist.html')
+
+
+@app.route('/')
+def index():
+    try:
+        return render_spotlights_playlist()
+    except FileNotFoundError:
+        return render_error_screen()
 
 
 @app.route('/api/labels/', methods=['POST'])

@@ -51,8 +51,23 @@ xset s off -dpms
 # Hide the cursor
 unclutter -idle 0.1 &
 
-# Rotate display
-xrandr -o left
+# Rotate display if env variable is set [normal, inverted, left or right]
+if [[ ! -z "$ROTATE_DISPLAY" ]]; then
+  echo "Rotating display ${ROTATE_DISPLAY}"
+  (sleep 3 && xrandr -o $ROTATE_DISPLAY) &
+fi
+
+# TODO: Rotate touch input for that model of touchscreen
+if [ "$ROTATE_SCREEN" == left ]
+then
+# Fix the touch when rotated (older recycled touchscreen)
+# xinput set-prop "eGalax Inc. eGalaxTouch EXC3000-1990-46.00.00" --type=float "Coordinate Transformation Matrix" 0 -1 1 1 0 0 0 0 1
+fi
+if [ "$ROTATE_SCREEN" == right ]
+then
+# Fix the touch when rotated (older recycled touchscreen)
+# xinput set-prop "eGalax Inc. eGalaxTouch EXC3000-1990-46.00.00" --type=float "Coordinate Transformation Matrix" 0 1 0 -1 0 1 0 0 1
+fi
 
 # Turn off speaker, and turn on headphone audio
 amixer sset Speaker off

@@ -58,16 +58,6 @@ if [[ ! -z "$ROTATE_DISPLAY" ]]; then
 fi
 
 # TODO: Rotate touch input for that model of touchscreen
-if [ "$ROTATE_DISPLAY" == left ]
-then
-# Fix the touch when rotated (older recycled touchscreen)
-# xinput set-prop "eGalax Inc. eGalaxTouch EXC3000-1990-46.00.00" --type=float "Coordinate Transformation Matrix" 0 -1 1 1 0 0 0 0 1
-fi
-if [ "$ROTATE_DISPLAY" == right ]
-then
-# Fix the touch when rotated (older recycled touchscreen)
-# xinput set-prop "eGalax Inc. eGalaxTouch EXC3000-1990-46.00.00" --type=float "Coordinate Transformation Matrix" 0 1 0 -1 0 1 0 0 1
-fi
 
 # Turn off speaker, and turn on headphone audio
 amixer sset Speaker off

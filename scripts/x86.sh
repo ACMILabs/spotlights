@@ -57,7 +57,15 @@ if [[ ! -z "$ROTATE_DISPLAY" ]]; then
   (sleep 3 && xrandr -o $ROTATE_DISPLAY) &
 fi
 
-# TODO: Rotate touch input for that model of touchscreen
+# Rotate touch input to match the display rotation
+if [ "$ROTATE_DISPLAY" == left ]; then
+  # For Samsung PM43F-BC (detect your touch display with `xinput -list`)
+  xinput set-prop "Advanced Silicon S.A. SamsungUSBTouch_CAP_043" --type=float "Coordinate Transformation Matrix" 0 -1 1 1 0 0 0 0 1
+fi
+if [ "$ROTATE_DISPLAY" == right ]; then
+  # For Samsung PM43F-BC (detect your touch display with `xinput -list`)
+  xinput set-prop "Advanced Silicon S.A. SamsungUSBTouch_CAP_043" --type=float "Coordinate Transformation Matrix" 0 1 0 -1 0 1 0 0 1
+fi
 
 # Turn off speaker, and turn on headphone audio
 amixer sset Speaker off

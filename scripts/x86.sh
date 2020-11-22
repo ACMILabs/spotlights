@@ -78,8 +78,14 @@ python -u -m app.main &
 
 sleep 5
 
-chromium http://localhost:8081 \
+# Cleanup bad Chromium exits to avoid popups
+sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' ~/.config/chromium/Default/Preferences
+sed -i 's/"exit_type": "Crashed"/"exit_type": "Normal"/' ~/.config/chromium/Default/Preferences
+
+chromium \
+  --app=http://localhost:8081 \
   --kiosk \
+  --disable-infobars \
   --no-sandbox \
   --ignore-gpu-blacklist \
   --window-position=0,0 --window-size=1080,1920 --test-type \

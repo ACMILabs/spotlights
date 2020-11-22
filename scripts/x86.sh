@@ -58,11 +58,12 @@ if [[ ! -z "$ROTATE_DISPLAY" ]]; then
 fi
 
 # Rotate touch input to match the display rotation
-if [ "$ROTATE_DISPLAY" == left ]; then
+if [[ "$ROTATE_DISPLAY" == "left" ]]; then
   # For Samsung PM43F-BC (detect your touch display with `xinput -list`)
   xinput set-prop "Advanced Silicon S.A. SamsungUSBTouch_CAP_043" --type=float "Coordinate Transformation Matrix" 0 -1 1 1 0 0 0 0 1
 fi
-if [ "$ROTATE_DISPLAY" == right ]; then
+
+if [[ "$ROTATE_DISPLAY" == "right" ]]; then
   # For Samsung PM43F-BC (detect your touch display with `xinput -list`)
   xinput set-prop "Advanced Silicon S.A. SamsungUSBTouch_CAP_043" --type=float "Coordinate Transformation Matrix" 0 1 0 -1 0 1 0 0 1
 fi

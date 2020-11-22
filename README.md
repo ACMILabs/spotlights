@@ -26,6 +26,8 @@ If the screen is installed upside down, use this environment variable in `config
 
 Options are: `normal, inverted, left or right`
 
+We have our Spotlights connected to a Samsung PM43F-BC display. Setting `ROTATE_DISPLAY` also attempts to rotate the touch overlay. You can find the name of your touch overlay using `xinput -list`.
+
 ## Run a development server with docker
 
 * Run `cp config.tmpl.env config.env`

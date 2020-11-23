@@ -18,6 +18,16 @@ This is intended for use on an Optiplex 7050 with a touchscreen.
 * Dell Optiplex 3070 Micro i3 small form factor PC
 * [A set of lens reader hardware](https://github.com/ACMILabs/lens-reader) if lens reader integration is needed
 
+## Screen rotation
+
+If the screen is installed upside down, use this environment variable in `config.env` to rotate it:
+
+* `ROTATE_DISPLAY=left`
+
+Options are: `normal, inverted, left or right`
+
+We have our Spotlights connected to a Samsung PM43F-BC display. Setting `ROTATE_DISPLAY` also attempts to rotate the touch overlay. You can find the name of your touch overlay using `xinput -list`.
+
 ## Run a development server with docker
 
 * Run `cp config.tmpl.env config.env`
@@ -81,5 +91,3 @@ Enable html5 video autoplay without setting muted
 
 Remote debug:
 chromium --no-sandbox --disable-gpu --remote-debugging-address=0.0.0.0 --remote-debugging-port=9222 --headless http://localhost:8080
-
-

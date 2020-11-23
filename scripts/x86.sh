@@ -51,8 +51,28 @@ xset s off -dpms
 # Hide the cursor
 unclutter -idle 0.1 &
 
-# Rotate display
-xrandr -o left
+# Rotate display if env variable is set [normal, inverted, left or right]
+if [[ ! -z "$ROTATE_DISPLAY" ]]; then
+  echo "Rotating display ${ROTATE_DISPLAY}"
+  (sleep 3 && xrandr -o $ROTATE_DISPLAY) &
+fi
+
+# Rotate touch input to match the display rotation
+if [[ "$ROTATE_DISPLAY" == left ]]; then
+  # For Samsung PM43F-BC (detect your touch display with `xinput -list`)
+  # xinput set-prop "Advanced Silicon S.A. SamsungUSBTouch_CAP_043" --type=float "Coordinate Transformation Matrix" 0 -1 1 1 0 0 0 0 1
+  # Note: on the Samsung PM43F-BC there are two pointer devices, so set them by ID 10 & 11:
+  xinput set-prop 10 --type=float "Coordinate Transformation Matrix" 0 -1 1 1 0 0 0 0 1
+  xinput set-prop 11 --type=float "Coordinate Transformation Matrix" 0 -1 1 1 0 0 0 0 1
+fi
+
+if [[ "$ROTATE_DISPLAY" == right ]]; then
+  # For Samsung PM43F-BC (detect your touch display with `xinput -list`)
+  # xinput set-prop "Advanced Silicon S.A. SamsungUSBTouch_CAP_043" --type=float "Coordinate Transformation Matrix" 0 1 0 -1 0 1 0 0 1
+  # Note: on the Samsung PM43F-BC there are two pointer devices, so set them by ID 10 & 11:
+  xinput set-prop 10 --type=float "Coordinate Transformation Matrix" 0 1 0 -1 0 1 0 0 1
+  xinput set-prop 11 --type=float "Coordinate Transformation Matrix" 0 1 0 -1 0 1 0 0 1
+fi
 
 # Turn off speaker, and turn on headphone audio
 amixer sset Speaker off
@@ -64,8 +84,14 @@ python -u -m app.main &
 
 sleep 5
 
-chromium http://localhost:8081 \
+# Cleanup bad Chromium exits to avoid popups
+sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' ~/.config/chromium/Default/Preferences
+sed -i 's/"exit_type": "Crashed"/"exit_type": "Normal"/' ~/.config/chromium/Default/Preferences
+
+chromium \
+  --app=http://localhost:8081 \
   --kiosk \
+  --disable-infobars \
   --no-sandbox \
   --ignore-gpu-blacklist \
   --window-position=0,0 --window-size=1080,1920 --test-type \

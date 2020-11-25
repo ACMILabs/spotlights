@@ -79,17 +79,13 @@ amixer sset Speaker off
 amixer sset Master 100% on
 
 # Start the touch overlay background checker to watch for screen/touch disconnections
-./touch_overlay.sh &
+./scripts/touch_overlay.sh &
 
 # Start Spotlights app
 python -u -m app.cache
 python -u -m app.main &
 
 sleep 5
-
-# Cleanup bad Chromium exits to avoid popups
-sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' ~/.config/chromium/Default/Preferences
-sed -i 's/"exit_type": "Crashed"/"exit_type": "Normal"/' ~/.config/chromium/Default/Preferences
 
 chromium \
   --app=http://localhost:8081 \
@@ -103,6 +99,10 @@ chromium \
   --disable-pinch \
   --disable-dev-shm-usage \
   --check-for-update-interval=31449600 --simulate-outdated-no-au='Tue, 31 Dec 2099 23:59:59 GMT'
+
+# Cleanup bad Chromium exits to avoid popups
+sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' ~/.config/chromium/Default/Preferences
+sed -i 's/"exit_type": "Crashed"/"exit_type": "Normal"/' ~/.config/chromium/Default/Preferences
 
 # For debugging
 echo "Chromium browser exited unexpectedly."

@@ -58,7 +58,7 @@ while true; do
     sleep 5
     # Reboot device
     echo "Rebooting device..."
-    curl -H "Content-Type: application/json" "$BALENA_SUPERVISOR_ADDRESS/v1/reboot?apikey=$BALENA_SUPERVISOR_API_KEY"
+    curl -H "Content-Type: application/json" -d "{}" "$BALENA_SUPERVISOR_ADDRESS/v1/reboot?apikey=$BALENA_SUPERVISOR_API_KEY"
 
   fi
 

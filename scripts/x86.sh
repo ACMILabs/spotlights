@@ -78,6 +78,9 @@ fi
 amixer sset Speaker off
 amixer sset Master 100% on
 
+# Start the touch overlay background checker to watch for screen/touch disconnections
+./touch_overlay.sh &
+
 # Start Spotlights app
 python -u -m app.cache
 python -u -m app.main &

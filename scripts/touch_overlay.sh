@@ -5,14 +5,14 @@ echo "________Start of touch_overlay.sh________"
 while true; do
 
   # Check if "Advanced Silicon S.A. SamsungUSBTouch_CAP_043" is in xinput
-  if [[ xinput -list | grep -q 'Advanced Silicon S.A. SamsungUSBTouch_CAP_043' ]]; then
+  if xinput -list | grep -q 'Advanced Silicon S.A. SamsungUSBTouch_CAP_043'; then
 
     if [[ "$DEBUG" == "true" ]]; then
       echo "xinput contains 'Advanced Silicon S.A. SamsungUSBTouch_CAP_043'"
     fi
 
     # Check if the right touch settings are present for the display rotation
-    if [[ "$ROTATE_DISPLAY" == left && xinput list-props 10 | grep -q '0.000000, -1.000000, 1.000000, 1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000' ]]; then
+    if [[ "$ROTATE_DISPLAY" == left ]] && xinput list-props 10 | grep -q '0.000000, -1.000000, 1.000000, 1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000'; then
 
       if [[ "$DEBUG" == "true" ]]; then
         echo "xinput for rotation $ROTATE_DISPLAY looks good, sleeping..."
@@ -29,7 +29,7 @@ while true; do
 
     fi
 
-    if [[ "$ROTATE_DISPLAY" == right && xinput list-props 10 | grep -q '0.000000, 1.000000, 0.000000, -1.000000, 0.000000, 1.000000, 0.000000, 0.000000, 1.000000' ]]; then
+    if [[ "$ROTATE_DISPLAY" == right ]] && xinput list-props 10 | grep -q '0.000000, 1.000000, 0.000000, -1.000000, 0.000000, 1.000000, 0.000000, 0.000000, 1.000000'; then
 
       if [[ "$DEBUG" == "true" ]]; then
         echo "xinput for rotation $ROTATE_DISPLAY looks good, sleeping..."

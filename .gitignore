@@ -1,6 +1,7 @@
 config.env
 .DS_Store
 .venv
+.vscode
 *.db
 playlist_*.json
 

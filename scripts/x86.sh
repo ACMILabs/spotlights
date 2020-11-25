@@ -100,13 +100,13 @@ chromium \
   --disable-dev-shm-usage \
   --check-for-update-interval=31449600 --simulate-outdated-no-au='Tue, 31 Dec 2099 23:59:59 GMT'
 
-# Cleanup bad Chromium exits to avoid popups
-sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' ~/.config/chromium/Default/Preferences
-sed -i 's/"exit_type": "Crashed"/"exit_type": "Normal"/' ~/.config/chromium/Default/Preferences
-
 # For debugging
 echo "Chromium browser exited unexpectedly."
 free -h
+
+# Cleanup bad Chromium exits to avoid popups
+sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' ~/.config/chromium/Default/Preferences
+sed -i 's/"exit_type": "Crashed"/"exit_type": "Normal"/' ~/.config/chromium/Default/Preferences
 
 # Restart the container
 echo "Restarting container..."

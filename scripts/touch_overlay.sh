@@ -12,37 +12,43 @@ while true; do
     fi
 
     # Check if the right touch settings are present for the display rotation
-    if [[ "$ROTATE_DISPLAY" == left ]] && xinput list-props 10 | grep -q '0.000000, -1.000000, 1.000000, 1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000'; then
+    if [[ "$ROTATE_DISPLAY" == left ]]; then
 
-      if [[ "$DEBUG" == "true" ]]; then
-        echo "xinput for rotation $ROTATE_DISPLAY looks good, sleeping..."
+      if xinput list-props 10 | grep -q '0.000000, -1.000000, 1.000000, 1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000'; then
+
+        if [[ "$DEBUG" == "true" ]]; then
+          echo "xinput for rotation $ROTATE_DISPLAY looks good, sleeping..."
+        fi
+
+      else
+
+        echo "xinput missing the correct settings for rotation $ROTATE_DISPLAY, setting them now..."
+        # For Samsung PM43F-BC (detect your touch display with `xinput -list`)
+        # xinput set-prop "Advanced Silicon S.A. SamsungUSBTouch_CAP_043" --type=float "Coordinate Transformation Matrix" 0 -1 1 1 0 0 0 0 1
+        # Note: on the Samsung PM43F-BC there are two pointer devices, so set them by ID 10 & 11:
+        xinput set-prop 10 --type=float "Coordinate Transformation Matrix" 0 -1 1 1 0 0 0 0 1
+        xinput set-prop 11 --type=float "Coordinate Transformation Matrix" 0 -1 1 1 0 0 0 0 1
+
       fi
 
-    else
+    elif [[ "$ROTATE_DISPLAY" == right ]]; then
 
-      echo "xinput missing the correct settings for rotation $ROTATE_DISPLAY, setting them now..."
-      # For Samsung PM43F-BC (detect your touch display with `xinput -list`)
-      # xinput set-prop "Advanced Silicon S.A. SamsungUSBTouch_CAP_043" --type=float "Coordinate Transformation Matrix" 0 -1 1 1 0 0 0 0 1
-      # Note: on the Samsung PM43F-BC there are two pointer devices, so set them by ID 10 & 11:
-      xinput set-prop 10 --type=float "Coordinate Transformation Matrix" 0 -1 1 1 0 0 0 0 1
-      xinput set-prop 11 --type=float "Coordinate Transformation Matrix" 0 -1 1 1 0 0 0 0 1
+      if xinput list-props 10 | grep -q '0.000000, 1.000000, 0.000000, -1.000000, 0.000000, 1.000000, 0.000000, 0.000000, 1.000000'; then
 
-    fi
+        if [[ "$DEBUG" == "true" ]]; then
+          echo "xinput for rotation $ROTATE_DISPLAY looks good, sleeping..."
+        fi
 
-    if [[ "$ROTATE_DISPLAY" == right ]] && xinput list-props 10 | grep -q '0.000000, 1.000000, 0.000000, -1.000000, 0.000000, 1.000000, 0.000000, 0.000000, 1.000000'; then
+      else
 
-      if [[ "$DEBUG" == "true" ]]; then
-        echo "xinput for rotation $ROTATE_DISPLAY looks good, sleeping..."
+        echo "xinput missing the correct settings for rotation $ROTATE_DISPLAY, setting them now..."
+        # For Samsung PM43F-BC (detect your touch display with `xinput -list`)
+        # xinput set-prop "Advanced Silicon S.A. SamsungUSBTouch_CAP_043" --type=float "Coordinate Transformation Matrix" 0 1 0 -1 0 1 0 0 1
+        # Note: on the Samsung PM43F-BC there are two pointer devices, so set them by ID 10 & 11:
+        xinput set-prop 10 --type=float "Coordinate Transformation Matrix" 0 1 0 -1 0 1 0 0 1
+        xinput set-prop 11 --type=float "Coordinate Transformation Matrix" 0 1 0 -1 0 1 0 0 1
+
       fi
-
-    else
-
-      echo "xinput missing the correct settings for rotation $ROTATE_DISPLAY, setting them now..."
-      # For Samsung PM43F-BC (detect your touch display with `xinput -list`)
-      # xinput set-prop "Advanced Silicon S.A. SamsungUSBTouch_CAP_043" --type=float "Coordinate Transformation Matrix" 0 1 0 -1 0 1 0 0 1
-      # Note: on the Samsung PM43F-BC there are two pointer devices, so set them by ID 10 & 11:
-      xinput set-prop 10 --type=float "Coordinate Transformation Matrix" 0 1 0 -1 0 1 0 0 1
-      xinput set-prop 11 --type=float "Coordinate Transformation Matrix" 0 1 0 -1 0 1 0 0 1
 
     fi
 

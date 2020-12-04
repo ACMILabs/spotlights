@@ -28,6 +28,10 @@ Options are: `normal, inverted, left or right`
 
 We have our Spotlights connected to a Samsung PM43F-BC display. Setting `ROTATE_DISPLAY` also attempts to rotate the touch overlay. You can find the name of your touch overlay using `xinput -list`.
 
+The `scripts/x86.sh` startup script includes running `scripts/touch_overlay.sh` in the background, which checks if the touch interface has disconnected, and re-sets the touch overlay rotation.
+
+To disable this, add the environment variable `DISABLE_TOUCH_CHECK=true`.
+
 ## Run a development server with docker
 
 * Run `cp config.tmpl.env config.env`

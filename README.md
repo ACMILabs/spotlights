@@ -51,6 +51,19 @@ To disable this, add the environment variable `DISABLE_TOUCH_CHECK=true`.
 * Run `docker-compose up --build`
 * In another Terminal run `docker exec -it spotlights make linttest`
 
+## Re-build the Chromium base-image
+
+To re-build the base-image on Docker Hub [acmilabs/spotlights:v1](https://hub.docker.com/r/acmilabs/spotlights/tags?name=v1):
+
+* `cd base-image`
+* `docker build -t acmilabs/spotlights:v1 .`
+* `docker push acmilabs/spotlights:v1`
+
+If you have authentication errors, try logging out and in again with the `acmi` credentials:
+
+* `docker logout`
+* `docker login`
+
 ## Installation via Balena
 
 * Clone this repo.

@@ -42,7 +42,6 @@ const MIN_DRAG = 10;
 // CONTENT
 
 const playlist_content = window.playlist_labels.map(function r(x) {
-  console.log(x.subtitles)
   return {
     id: x.label.id,
     title: x.label.title,

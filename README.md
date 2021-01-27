@@ -5,6 +5,8 @@ An interactive video player that loads a playlist of videos from XOS specified b
 It autoplays by default and a user is able to select from the menu of videos to begin playing them.
 This is intended for use on an Optiplex 7050 with a touchscreen.
 
+![Spotlights CI](https://github.com/ACMILabs/spotlights/workflows/Spotlights%20CI/badge.svg)
+
 ## Features
 
 * Takes an XOS playlist of videos and labels

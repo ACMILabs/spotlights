@@ -3,8 +3,8 @@
 FROM balenalib/intel-nuc-python:3.7-buster-run
 
 # To rebuild:
-# docker build -t acmilabs/spotlights:v1 .
-# docker push acmilabs/spotlights:v1
+# docker build -t acmilabs/spotlights:v2 .
+# docker push acmilabs/spotlights:v2
 
 # use `install_packages` if you need to install dependencies,
 # for instance if you need git, just uncomment the line below.
@@ -20,7 +20,8 @@ RUN install_packages \
   x11-xserver-utils \
   git \
   alsa-utils \
-  zstd
+  zstd \
+  jq
 
 
 

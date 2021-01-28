@@ -54,7 +54,11 @@ const playlist_content = window.playlist_labels.map(function r(x) {
     style2: x.label.columns[2].style,
     video_url: x.resource,
     image_url: x.image,
-    subtitles: x.subtitles ? URL.createObjectURL(new Blob([x.subtitles], {type: 'text/vtt; charset=UTF-8'})) : ''
+    subtitles: x.subtitles
+      ? URL.createObjectURL(
+          new Blob([x.subtitles], { type: "text/vtt; charset=UTF-8" })
+        )
+      : ""
   };
 });
 

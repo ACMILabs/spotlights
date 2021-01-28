@@ -54,7 +54,11 @@ const playlist_content = window.playlist_labels.map(function r(x) {
     style2: x.label.columns[2].style,
     video_url: x.resource,
     image_url: x.image,
-    subtitles: `data:text/vtt;base64,${btoa(x.subtitles)}`
+    subtitles: x.subtitles
+      ? URL.createObjectURL(
+          new Blob([x.subtitles], { type: "text/vtt; charset=UTF-8" })
+        )
+      : ""
   };
 });
 
@@ -166,7 +170,7 @@ for (let i = 0; i < playlist_content.length; i++) {
       video.style.transition = "none";
       video.style.opacity = 0;
       video.src = playlist_content[i].video_url;
-      video_track.src = `data:text/vtt;${playlist_content[i].subtitles}`;
+      video_track.src = playlist_content[i].subtitles;
       save_label(playlist_content[i].id);
       current_index = i;
 
@@ -227,7 +231,7 @@ function handle_video_ended() {
   list_items[current_index].classList.remove("active");
   list_items[next_index].classList.add("active");
   video.src = playlist_content[next_index].video_url;
-  video_track.src = `data:text/vtt;${playlist_content[next_index].subtitles}`;
+  video_track.src = playlist_content[next_index].subtitles;
   save_label(playlist_content[next_index].id);
   current_index = next_index;
 

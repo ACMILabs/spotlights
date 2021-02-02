@@ -303,3 +303,13 @@ p:last-child {
 .error_screen {
   color: white;
 }
+
+.scrollbar {
+  position: fixed;
+  bottom: 10px;
+  width: 60px;
+  height: 10px;
+  border-radius: 5px;
+  background: #f4cb3a;
+  z-index: 10;
+}

@@ -83,6 +83,11 @@ if [ -z "$DISABLE_TOUCH_CHECK" ]; then
   ./scripts/touch_overlay.sh &
 fi
 
+# Start the first boot checker
+if [ -z "$DISABLE_FIRST_BOOT_CHECK" ]; then
+  ./scripts/first_boot.sh &
+fi
+
 # Start Spotlights app
 python -u -m app.cache
 python -u -m app.main &

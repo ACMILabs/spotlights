@@ -1,9 +1,9 @@
 # Built from /base-image/Dockerfile
 # To rebuild:
 # cd base-image
-# docker build -t acmilabs/spotlights:v1 .
-# docker push acmilabs/spotlights:v1
-FROM acmilabs/spotlights:v1
+# docker build -t acmilabs/spotlights:v2 .
+# docker push acmilabs/spotlights:v2
+FROM acmilabs/spotlights:v2
 
 COPY . /code/
 

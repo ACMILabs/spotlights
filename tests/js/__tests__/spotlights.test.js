@@ -1,3 +1,5 @@
+window.URL.createObjectURL = function createObjectURL() {};
+
 global.EventSource = function dummyEventSource() {};
 global.playlist_labels = require("../../data/playlist.json").playlist_labels;
 

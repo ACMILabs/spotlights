@@ -194,6 +194,10 @@ video.addEventListener("play", function handle_play() {
   video.style.opacity = 1;
 });
 
+const scrollbar_el = document.createElement("div");
+document.body.appendChild(scrollbar_el);
+scrollbar_el.className = "scrollbar";
+
 // EVENT HANDLERS
 
 function handle_window_resize() {
@@ -336,6 +340,10 @@ function main_loop() {
   video_progress.style.transform = `scaleX(${
     video_duration ? video.currentTime / video_duration : 0
   })`;
+
+  // UPDATE SCROLLBAR
+  scrollbar_el.style.left = `${((window.innerWidth - 60) * list_offset) /
+    (min_list_offset || 1)}px`;
 
   requestAnimationFrame(main_loop);
 }

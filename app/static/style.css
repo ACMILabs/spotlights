@@ -99,7 +99,7 @@ body {
   left: 0;
   top: 50%;
   z-index: 1;
-  box-shadow: inset 0 0 80px 80px #000;
+  box-shadow: inset 0 0 100px 100px #000;
   pointer-events: none;
 }
 
@@ -302,4 +302,14 @@ p:last-child {
 }
 .error_screen {
   color: white;
+}
+
+.scrollbar {
+  position: fixed;
+  bottom: 10px;
+  width: 60px;
+  height: 10px;
+  border-radius: 5px;
+  background: #f4cb3a;
+  z-index: 10;
 }

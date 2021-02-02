@@ -2,7 +2,7 @@
 
 echo "________Start of first_boot.sh________"
 
-BOOT_COUNT_RESPONSE=$(curl -sk http://bootcount:8082)
+BOOT_COUNT_RESPONSE=$(curl -sk http://bootcount:8082/api/count/)
 BOOT_COUNT=$(echo $BOOT_COUNT_RESPONSE | jq --raw-output '.count')
 
 if [[ $BOOT_COUND == "1" ]]; then

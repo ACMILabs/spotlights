@@ -7,7 +7,8 @@ BOOT_COUNT=$(echo $BOOT_COUNT_RESPONSE | jq --raw-output '.count')
 
 if [[ $BOOT_COUNT == "1" ]]; then
   # Restart the container
-  echo "This is the first boot, so restarting the spotlights container to resolve the lack of touch input..."
+  echo "This is the first boot, so restarting the spotlights container in 30 seconds to resolve the lack of touch input..."
+  sleep 30
   # Update the boot count
   curl --request POST 'http://bootcount:8082/api/count/'
   # Restart the spotlights container

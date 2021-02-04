@@ -52,7 +52,7 @@ def create_cache():
 
             # Cache image
             if 'images' in label['label'] and len(label['label']['images']) > 0:
-                image_url = label['label']['images'][0]['image_file']
+                image_url = label['label']['images'][0]['image_file_xs']
                 name = urlparse(image_url).path.split('/')[-1]
                 if name in old_files:
                     old_files.remove(name)

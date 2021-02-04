@@ -30,6 +30,7 @@
                         {
                             "id": 554,
                             "image_file": "https://xos-prod-media.s3.amazonaws.com/xos/works/image/placeholder-1.jpg?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=jfQtaHD7R7SQk0FCigeJVG1mr8c%3D&Expires=1582252714",
+                            "image_file_xs": "https://xos-prod-media.s3.amazonaws.com/xos/works/image/placeholder-1.jpg?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=jfQtaHD7R7SQk0FCigeJVG1mr8c%3D&Expires=1582252714",
                             "thumbnail_url": "https://xos-prod-media.s3.amazonaws.com/xos/works/image/placeholder-1.jpg.150x150_q85.jpg?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=rk7VtFdv2uSeLK55fwZ4YzvvoyU%3D&Expires=1582252714",
                             "caption": "",
                             "credit_line": "",
@@ -47,6 +48,7 @@
                     {
                         "id": 554,
                         "image_file": "https://xos-prod-media.s3.amazonaws.com/xos/works/image/placeholder-1.jpg?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=jfQtaHD7R7SQk0FCigeJVG1mr8c%3D&Expires=1582252714",
+                        "image_file_xs": "https://xos-prod-media.s3.amazonaws.com/xos/works/image/placeholder-1.jpg?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=jfQtaHD7R7SQk0FCigeJVG1mr8c%3D&Expires=1582252714",
                         "thumbnail_url": "https://xos-prod-media.s3.amazonaws.com/xos/works/image/placeholder-1.jpg.150x150_q85.jpg?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=rk7VtFdv2uSeLK55fwZ4YzvvoyU%3D&Expires=1582252714",
                         "caption": "",
                         "credit_line": "",
@@ -92,6 +94,7 @@
                         {
                             "id": 555,
                             "image_file": "https://xos-prod-media.s3.amazonaws.com/xos/works/image/placeholder-2.jpg?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=m2rzvqQzgCwDhFM%2BOcE2R%2F8Mi1w%3D&Expires=1582252714",
+                            "image_file_xs": "https://xos-prod-media.s3.amazonaws.com/xos/works/image/placeholder-2.jpg?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=m2rzvqQzgCwDhFM%2BOcE2R%2F8Mi1w%3D&Expires=1582252714",
                             "thumbnail_url": "https://xos-prod-media.s3.amazonaws.com/xos/works/image/placeholder-2.jpg.150x150_q85.jpg?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=tcol5khLEzj9ms4k5n6FDr6BoVg%3D&Expires=1582252714",
                             "caption": "",
                             "credit_line": "",
@@ -109,6 +112,7 @@
                     {
                         "id": 555,
                         "image_file": "https://xos-prod-media.s3.amazonaws.com/xos/works/image/placeholder-2.jpg?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=m2rzvqQzgCwDhFM%2BOcE2R%2F8Mi1w%3D&Expires=1582252714",
+                        "image_file_xs": "https://xos-prod-media.s3.amazonaws.com/xos/works/image/placeholder-2.jpg?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=m2rzvqQzgCwDhFM%2BOcE2R%2F8Mi1w%3D&Expires=1582252714",
                         "thumbnail_url": "https://xos-prod-media.s3.amazonaws.com/xos/works/image/placeholder-2.jpg.150x150_q85.jpg?AWSAccessKeyId=AKIAJJ6243F2DWMI5O3A&Signature=tcol5khLEzj9ms4k5n6FDr6BoVg%3D&Expires=1582252714",
                         "caption": "",
                         "credit_line": "",

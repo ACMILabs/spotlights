@@ -83,7 +83,7 @@ def test_route_collect_item(client):
         lens_tap_data = taps_file.read()
 
     response = client.post('/api/taps/', data=lens_tap_data, headers={'Content-Type': 'application/json'})
-    assert response.json["nfc_tag"]["short_code"] == "nbadbb"
+    assert response.json["lens_short_code"] == "lens12"
     assert response.status_code == 201
 
 

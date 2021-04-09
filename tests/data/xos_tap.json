@@ -1,21 +1,60 @@
 {
-  "id": 26775,
-  "nfc_tag": {
-    "atr": "",
-    "uid": "lensuid",
-    "short_code": "nbadbb"
-  },
+  "id": 981363,
+  "tap_datetime": "2021-04-09T10:27:50.310975+10:00",
+  "created_at": "2021-04-09T10:27:52.104253+10:00",
+  "lens_hash": "ef...dc",
+  "lens_short_code": "lens12",
   "experience_id": null,
-  "tap_datetime": "2019-10-22T12:47:04.347477+11:00",
-  "created_at": "2019-10-22T12:47:04.512503+11:00",
-  "data": {
-    "nfc_reader": {
-      "mac_address": "00:00:00:00:00:00",
-      "reader_ip": "127.0.0.666",
-      "reader_model": "IDTech Kiosk IV",
-      "reader_name": "nfc-666"
-    }
-  },
   "maker_moment": null,
-  "label": 1
+  "collectible": {
+    "id": 57404,
+    "acmi_id": "183866",
+    "title": "",
+    "thumbnail": {
+      "image_url": "https://.s3.amazonaws.com/media/image.jpg",
+      "animated_image_url": "",
+      "has_video": true
+    },
+    "slug": "warwick-thornton",
+    "type": "Film",
+    "work": {
+      "id": 117910,
+      "acmi_id": "183866",
+      "title": "Spotlights: Warwick Thornton",
+      "title_annotation": "",
+      "slug": "spotlights-warwick-thornton",
+      "creator_credit": "",
+      "credit_line": "",
+      "headline_credit": "",
+      "thumbnail": {
+        "image_url": "https://.s3.amazonaws.com/media/image.jpg",
+        "animated_image_url": "",
+        "has_video": true
+      },
+      "record_type": "work",
+      "type": "Film",
+      "is_on_display": true,
+      "last_on_display_place": "ACMI: Gallery 1",
+      "last_on_display_date": "2031-02-16",
+      "is_context_indigenous": false,
+      "material_description": "",
+      "unpublished": false,
+      "first_production_date": null,
+      "brief_description": "<p>A Kaytetye man born and raised in Alice Springs. A film director, screenwriter and cinematographer, his debut feature film Samson and Delilah won the Caméra d&#8217;Or at the 2009 Cannes Film Festival. He also won the Asia Pacific Screen Award for Best Film in 2017 for Sweet Country.</p>",
+      "constellations_primary": [],
+      "constellations_other": [],
+      "recommendations": []
+    },
+    "is_an_event": false,
+    "url_override": ""
+  },
+  "data": {
+    "lens_reader": {
+      "device_name": "si-tap-reader",
+      "mac_address": "00:00:00:00:00:00",
+      "reader_ip": "127.0.0.1",
+      "reader_model": "IDTech Kiosk IV"
+    },
+    "playlist_info": { "datetime": "1617928066827", "playlist_id": 156 }
+  }
 }

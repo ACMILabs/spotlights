@@ -254,7 +254,11 @@ function handle_video_play() {
   video_duration = video.duration;
 }
 
-function handle_tap_message() {
+function handle_tap_message(e) {
+  const eventData = JSON.parse(e.data);
+  const tapSuccessful = eventData.tap_successful && eventData.tap_successful === 1;
+  const tapSuccessClassname = tapSuccessful ? "tap_success" : "tap_fail";
+
   // UPDATE 'COLLECTED' UI
   if (!is_animating_collect) {
     // Debounced with is_animating_collect
@@ -264,11 +268,12 @@ function handle_tap_message() {
     // Animation plays: collect -> hidden -> collected -> hidden -> collect
     active_collect_element.className = "list_item_collect hidden";
     window.setTimeout(function timeout1() {
-      active_collect_element.innerHTML = "COLLECTED";
-      active_collect_element.className = "list_item_collect active";
+      const message = tapSuccessful ? "COLLECTED" : "BROKEN LENS";
+      active_collect_element.innerHTML = message;
+      active_collect_element.className = "list_item_collect active " + tapSuccessClassname;
     }, 500);
     window.setTimeout(function timeout2() {
-      active_collect_element.className = "list_item_collect active hidden";
+      active_collect_element.className = "list_item_collect active hidden " + tapSuccessClassname;
     }, 3000);
     window.setTimeout(function timeout3() {
       active_collect_element.className = "list_item_collect";

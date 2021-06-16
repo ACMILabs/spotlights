@@ -4,7 +4,7 @@ global.EventSource = function dummyEventSource() {};
 global.playlist_labels = require("../../data/playlist.json").playlist_labels;
 
 document.body.innerHTML = "<div id='root'/>";
-require("../../../app/static/index.js");
+require("../../../app/static/index");
 
 describe("App", () => {
   beforeAll(() => {});

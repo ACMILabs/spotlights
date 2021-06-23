@@ -254,33 +254,60 @@ function handle_video_play() {
   video_duration = video.duration;
 }
 
+let error_dialogue_close_timeout = null;
+
+function open_error_dialogue(errorHtml) {
+  const error_dialogue_element = document.getElementById("error-dialogue");
+  error_dialogue_element.className = "error-dialogue open";
+  const error_dialogue_text_element = document.getElementById(
+    "error-dialogue-text"
+  );
+  error_dialogue_text_element.innerHTML = errorHtml;
+  window.clearTimeout(error_dialogue_close_timeout);
+  error_dialogue_close_timeout = window.setTimeout(
+    close_error_dialogue,
+    3000
+  );
+  window.addEventListener("click", close_error_dialogue);
+}
+
+function close_error_dialogue() {
+  const error_dialogue_element = document.getElementById("error-dialogue");
+  window.clearTimeout(error_dialogue_close_timeout);
+  window.removeEventListener("click", close_error_dialogue);
+  error_dialogue_element.className = "error-dialogue closed";
+}
+
 function handle_tap_message(e) {
   const eventData = JSON.parse(e.data);
-  const tapSuccessful = eventData.tap_successful && eventData.tap_successful === 1;
-  const tapSuccessClassname = tapSuccessful ? "tap_success" : "tap_fail";
+  const tap_successful = eventData.tap_successful && eventData.tap_successful === 1;
+
+  if (!tap_successful) {
+    open_error_dialogue("Work not collected <br><br> See a Visitor Experience staff member");
+    return;
+  }
+
+  if (is_animating_collect) return;
 
   // UPDATE 'COLLECTED' UI
-  if (!is_animating_collect) {
-    // Debounced with is_animating_collect
-    is_animating_collect = true;
-    const active_collect_element = collect_elements[current_index];
+  // Debounced with is_animating_collect
+  is_animating_collect = true;
+  const active_collect_element = collect_elements[current_index];
 
-    // Animation plays: collect -> hidden -> collected -> hidden -> collect
-    active_collect_element.className = "list_item_collect hidden";
-    window.setTimeout(function timeout1() {
-      const message = tapSuccessful ? "COLLECTED" : "BROKEN LENS";
-      active_collect_element.innerHTML = message;
-      active_collect_element.className = "list_item_collect active " + tapSuccessClassname;
-    }, 500);
-    window.setTimeout(function timeout2() {
-      active_collect_element.className = "list_item_collect active hidden " + tapSuccessClassname;
-    }, 3000);
-    window.setTimeout(function timeout3() {
-      active_collect_element.className = "list_item_collect";
-      active_collect_element.innerHTML = "COLLECT";
-      is_animating_collect = false;
-    }, 3500);
-  }
+  // Animation plays: collect -> hidden -> collected -> hidden -> collect
+  active_collect_element.className = "list_item_collect hidden";
+  window.setTimeout(function timeout1() {
+    active_collect_element.innerHTML = message;
+    active_collect_element.className = "list_item_collect active";
+  }, 500);
+  window.setTimeout(function timeout2() {
+    active_collect_element.className = "list_item_collect active hidden";
+  }, 3000);
+  window.setTimeout(function timeout3() {
+    active_collect_element.className = "list_item_collect";
+    active_collect_element.innerHTML = "COLLECT";
+    is_animating_collect = false;
+  }, 3500);
 }
 
 list_cont.addEventListener("mousedown", handle_list_mousedown);

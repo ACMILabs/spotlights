@@ -247,10 +247,6 @@ body {
   vertical-align: 1px;
 }
 
-.list_item_collect.active.tap_fail:after {
-  background: url('cross.svg') center/contain no-repeat;
-}
-
 .list_item_collect.active.hidden,
 .list_item_collect.hidden {
   color: rgba(0,0,0,0);
@@ -316,4 +312,49 @@ p:last-child {
   border-radius: 5px;
   background: #f4cb3a;
   z-index: 10;
+}
+
+.error-dialogue {
+  position: absolute;
+  z-index: 10;
+  left: 50%;
+  top: 70%;
+  transform: translate(-50%, -50%);
+  width: 66vw;
+  height: 30vh;
+  background: #fff;
+  transition: opacity 400ms;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.error-dialogue.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.error-dialogue.closed {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.error-dialogue-text {
+  position: absolute;
+  z-index: 10;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 65%;
+  font-size: 60px;
+  font-family: PxGrotesk;
+  text-align: center;
+}
+
+.error-dialogue-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 50px;
+  height: 50px;
+  background: center/contain url('close.svg');
 }

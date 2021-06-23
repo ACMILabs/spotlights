@@ -119,6 +119,12 @@ def collect_item():
     """
     Collect a tap and forward it on to XOS with the label ID.
     """
+    has_tapped = HasTapped.get_or_none(has_tapped=0)
+    if not has_tapped:
+        raise HTTPError('Tap still processing.')
+    has_tapped.tap_successful = 0
+    has_tapped.has_tapped = 1
+
     xos_tap = dict(request.get_json())
     record = model_to_dict(Label.select().order_by(Label.datetime.desc()).get())
     xos_tap['label'] = record.pop('label_id', None)
@@ -126,23 +132,13 @@ def collect_item():
     headers = {'Authorization': 'Token ' + AUTH_TOKEN}
     response = requests.post(XOS_TAPS_ENDPOINT, json=xos_tap, headers=headers)
 
-    has_tapped = None
-    try:
-        has_tapped = HasTapped.get(has_tapped=1)
-    except:
-        has_tapped = HasTapped.get(has_tapped=0)
-        has_tapped.has_tapped = 1
-
     if response.status_code != requests.codes['created']:
-        has_tapped.tap_successful = 0
         has_tapped.save()
-        raise HTTPError('Could not save tap to XOS.')
+        raise HTTPError('Tap still processing.')
 
     has_tapped.tap_successful = 1
     has_tapped.save()
 
-    if response.status_code != requests.codes['created']:
-        raise HTTPError('Could not save tap to XOS.')
     return response.json(), response.status_code
 
 

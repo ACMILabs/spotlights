@@ -86,6 +86,8 @@ let is_animating_collect = false;
 
 let video_duration = 0;
 
+let error_dialogue_close_timeout = null;
+
 // DOM
 
 const root = document.getElementById("root");
@@ -198,6 +200,20 @@ const scrollbar_el = document.createElement("div");
 document.body.appendChild(scrollbar_el);
 scrollbar_el.className = "scrollbar";
 
+const tap_error_element = document.createElement("div");
+tap_error_element.id = "error_dialogue";
+tap_error_element.className = "error_dialogue";
+document.body.appendChild(tap_error_element);
+
+const tap_error_text_element = document.createElement("div");
+tap_error_text_element.id = "error_dialogue_text";
+tap_error_text_element.className = "error_dialogue_text";
+tap_error_element.appendChild(tap_error_text_element);
+
+const tap_error_close_element = document.createElement("div");
+tap_error_close_element.className = "error_dialogue_close";
+tap_error_element.appendChild(tap_error_close_element);
+
 // EVENT HANDLERS
 
 function handle_window_resize() {
@@ -254,36 +270,34 @@ function handle_video_play() {
   video_duration = video.duration;
 }
 
-let error_dialogue_close_timeout = null;
+function close_error_dialogue() {
+  const error_dialogue_element = document.getElementById("error_dialogue");
+  window.clearTimeout(error_dialogue_close_timeout);
+  window.removeEventListener("click", close_error_dialogue);
+  error_dialogue_element.className = "error_dialogue closed";
+}
 
 function open_error_dialogue(errorHtml) {
-  const error_dialogue_element = document.getElementById("error-dialogue");
-  error_dialogue_element.className = "error-dialogue open";
+  const error_dialogue_element = document.getElementById("error_dialogue");
+  error_dialogue_element.className = "error_dialogue open";
   const error_dialogue_text_element = document.getElementById(
-    "error-dialogue-text"
+    "error_dialogue_text"
   );
   error_dialogue_text_element.innerHTML = errorHtml;
   window.clearTimeout(error_dialogue_close_timeout);
-  error_dialogue_close_timeout = window.setTimeout(
-    close_error_dialogue,
-    3000
-  );
+  error_dialogue_close_timeout = window.setTimeout(close_error_dialogue, 3000);
   window.addEventListener("click", close_error_dialogue);
-}
-
-function close_error_dialogue() {
-  const error_dialogue_element = document.getElementById("error-dialogue");
-  window.clearTimeout(error_dialogue_close_timeout);
-  window.removeEventListener("click", close_error_dialogue);
-  error_dialogue_element.className = "error-dialogue closed";
 }
 
 function handle_tap_message(e) {
   const eventData = JSON.parse(e.data);
-  const tap_successful = eventData.tap_successful && eventData.tap_successful === 1;
+  const tap_successful =
+    eventData.tap_successful && eventData.tap_successful === 1;
 
   if (!tap_successful) {
-    open_error_dialogue("Work not collected <br><br> See a Visitor Experience staff member");
+    open_error_dialogue(
+      "Work not collected <br><br> See a Visitor Experience staff member"
+    );
     return;
   }
 
@@ -297,7 +311,7 @@ function handle_tap_message(e) {
   // Animation plays: collect -> hidden -> collected -> hidden -> collect
   active_collect_element.className = "list_item_collect hidden";
   window.setTimeout(function timeout1() {
-    active_collect_element.innerHTML = message;
+    active_collect_element.innerHTML = "COLLECT";
     active_collect_element.className = "list_item_collect active";
   }, 500);
   window.setTimeout(function timeout2() {

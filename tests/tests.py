@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from app.cache import create_cache
-from app.main import Label
+from app.main import HasTapped, Label
 
 
 @pytest.mark.usefixtures('database')
@@ -46,7 +46,7 @@ class MockTextResponse:
 
 
 def mocked_requests_get(*args, **kwargs):
-    if args[0] == 'https://xos.acmi.net.au/api/playlists/1/':
+    if '/api/playlists/1/' in args[0]:
         with open('tests/data/playlist.json', 'r') as file_obj:
             return MockJsonResponse(file_obj.read(), 200)
 
@@ -66,9 +66,11 @@ def mocked_requests_get(*args, **kwargs):
 
 
 def mocked_requests_post(*args, **kwargs):
-    if args[0] == 'https://xos.acmi.net.au/api/taps/':
+    if '/api/taps/' in args[0]:
         with open('tests/data/xos_tap.json', 'r') as taps_file:
             return MockJsonResponse(taps_file.read(), 201)
+    if '/api/bad-uri/' in args[0]:
+        return MockJsonResponse('{}', 404)
 
     raise Exception("No mocked sample data for request: "+args[0])
 
@@ -112,3 +114,54 @@ def test_index_renders(client):
     assert b'<!doctype html>' in response.data
     assert b'<div id="root">' in response.data
     assert b'<script src="/static/index.js">' in response.data
+
+
+@pytest.mark.usefixtures('database')
+@patch('app.main.XOS_TAPS_ENDPOINT', 'https://xos.acmi.net.au/api/bad-uri/')
+@patch('requests.post', MagicMock(side_effect=mocked_requests_post))
+def test_tap_received_xos_error(client):
+    """
+    Test that a tap fails correctly for an XOS error
+    """
+
+    with open('tests/data/lens_tap.json', 'r') as taps_file:
+        lens_tap_data = taps_file.read()
+
+    response = client.post(
+        '/api/taps/',
+        data=lens_tap_data,
+        headers={'Content-Type': 'application/json'}
+    )
+
+    assert response.status_code == 400
+
+    has_tapped = HasTapped.get_or_none(has_tapped=1)
+    assert has_tapped
+    assert has_tapped.tap_successful == 0
+
+
+@pytest.mark.usefixtures('database')
+@patch('requests.post', MagicMock(side_effect=mocked_requests_post))
+def test_tap_received_still_processing_error(client):
+    """
+    Test that if a tap is already processing, new taps fail
+    """
+    has_tapped = HasTapped.get_or_none(has_tapped=0)
+    has_tapped.has_tapped = 1
+    has_tapped.save()
+
+    with open('tests/data/lens_tap.json', 'r') as taps_file:
+        lens_tap_data = taps_file.read()
+
+    response = client.post(
+        '/api/taps/',
+        data=lens_tap_data,
+        headers={'Content-Type': 'application/json'}
+    )
+
+    assert b'Tap still processing.' in response.data
+    assert response.status_code == 400
+
+    has_tapped = HasTapped.get_or_none(has_tapped=1)
+    assert has_tapped
+    assert has_tapped.tap_successful == 0

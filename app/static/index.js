@@ -202,7 +202,7 @@ scrollbar_el.className = "scrollbar";
 
 const tap_error_element = document.createElement("div");
 tap_error_element.id = "error_dialogue";
-tap_error_element.className = "error_dialogue";
+tap_error_element.className = "error_dialogue closed";
 document.body.appendChild(tap_error_element);
 
 const tap_error_text_element = document.createElement("div");
@@ -311,7 +311,7 @@ function handle_tap_message(e) {
   // Animation plays: collect -> hidden -> collected -> hidden -> collect
   active_collect_element.className = "list_item_collect hidden";
   window.setTimeout(function timeout1() {
-    active_collect_element.innerHTML = "COLLECT";
+    active_collect_element.innerHTML = "COLLECTED";
     active_collect_element.className = "list_item_collect active";
   }, 500);
   window.setTimeout(function timeout2() {

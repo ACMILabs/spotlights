@@ -117,6 +117,30 @@ def test_index_renders(client):
 
 
 @pytest.mark.usefixtures('database')
+@patch('app.main.XOS_TAPS_ENDPOINT', 'https://xos.acmi.net.au/api/taps/')
+@patch('requests.post', MagicMock(side_effect=mocked_requests_post))
+def test_tap_received_xos_created(client):
+    """
+    Test that a tap is successfully created and has_tapped processes correctly
+    """
+
+    with open('tests/data/lens_tap.json', 'r') as taps_file:
+        lens_tap_data = taps_file.read()
+
+    response = client.post(
+        '/api/taps/',
+        data=lens_tap_data,
+        headers={'Content-Type': 'application/json'}
+    )
+
+    assert response.status_code == 201
+
+    has_tapped = HasTapped.get_or_none(tap_processing=1)
+    assert has_tapped.has_tapped == 1
+    assert has_tapped.tap_successful == 1
+
+
+@pytest.mark.usefixtures('database')
 @patch('app.main.XOS_TAPS_ENDPOINT', 'https://xos.acmi.net.au/api/bad-uri/')
 @patch('requests.post', MagicMock(side_effect=mocked_requests_post))
 def test_tap_received_xos_error(client):
@@ -135,8 +159,8 @@ def test_tap_received_xos_error(client):
 
     assert response.status_code == 400
 
-    has_tapped = HasTapped.get_or_none(has_tapped=1)
-    assert has_tapped
+    has_tapped = HasTapped.get_or_none(tap_processing=1)
+    assert has_tapped.has_tapped == 1
     assert has_tapped.tap_successful == 0
 
 
@@ -144,10 +168,10 @@ def test_tap_received_xos_error(client):
 @patch('requests.post', MagicMock(side_effect=mocked_requests_post))
 def test_tap_received_still_processing_error(client):
     """
-    Test that if a tap is already processing, new taps fail
+    Test that if an old tap is still being processed by the UI, new taps are still created
     """
-    has_tapped = HasTapped.get_or_none(has_tapped=0)
-    has_tapped.has_tapped = 1
+    has_tapped = HasTapped.get_or_none(tap_processing=0)
+    has_tapped.tap_processing = 1
     has_tapped.save()
 
     with open('tests/data/lens_tap.json', 'r') as taps_file:
@@ -159,9 +183,4 @@ def test_tap_received_still_processing_error(client):
         headers={'Content-Type': 'application/json'}
     )
 
-    assert b'Tap still processing.' in response.data
-    assert response.status_code == 400
-
-    has_tapped = HasTapped.get_or_none(has_tapped=1)
-    assert has_tapped
-    assert has_tapped.tap_successful == 0
+    assert response.status_code == 201

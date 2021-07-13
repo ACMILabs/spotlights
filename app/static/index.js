@@ -274,7 +274,7 @@ function close_error_dialogue() {
   const error_dialogue_element = document.getElementById("error_dialogue");
   window.clearTimeout(error_dialogue_close_timeout);
   window.removeEventListener("click", close_error_dialogue);
-  error_dialogue_element.styles.opacity = 0;
+  error_dialogue_element.style.opacity = 0;
   error_dialogue_element.style.pointerEvents = "none";
 }
 
@@ -305,11 +305,9 @@ function handle_tap_message(event) {
 
   if (is_animating_collect) return;
 
-  // UPDATE 'COLLECTED' UI
   is_animating_collect = true;
   const active_collect_element = collect_elements[current_index];
 
-  // Animation plays: collect -> hidden -> collected -> hidden -> collect
   active_collect_element.className = "list_item_collect hidden";
   window.setTimeout(function timeout1() {
     active_collect_element.innerHTML = "COLLECTED";

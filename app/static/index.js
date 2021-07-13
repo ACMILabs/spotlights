@@ -274,12 +274,14 @@ function close_error_dialogue() {
   const error_dialogue_element = document.getElementById("error_dialogue");
   window.clearTimeout(error_dialogue_close_timeout);
   window.removeEventListener("click", close_error_dialogue);
-  error_dialogue_element.className = "error_dialogue closed";
+  error_dialogue_element.styles.opacity = 0;
+  error_dialogue_element.style.pointerEvents = "none";
 }
 
 function open_error_dialogue(errorHtml) {
   const error_dialogue_element = document.getElementById("error_dialogue");
-  error_dialogue_element.className = "error_dialogue open";
+  error_dialogue_element.style.opacity = 1;
+  error_dialogue_element.style.pointerEvents = "all";
   const error_dialogue_text_element = document.getElementById(
     "error_dialogue_text"
   );
@@ -289,8 +291,8 @@ function open_error_dialogue(errorHtml) {
   window.addEventListener("click", close_error_dialogue);
 }
 
-function handle_tap_message(e) {
-  const eventData = JSON.parse(e.data);
+function handle_tap_message(event) {
+  const eventData = JSON.parse(event.data);
   const tap_successful =
     eventData.tap_successful && eventData.tap_successful === 1;
 
@@ -304,7 +306,6 @@ function handle_tap_message(e) {
   if (is_animating_collect) return;
 
   // UPDATE 'COLLECTED' UI
-  // Debounced with is_animating_collect
   is_animating_collect = true;
   const active_collect_element = collect_elements[current_index];
 

@@ -137,7 +137,7 @@ def collect_item():
             tap_to_process.tap_successful = 0
             tap_to_process.has_tapped = 1
             tap_to_process.save()
-        raise HTTPError('Tap still processing.')
+        raise HTTPError('Could not save tap to XOS.')
 
     if tap_to_process:
         tap_to_process.tap_successful = 1
@@ -152,12 +152,12 @@ def event_stream():
         time.sleep(0.1)
         has_tapped = HasTapped.get_or_none(tap_processing=1, has_tapped=1)
         if has_tapped:
-            ui_tap_event = f'data: {{ "tap_successful": {has_tapped.tap_successful} }}\n\n'
+            tap_event_message = f'data: {{ "tap_successful": {has_tapped.tap_successful} }}\n\n'
             has_tapped.has_tapped = 0
             has_tapped.tap_processing = 0
             has_tapped.tap_successful = 0
             has_tapped.save()
-            yield ui_tap_event
+            yield tap_event_message
 
 
 @app.route('/api/tap-source/')

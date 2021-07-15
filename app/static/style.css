@@ -313,3 +313,38 @@ p:last-child {
   background: #f4cb3a;
   z-index: 10;
 }
+
+.error_dialogue {
+  position: absolute;
+  z-index: 10;
+  left: 50%;
+  top: 70%;
+  transform: translate(-50%, -50%);
+  width: 66vw;
+  height: 30vh;
+  background: #fff;
+  transition: opacity 400ms;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.error_dialogue_text {
+  position: absolute;
+  z-index: 10;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  font-size: 60px;
+  font-family: PxGrotesk;
+  text-align: center;
+}
+
+.error_dialogue_close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 50px;
+  height: 50px;
+  background: center/contain url('close.svg');
+}

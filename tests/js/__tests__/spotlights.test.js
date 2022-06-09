@@ -46,9 +46,8 @@ describe("App", () => {
   });
 
   it("displays expected tap to collect text", () => {
-    const collectElement = document.getElementsByClassName(
-      "list_item_collect"
-    )[0];
+    const collectElement =
+      document.getElementsByClassName("list_item_collect")[0];
     expect(collectElement.innerHTML).toBe("TAP LENS ON READER");
   });
 });

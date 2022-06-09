@@ -24,8 +24,8 @@ function save_label(label_id) {
     referrer: "no-referrer",
     body: JSON.stringify({
       datetime: Date.now(),
-      label_id
-    })
+      label_id,
+    }),
   });
 }
 
@@ -59,7 +59,7 @@ const playlist_content = window.playlist_labels.map(function r(x) {
       ? URL.createObjectURL(
           new Blob([x.subtitles], { type: "text/vtt; charset=UTF-8" })
         )
-      : ""
+      : "",
   };
 });
 
@@ -326,11 +326,11 @@ function handle_tap_message(event) {
 
 list_cont.addEventListener("mousedown", handle_list_mousedown);
 list_cont.addEventListener("touchstart", handle_list_mousedown, {
-  passive: false
+  passive: false,
 });
 list_cont.addEventListener("mousemove", handle_list_mousemove);
 list_cont.addEventListener("touchmove", handle_list_mousemove, {
-  passive: false
+  passive: false,
 });
 list_cont.addEventListener("mouseup", handle_list_mouseup);
 list_cont.addEventListener("touchend", handle_list_mouseup);
@@ -388,8 +388,9 @@ function main_loop() {
   })`;
 
   // UPDATE SCROLLBAR
-  scrollbar_el.style.left = `${((window.innerWidth - 60) * list_offset) /
-    (min_list_offset || 1)}px`;
+  scrollbar_el.style.left = `${
+    ((window.innerWidth - 60) * list_offset) / (min_list_offset || 1)
+  }px`;
 
   requestAnimationFrame(main_loop);
 }

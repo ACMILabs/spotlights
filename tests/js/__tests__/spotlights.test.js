@@ -44,4 +44,11 @@ describe("App", () => {
     video.dispatchEvent(new Event("ended"));
     expect(video.src).not.toBe(initial_video_src);
   });
+
+  it("displays expected tap to collect text", () => {
+    const collectElement = document.getElementsByClassName(
+      "list_item_collect"
+    )[0];
+    expect(collectElement.innerHTML).toBe("TAP LENS ON READER");
+  });
 });

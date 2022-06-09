@@ -33,6 +33,11 @@
   src: url("PxGrotesk-BoldIta.otf") format("opentype");
 }
 
+@-webkit-keyframes animatedown {
+  0% { -webkit-transform: translateY(0); }
+  100% { -webkit-transform: translateY(0.2em); }
+}
+
 html {
   background: #000;
   margin: 0;
@@ -232,6 +237,7 @@ body {
   line-height: 0;
   vertical-align: -2px;
   transition: opacity 500ms;
+  -webkit-animation: animatedown 0.6s infinite alternate ease-in-out;
 }
 
 .active .list_item_collect {
@@ -245,6 +251,7 @@ body {
   height: 10px;
   display: inline-block;
   vertical-align: 1px;
+  -webkit-animation: none;
 }
 
 .list_item_collect.active.hidden,

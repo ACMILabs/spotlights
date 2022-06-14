@@ -50,4 +50,18 @@ describe("App", () => {
       document.getElementsByClassName("list_item_collect")[0];
     expect(collectElement.innerHTML).toBe("TAP LENS ON READER");
   });
+
+  it("plays next and previous videos when arrows are pressed", () => {
+    const initialLabel = document.getElementsByClassName("active")[0];
+    const rightArrow = document.getElementsByClassName("arrow_right")[0];
+    const leftArrow = document.getElementsByClassName("arrow_left")[0];
+
+    rightArrow.dispatchEvent(new MouseEvent("mouseup"));
+    const nextLabel = document.getElementsByClassName("active")[0];
+    expect(nextLabel).not.toBe(initialLabel);
+
+    leftArrow.dispatchEvent(new MouseEvent("mouseup"));
+    const previousLabel = document.getElementsByClassName("active")[0];
+    expect(previousLabel).toBe(initialLabel);
+  });
 });

@@ -215,6 +215,14 @@ const tap_error_close_element = document.createElement("div");
 tap_error_close_element.className = "error_dialogue_close";
 tap_error_element.appendChild(tap_error_close_element);
 
+const arrow_left_element = document.createElement("div");
+document.body.appendChild(arrow_left_element);
+arrow_left_element.className = "arrow_left";
+
+const arrow_right_element = document.createElement("div");
+document.body.appendChild(arrow_right_element);
+arrow_right_element.className = "arrow_right";
+
 // EVENT HANDLERS
 
 function handle_window_resize() {
@@ -247,7 +255,7 @@ function handle_list_mouseup() {
   is_mouse_down = false;
 }
 
-function handle_video_ended() {
+function handle_next_video() {
   const next_index = (current_index + 1) % playlist_content.length;
   list_items[current_index].classList.remove("active");
   list_items[next_index].classList.add("active");
@@ -267,8 +275,49 @@ function handle_video_ended() {
   is_targeting = true;
 }
 
+function handle_previous_video() {
+  let last_index = (current_index - 1) % playlist_content.length;
+  if (last_index < 0) {
+    last_index = playlist_content.length - 1;
+  }
+  list_items[current_index].classList.remove("active");
+  list_items[last_index].classList.add("active");
+  video.src = playlist_content[last_index].video_url;
+  video_track.src = playlist_content[last_index].subtitles;
+  save_label(playlist_content[last_index].id);
+  current_index = last_index;
+
+  target_list_offset = Math.min(
+    0,
+    Math.max(
+      min_list_offset,
+      -(last_index - 1) * LIST_ITEM_WIDTH -
+        (window_inner_width - 2 * LIST_PADDING) * 0.5
+    )
+  );
+  is_targeting = true;
+}
+
 function handle_video_play() {
   video_duration = video.duration;
+}
+
+function handle_arrow_mousedown(e) {
+  e.preventDefault();
+  return false;
+}
+
+function handle_arrow_mousemove(e) {
+  e.preventDefault();
+  return false;
+}
+
+function handle_arrow_mouseup() {
+  if (this.className === arrow_right_element.className) {
+    handle_next_video();
+  } else {
+    handle_previous_video();
+  }
 }
 
 function close_error_dialogue() {
@@ -337,10 +386,34 @@ list_cont.addEventListener("touchend", handle_list_mouseup);
 list_cont.addEventListener("mouseleave", handle_list_mouseup);
 list_cont.addEventListener("touchcancel", handle_list_mouseup);
 window.addEventListener("resize", handle_window_resize);
-video.addEventListener("ended", handle_video_ended);
+video.addEventListener("ended", handle_next_video);
 video.addEventListener("play", handle_video_play);
 const tap_source = new EventSource("/api/tap-source");
 tap_source.onmessage = handle_tap_message;
+
+// Arrow event listeners
+arrow_right_element.addEventListener("mousedown", handle_arrow_mousedown);
+arrow_right_element.addEventListener("touchstart", handle_arrow_mousedown, {
+  passive: false,
+});
+arrow_right_element.addEventListener("mousemove", handle_arrow_mousemove);
+arrow_right_element.addEventListener("touchmove", handle_arrow_mousemove, {
+  passive: false,
+});
+arrow_right_element.addEventListener("mouseup", handle_arrow_mouseup);
+arrow_right_element.addEventListener("touchend", handle_arrow_mouseup);
+arrow_right_element.addEventListener("touchcancel", handle_arrow_mouseup);
+arrow_left_element.addEventListener("mousedown", handle_arrow_mousedown);
+arrow_left_element.addEventListener("touchstart", handle_arrow_mousedown, {
+  passive: false,
+});
+arrow_left_element.addEventListener("mousemove", handle_arrow_mousemove);
+arrow_left_element.addEventListener("touchmove", handle_arrow_mousemove, {
+  passive: false,
+});
+arrow_left_element.addEventListener("mouseup", handle_arrow_mouseup);
+arrow_left_element.addEventListener("touchend", handle_arrow_mouseup);
+arrow_left_element.addEventListener("touchcancel", handle_arrow_mouseup);
 
 // Updates everything that needs regular updating, at 60fps
 function main_loop() {

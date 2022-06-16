@@ -52,16 +52,27 @@ describe("App", () => {
   });
 
   it("plays next and previous videos when arrows are pressed", () => {
-    const initialLabel = document.getElementsByClassName("active")[0];
+    const arrow_movement = 400;
+    const list_width = 616;
     const rightArrow = document.getElementsByClassName("arrow_right")[0];
     const leftArrow = document.getElementsByClassName("arrow_left")[0];
 
     rightArrow.dispatchEvent(new MouseEvent("mouseup"));
-    const nextLabel = document.getElementsByClassName("active")[0];
-    expect(nextLabel).not.toBe(initialLabel);
+    expect(window.current_list_offset).toBe(-arrow_movement);
+
+    // Wraps to zero
+    rightArrow.dispatchEvent(new MouseEvent("mouseup"));
+    expect(window.current_list_offset).toBe(0);
+
+    // Wraps to the end
+    leftArrow.dispatchEvent(new MouseEvent("mouseup"));
+    expect(window.current_list_offset).toBe(-list_width);
 
     leftArrow.dispatchEvent(new MouseEvent("mouseup"));
-    const previousLabel = document.getElementsByClassName("active")[0];
-    expect(previousLabel).toBe(initialLabel);
+    expect(window.current_list_offset).toBe(-list_width + arrow_movement);
+
+    // Wraps again
+    leftArrow.dispatchEvent(new MouseEvent("mouseup"));
+    expect(window.current_list_offset).toBe(-list_width);
   });
 });

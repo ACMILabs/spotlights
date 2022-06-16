@@ -89,6 +89,8 @@ let video_duration = 0;
 
 let error_dialogue_close_timeout = null;
 
+window.current_list_offset = 0;
+
 // DOM
 
 const root = document.getElementById("root");
@@ -275,29 +277,6 @@ function handle_next_video() {
   is_targeting = true;
 }
 
-function handle_previous_video() {
-  let last_index = (current_index - 1) % playlist_content.length;
-  if (last_index < 0) {
-    last_index = playlist_content.length - 1;
-  }
-  list_items[current_index].classList.remove("active");
-  list_items[last_index].classList.add("active");
-  video.src = playlist_content[last_index].video_url;
-  video_track.src = playlist_content[last_index].subtitles;
-  save_label(playlist_content[last_index].id);
-  current_index = last_index;
-
-  target_list_offset = Math.min(
-    0,
-    Math.max(
-      min_list_offset,
-      -(last_index - 1) * LIST_ITEM_WIDTH -
-        (window_inner_width - 2 * LIST_PADDING) * 0.5
-    )
-  );
-  is_targeting = true;
-}
-
 function handle_video_play() {
   video_duration = video.duration;
 }
@@ -314,9 +293,19 @@ function handle_arrow_mousemove(e) {
 
 function handle_arrow_mouseup() {
   if (this.className === arrow_right_element.className) {
-    handle_next_video();
+    window.current_list_offset -= LIST_ITEM_WIDTH;
+    if (window.current_list_offset < min_list_offset) {
+      window.current_list_offset = 0;
+    }
+    target_list_offset = window.current_list_offset;
+    is_targeting = true;
   } else {
-    handle_previous_video();
+    window.current_list_offset += LIST_ITEM_WIDTH;
+    if (window.current_list_offset > 0) {
+      window.current_list_offset = min_list_offset;
+    }
+    target_list_offset = window.current_list_offset;
+    is_targeting = true;
   }
 }
 
@@ -445,6 +434,7 @@ function main_loop() {
       target_list_offset =
         Math.round(list_offset / LIST_ITEM_WIDTH) * LIST_ITEM_WIDTH;
     }
+    window.current_list_offset = target_list_offset;
   }
 
   // UPDATE LIST OFFSET WHEN VIDEO CHANGES
@@ -453,6 +443,7 @@ function main_loop() {
     if (target_d > MIN_TARGET_D || target_d < -MIN_TARGET_D) {
       list_velocity = 0.1 * target_d;
     }
+    window.current_list_offset = target_list_offset;
   }
 
   // UPDATE VIDEO PROGRESS BAR

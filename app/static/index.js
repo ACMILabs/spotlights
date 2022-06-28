@@ -24,8 +24,8 @@ function save_label(label_id) {
     referrer: "no-referrer",
     body: JSON.stringify({
       datetime: Date.now(),
-      label_id
-    })
+      label_id,
+    }),
   });
 }
 
@@ -38,6 +38,7 @@ const FRICTION = 0.9;
 const MIN_LIST_VELOCITY = 0.02;
 const MIN_TARGET_D = 0.02;
 const MIN_DRAG = 10;
+const COLLECT_TEXT = "TAP LENS ON READER";
 
 // CONTENT
 
@@ -58,7 +59,7 @@ const playlist_content = window.playlist_labels.map(function r(x) {
       ? URL.createObjectURL(
           new Blob([x.subtitles], { type: "text/vtt; charset=UTF-8" })
         )
-      : ""
+      : "",
   };
 });
 
@@ -87,6 +88,8 @@ let is_animating_collect = false;
 let video_duration = 0;
 
 let error_dialogue_close_timeout = null;
+
+window.current_list_offset = 0;
 
 // DOM
 
@@ -160,7 +163,7 @@ for (let i = 0; i < playlist_content.length; i++) {
   const collect = document.createElement("div");
   item_inner.appendChild(collect);
   collect.className = "list_item_collect";
-  collect.innerHTML = "COLLECT";
+  collect.innerHTML = COLLECT_TEXT;
   collect_elements.push(collect);
 
   item.addEventListener("click", function handle_item_click(e) {
@@ -214,6 +217,14 @@ const tap_error_close_element = document.createElement("div");
 tap_error_close_element.className = "error_dialogue_close";
 tap_error_element.appendChild(tap_error_close_element);
 
+const arrow_left_element = document.createElement("div");
+document.body.appendChild(arrow_left_element);
+arrow_left_element.className = "arrow_left";
+
+const arrow_right_element = document.createElement("div");
+document.body.appendChild(arrow_right_element);
+arrow_right_element.className = "arrow_right";
+
 // EVENT HANDLERS
 
 function handle_window_resize() {
@@ -246,7 +257,7 @@ function handle_list_mouseup() {
   is_mouse_down = false;
 }
 
-function handle_video_ended() {
+function handle_next_video() {
   const next_index = (current_index + 1) % playlist_content.length;
   list_items[current_index].classList.remove("active");
   list_items[next_index].classList.add("active");
@@ -268,6 +279,34 @@ function handle_video_ended() {
 
 function handle_video_play() {
   video_duration = video.duration;
+}
+
+function handle_arrow_mousedown(e) {
+  e.preventDefault();
+  return false;
+}
+
+function handle_arrow_mousemove(e) {
+  e.preventDefault();
+  return false;
+}
+
+function handle_arrow_mouseup() {
+  if (this.className === arrow_right_element.className) {
+    window.current_list_offset -= LIST_ITEM_WIDTH;
+    if (window.current_list_offset < min_list_offset) {
+      window.current_list_offset = 0;
+    }
+    target_list_offset = window.current_list_offset;
+    is_targeting = true;
+  } else {
+    window.current_list_offset += LIST_ITEM_WIDTH;
+    if (window.current_list_offset > 0) {
+      window.current_list_offset = min_list_offset;
+    }
+    target_list_offset = window.current_list_offset;
+    is_targeting = true;
+  }
 }
 
 function close_error_dialogue() {
@@ -318,28 +357,52 @@ function handle_tap_message(event) {
   }, 3000);
   window.setTimeout(function timeout3() {
     active_collect_element.className = "list_item_collect";
-    active_collect_element.innerHTML = "COLLECT";
+    active_collect_element.innerHTML = COLLECT_TEXT;
     is_animating_collect = false;
   }, 3500);
 }
 
 list_cont.addEventListener("mousedown", handle_list_mousedown);
 list_cont.addEventListener("touchstart", handle_list_mousedown, {
-  passive: false
+  passive: false,
 });
 list_cont.addEventListener("mousemove", handle_list_mousemove);
 list_cont.addEventListener("touchmove", handle_list_mousemove, {
-  passive: false
+  passive: false,
 });
 list_cont.addEventListener("mouseup", handle_list_mouseup);
 list_cont.addEventListener("touchend", handle_list_mouseup);
 list_cont.addEventListener("mouseleave", handle_list_mouseup);
 list_cont.addEventListener("touchcancel", handle_list_mouseup);
 window.addEventListener("resize", handle_window_resize);
-video.addEventListener("ended", handle_video_ended);
+video.addEventListener("ended", handle_next_video);
 video.addEventListener("play", handle_video_play);
 const tap_source = new EventSource("/api/tap-source");
 tap_source.onmessage = handle_tap_message;
+
+// Arrow event listeners
+arrow_right_element.addEventListener("mousedown", handle_arrow_mousedown);
+arrow_right_element.addEventListener("touchstart", handle_arrow_mousedown, {
+  passive: false,
+});
+arrow_right_element.addEventListener("mousemove", handle_arrow_mousemove);
+arrow_right_element.addEventListener("touchmove", handle_arrow_mousemove, {
+  passive: false,
+});
+arrow_right_element.addEventListener("mouseup", handle_arrow_mouseup);
+arrow_right_element.addEventListener("touchend", handle_arrow_mouseup);
+arrow_right_element.addEventListener("touchcancel", handle_arrow_mouseup);
+arrow_left_element.addEventListener("mousedown", handle_arrow_mousedown);
+arrow_left_element.addEventListener("touchstart", handle_arrow_mousedown, {
+  passive: false,
+});
+arrow_left_element.addEventListener("mousemove", handle_arrow_mousemove);
+arrow_left_element.addEventListener("touchmove", handle_arrow_mousemove, {
+  passive: false,
+});
+arrow_left_element.addEventListener("mouseup", handle_arrow_mouseup);
+arrow_left_element.addEventListener("touchend", handle_arrow_mouseup);
+arrow_left_element.addEventListener("touchcancel", handle_arrow_mouseup);
 
 // Updates everything that needs regular updating, at 60fps
 function main_loop() {
@@ -371,6 +434,7 @@ function main_loop() {
       target_list_offset =
         Math.round(list_offset / LIST_ITEM_WIDTH) * LIST_ITEM_WIDTH;
     }
+    window.current_list_offset = target_list_offset;
   }
 
   // UPDATE LIST OFFSET WHEN VIDEO CHANGES
@@ -379,6 +443,7 @@ function main_loop() {
     if (target_d > MIN_TARGET_D || target_d < -MIN_TARGET_D) {
       list_velocity = 0.1 * target_d;
     }
+    window.current_list_offset = target_list_offset;
   }
 
   // UPDATE VIDEO PROGRESS BAR
@@ -387,8 +452,9 @@ function main_loop() {
   })`;
 
   // UPDATE SCROLLBAR
-  scrollbar_el.style.left = `${((window.innerWidth - 60) * list_offset) /
-    (min_list_offset || 1)}px`;
+  scrollbar_el.style.left = `${
+    ((window.innerWidth - 60) * list_offset) / (min_list_offset || 1)
+  }px`;
 
   requestAnimationFrame(main_loop);
 }

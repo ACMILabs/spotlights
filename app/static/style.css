@@ -356,25 +356,39 @@ p:last-child {
   background: center/contain url('close.svg');
 }
 
-.arrow_left {
+.arrow_container {
   position: fixed;
-  bottom: 200px;
+  bottom: 0px;
+  z-index: 10;
+  height: 400px;
+  width: 100px;
+}
+
+#arrow_left_container {
   left: 0px;
+}
+
+#arrow_right_container {
+  right: 0px;
+}
+
+.arrow_left {
+  position: relative;
+  left: 0px;
+  top: 150px;
   width: 50px;
   height: 50px;
   background: center/contain no-repeat url('right-black.svg');
   background-color: white;
   transform: rotate(-180deg);
-  z-index: 10;
 }
 
 .arrow_right {
-  position: fixed;
-  bottom: 200px;
-  right: 0px;
+  position: relative;
+  left: 50px;
+  top: 150px;
   width: 50px;
   height: 50px;
   background: center/contain no-repeat url('right-black.svg');
   background-color: white;
-  z-index: 10;
 }

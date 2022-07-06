@@ -45,7 +45,7 @@ class MockTextResponse:
         self.status_code = 200
 
 
-def mocked_requests_get(*args, **kwargs):
+def mocked_requests_get(*args, **kwargs):  # pylint: disable=unused-argument
     if '/api/playlists/1/' in args[0]:
         with open('tests/data/playlist.json', 'r', encoding='utf-8') as file_obj:
             return MockJsonResponse(file_obj.read(), 200)
@@ -65,7 +65,7 @@ def mocked_requests_get(*args, **kwargs):
     raise Exception("No mocked sample data for request: "+args[0])
 
 
-def mocked_requests_post(*args, **kwargs):
+def mocked_requests_post(*args, **kwargs):  # pylint: disable=unused-argument
     if '/api/taps/' in args[0]:
         with open('tests/data/xos_tap.json', 'r', encoding='utf-8') as taps_file:
             return MockJsonResponse(taps_file.read(), 201)
@@ -84,7 +84,11 @@ def test_route_collect_item(client):
     with open('tests/data/lens_tap.json', 'r', encoding='utf-8') as taps_file:
         lens_tap_data = taps_file.read()
 
-    response = client.post('/api/taps/', data=lens_tap_data, headers={'Content-Type': 'application/json'})
+    response = client.post(
+        '/api/taps/',
+        data=lens_tap_data,
+        headers={'Content-Type': 'application/json'},
+    )
     assert response.json["lens_short_code"] == "lens12"
     assert response.status_code == 201
 

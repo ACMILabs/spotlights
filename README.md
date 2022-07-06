@@ -7,6 +7,8 @@ This is intended for use on an Optiplex 7050 with a touchscreen.
 
 ![Spotlights CI](https://github.com/ACMILabs/spotlights/workflows/Spotlights%20CI/badge.svg)
 
+<img src="spotlights-screenshot.jpg" style="width: 40%; margin-left: 25%;" title="A screenshot of Spotlights running in Chromium browser." alt="A screenshot of Spotlights running in Chromium browser." />
+
 ## Features
 
 * Takes an XOS playlist of videos and labels

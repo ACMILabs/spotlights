@@ -65,7 +65,7 @@ class HasTapped(Model):
     tap_successful = IntegerField()
     tap_processing = IntegerField()
 
-    class Meta:  # pylint: disable=R0903
+    class Meta:
         database = db
 
 

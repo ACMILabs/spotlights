@@ -54,8 +54,8 @@ describe("App", () => {
   it("plays next and previous videos when arrows are pressed", () => {
     const arrow_movement = 400;
     const list_width = 616;
-    const rightArrow = document.getElementsByClassName("arrow_right")[0];
-    const leftArrow = document.getElementsByClassName("arrow_left")[0];
+    const rightArrow = document.getElementById("arrow_right_container");
+    const leftArrow = document.getElementById("arrow_left_container");
 
     rightArrow.dispatchEvent(new MouseEvent("mouseup"));
     expect(window.current_list_offset).toBe(-arrow_movement);

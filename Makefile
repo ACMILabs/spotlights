@@ -12,7 +12,7 @@ lint:
 	flake8
 	isort -rc --check-only .
 install:
-	npm install
+	npm install --force
 test:
 	# Run python tests
 	env `cat /code/config.tmpl.env | xargs` pytest -v

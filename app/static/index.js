@@ -217,12 +217,22 @@ const tap_error_close_element = document.createElement("div");
 tap_error_close_element.className = "error_dialogue_close";
 tap_error_element.appendChild(tap_error_close_element);
 
+const arrow_left_container = document.createElement("div");
+document.body.appendChild(arrow_left_container);
+arrow_left_container.className = "arrow_container";
+arrow_left_container.id = "arrow_left_container";
+
+const arrow_right_container = document.createElement("div");
+document.body.appendChild(arrow_right_container);
+arrow_right_container.className = "arrow_container";
+arrow_right_container.id = "arrow_right_container";
+
 const arrow_left_element = document.createElement("div");
-document.body.appendChild(arrow_left_element);
+arrow_left_container.appendChild(arrow_left_element);
 arrow_left_element.className = "arrow_left";
 
 const arrow_right_element = document.createElement("div");
-document.body.appendChild(arrow_right_element);
+arrow_right_container.appendChild(arrow_right_element);
 arrow_right_element.className = "arrow_right";
 
 // EVENT HANDLERS
@@ -292,7 +302,7 @@ function handle_arrow_mousemove(e) {
 }
 
 function handle_arrow_mouseup() {
-  if (this.className === arrow_right_element.className) {
+  if (this.id === arrow_right_container.id) {
     window.current_list_offset -= LIST_ITEM_WIDTH;
     if (window.current_list_offset < min_list_offset) {
       window.current_list_offset = 0;
@@ -381,28 +391,28 @@ const tap_source = new EventSource("/api/tap-source");
 tap_source.onmessage = handle_tap_message;
 
 // Arrow event listeners
-arrow_right_element.addEventListener("mousedown", handle_arrow_mousedown);
-arrow_right_element.addEventListener("touchstart", handle_arrow_mousedown, {
+arrow_right_container.addEventListener("mousedown", handle_arrow_mousedown);
+arrow_right_container.addEventListener("touchstart", handle_arrow_mousedown, {
   passive: false,
 });
-arrow_right_element.addEventListener("mousemove", handle_arrow_mousemove);
-arrow_right_element.addEventListener("touchmove", handle_arrow_mousemove, {
+arrow_right_container.addEventListener("mousemove", handle_arrow_mousemove);
+arrow_right_container.addEventListener("touchmove", handle_arrow_mousemove, {
   passive: false,
 });
-arrow_right_element.addEventListener("mouseup", handle_arrow_mouseup);
-arrow_right_element.addEventListener("touchend", handle_arrow_mouseup);
-arrow_right_element.addEventListener("touchcancel", handle_arrow_mouseup);
-arrow_left_element.addEventListener("mousedown", handle_arrow_mousedown);
-arrow_left_element.addEventListener("touchstart", handle_arrow_mousedown, {
+arrow_right_container.addEventListener("mouseup", handle_arrow_mouseup);
+arrow_right_container.addEventListener("touchend", handle_arrow_mouseup);
+arrow_right_container.addEventListener("touchcancel", handle_arrow_mouseup);
+arrow_left_container.addEventListener("mousedown", handle_arrow_mousedown);
+arrow_left_container.addEventListener("touchstart", handle_arrow_mousedown, {
   passive: false,
 });
-arrow_left_element.addEventListener("mousemove", handle_arrow_mousemove);
-arrow_left_element.addEventListener("touchmove", handle_arrow_mousemove, {
+arrow_left_container.addEventListener("mousemove", handle_arrow_mousemove);
+arrow_left_container.addEventListener("touchmove", handle_arrow_mousemove, {
   passive: false,
 });
-arrow_left_element.addEventListener("mouseup", handle_arrow_mouseup);
-arrow_left_element.addEventListener("touchend", handle_arrow_mouseup);
-arrow_left_element.addEventListener("touchcancel", handle_arrow_mouseup);
+arrow_left_container.addEventListener("mouseup", handle_arrow_mouseup);
+arrow_left_container.addEventListener("touchend", handle_arrow_mouseup);
+arrow_left_container.addEventListener("touchcancel", handle_arrow_mouseup);
 
 // Updates everything that needs regular updating, at 60fps
 function main_loop() {
